@@ -1,0 +1,14 @@
+site_name: statista
+site_description: The documentation of Hapi Hydrological Model
+site_author: Mostafa Farrag
+
+repo_url: https://github.com/MAfarrag/statista
+edit_url: ""
+
+theme:
+    name: readthedocs
+
+nav:
+    - Home: index.md
+    - GIS: GIS.md
+    - License: license.md

@@ -1,0 +1,77 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.3.0
+    hooks:
+#    -   id: check-yaml
+#        name: "[yaml -  check] validate yaml"
+    -   id: end-of-file-fixer
+        name: "[py -  check] validate yaml"
+    -   id: trailing-whitespace
+        name: "[file - format] trim trailing whitespace"
+        args: [ --markdown-linebreak-ext=md ]
+    -   id: check-added-large-files
+        name: "[file -  check] large file"
+        args: [ --maxkb=5000 ]
+    -   id: check-docstring-first
+        name: "[py   -  check] docstring first"
+        files: /examples
+        types : [file, python ]
+    -   id: check-json
+        name: "[json -  check] validate json"
+    -   id: check-merge-conflict
+        name: "[git  -  check] merge conflict"
+    -   id: debug-statements
+        name: "[py   -  check] debug statements"
+    -   id: detect-private-key
+        name: "[cred -  check] private keys"
+    -   id: fix-encoding-pragma
+        name: "[file - format] coding pragma"
+        args: [ --remove ]
+    -   id: mixed-line-ending
+        name: "[file - format] mixed line ending"
+        args: [ --fix=auto ]
+    -   id: pretty-format-json
+        name: "[json - format] pretty json"
+        args: [ --autofix,
+                --indent=4,
+                --no-sort-keys ]
+    -   id: requirements-txt-fixer
+        name: "[reqs - format] fix requirements.txt"
+
+#    - repo: https://github.com/PyCQA/docformatter
+#      rev: v1.4
+#      hooks:
+#        - id: docformatter
+##          name: "[py   - format] docformatter"
+##          args: [ -i, --wrap-summaries, "0" ]
+
+#    - repo: https://github.com/PyCQA/pydocstyle
+#      rev: 6.1.1
+#      hooks:
+#        - id: pydocstyle
+#          name: "[py   - check] pydocstyle"
+#          files: ^Hapi/
+    # TODO : uncheck later and fix all the problems of line too long
+#-   repo: https://gitlab.com/pycqa/flake8
+#    rev: 3.8.4
+#    hooks:
+#      - id: flake8
+#        name: "[py   - check] flake8"
+#        language_version: python3.8
+# TODO : this hook does not fix the files
+    #-   repo: https://github.com/psf/black
+#    rev: 19.3b0
+#    hooks:
+#    -   id: black
+-   repo: https://github.com/pre-commit/mirrors-isort
+    rev: v5.7.0
+    hooks:
+      - id: isort
+        name: "[py   - format] isort"
+
+#- repo: https://github.com/ambv/black
+#  rev: 20.8b1
+#  hooks:
+#    - id: black
+#      name: "[py   - format] black"
+#      language_version: python3.8

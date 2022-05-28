@@ -1,0 +1,65 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  Run:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest] #, macos-latest, windows-latest
+        python-version: ["3.9" ] # "3.7", "3.8",
+    env:
+      OS: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@master
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@master
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          miniconda-version: "latest"
+          channels: conda-forge
+          allow-softlinks: true
+          channel-priority: flexible
+          show-channel-urls: true
+
+      - name: Install dependencies
+        run: |
+          $CONDA/bin/conda env update --file environment.yml --name base
+          python setup.py install
+
+#    - name: Lint with flake8
+#      run: |
+#        # add CONDA/bin/ in front of everything
+#        $CONDA/bin/conda install flake8
+#        # stop the build if there are Python syntax errors or undefined names
+#        $CONDA/bin/flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+#        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+#        $CONDA/bin/flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      - name: Generate coverage report
+#        working-directory: ../
+        run: |
+          pwd
+          $CONDA/bin/pytest --cov=pyramids --cov-report=xml
+
+#      - name: Upload coverage to Codecov
+#        uses: codecov/codecov-action@v1
+#        with:
+#          token: ${{ secrets.CODECOV_TOKEN }}
+#          files: ./coverage1.xml,./coverage2.xml
+#          directory: ./coverage/reports/
+#          flags: unittests
+#          env_vars: OS,PYTHON
+#          name: codecov-umbrella
+#          fail_ci_if_error: true
+#          path_to_write_report: ./coverage/codecov_report.txt
+#          verbose: true
+
+      - name: Coveralls GitHub Action
+        uses: coverallsapp/github-action@1.1.3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage1.xml,./coverage2.xml
+          directory: ./coverage/reports/
