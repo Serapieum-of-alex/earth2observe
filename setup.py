@@ -12,7 +12,7 @@ with open('HISTORY.rst') as history_file:
 test_requirements = ['pytest>=3', ]
 
 setup(
-    name="earthobserve",
+    name="earth2observe",
     version="0.1.0",
     description="remote sensing package",
     author="Mostafa Farrag",
@@ -23,15 +23,15 @@ setup(
     long_description_content_type="text/markdown",
     license="GNU General Public License v3",
     zip_safe=False,
-    packages=find_packages(include=['earthobserve', 'earthobserve.*']),
+    packages=find_packages(include=['earth2observe', 'earth2observe.*']),
     test_suite="tests",
     tests_require=test_requirements,
     # install_requires=requirements,
-    entry_points={
-        'console_scripts': [
-            'earthobserve=earthobserve.cli:main',
-        ],
-    },
+    # entry_points={
+    #     'console_scripts': [
+    #         'earth2observe=earth2observe.cli:main',
+    #     ],
+    # },
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Environment :: Console",

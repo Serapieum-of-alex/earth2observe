@@ -29,8 +29,9 @@ for dependency in hard_dependencies:
 if missing_dependencies:
     raise ImportError("Missing required dependencies {0}".format(missing_dependencies))
 
-import earthobserve.remotesensing as remotesensing
-
+import earth2observe.ecmwf as ecmwf
+import earth2observe.chirps as chirps
+import earth2observe.utils as utils
 __doc__ = """
-earthobserve - remote sensing package
+earth2observe - remote sensing package
 """
