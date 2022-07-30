@@ -1,0 +1,38 @@
+[
+    {
+        "dataset": "ls9",
+        "url": "LANDSAT/LC09/C02/T1_L2",
+        "bands": [
+            "SR_B1",
+            "SR_B2",
+            "SR_B3",
+            "SR_B4",
+            "SR_B5",
+            "SR_B6",
+            "SR_B7",
+            "SR_QA_AEROSOL"
+        ],
+        "spatial_resolution": 30,
+        "temporal_resolution": 16,
+        "min": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+        ],
+        "max": [
+            65455,
+            65455,
+            65455,
+            65455,
+            65455,
+            65455,
+            65455,
+            65455
+        ]
+    }
+]
