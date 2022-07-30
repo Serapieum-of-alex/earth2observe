@@ -7,8 +7,8 @@ Installation of ECMWF API key
 2 - Install ECMWF key (instruction are here https://confluence.ecmwf.int/display/WEBAPI/Access+ECMWF+Public+Datasets#AccessECMWFPublicDatasets-key)
 """
 from earth2observe.chirps import CHIRPS
-from earth2observe.ecmwf import ECMWF
-from earth2observe.ecmwf import Variables
+from earth2observe.ecmwf import ECMWF, Variables
+
 #%% precipitation
 start = "2009-01-01"
 end = "2009-01-10"
