@@ -1,7 +1,10 @@
-# from typing import List
-
 import pandas as pd
 import pytest
+
+from tests.gee.conftest import *
+
+# from typing import List
+
 
 
 # @pytest.fixture(scope="module")
