@@ -1,16 +1,16 @@
-"Google earth engine main script"
+"""Google earth engine main script."""
 import base64
 import json
-import os
 
 import ee
 
+# import os
+
 
 class GEE:
-    """
-    GEE
-    """
-    def __init__(self, service_account:str, service_key_path: str):
+    """GEE."""
+
+    def __init__(self, service_account: str, service_key_path: str):
         """Initialize.
 
         Parameters
@@ -23,11 +23,12 @@ class GEE:
         -------
         None
         """
-        self.Initialize(service_account, service_key_path)
+        self.initialize(service_account, service_key_path)
 
         pass
 
-    def Initialize(self, service_account: str, service_key: str):
+    @staticmethod
+    def initialize(service_account: str, service_key: str):
         """Initialize.
 
             Initialize authenticate and initializes the connection to google earth engine with a service accont file
@@ -47,9 +48,10 @@ class GEE:
         try:
             credentials = ee.ServiceAccountCredentials(service_account, service_key)
         except ValueError:
-            credentials = ee.ServiceAccountCredentials(service_account, key_data=service_key)
+            credentials = ee.ServiceAccountCredentials(
+                service_account, key_data=service_key
+            )
         ee.Initialize(credentials=credentials)
-
 
     @staticmethod
     def encodeServiceAccount(service_key_dir: str) -> bytes:
@@ -69,7 +71,6 @@ class GEE:
         dumped_service_account = json.dumps(content)
         encoded_service_account = base64.b64encode(dumped_service_account.encode())
         return encoded_service_account
-
 
     @staticmethod
     def decodeServiceAccount(service_key_bytes: bytes) -> str:

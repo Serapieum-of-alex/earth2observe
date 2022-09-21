@@ -13,7 +13,7 @@ except PackageNotFoundError:  # pragma: no cover
 
 # documentation format
 __author__ = "Mostafa Farrag"
-__email__ = 'moah.farag@gmail.com'
+__email__ = "moah.farag@gmail.com"
 __docformat__ = "restructuredtext"
 
 # Let users know if they're missing any of our hard dependencies
@@ -25,15 +25,17 @@ for dependency in hard_dependencies:
         __import__(dependency)
     except ImportError as e:
         missing_dependencies.append(dependency)
+        print(e)
 
 if missing_dependencies:
     raise ImportError("Missing required dependencies {0}".format(missing_dependencies))
 
-def configuration(parent_package='',top_path=None):
+
+def configuration(parent_package="", top_path=None):
 
     from numpy.distutils.misc_util import Configuration
 
-    config = Configuration(None,parent_package,top_path)
+    config = Configuration(None, parent_package, top_path)
     config.set_options(
         ignore_setup_xxx_py=True,
         assume_default_configuration=True,
@@ -41,14 +43,14 @@ def configuration(parent_package='',top_path=None):
         quiet=True,
     )
 
-    config.add_subpackage('gee')
+    config.add_subpackage("gee")
     return config
 
 
-import earth2observe.chirps as chirps
-import earth2observe.ecmwf as ecmwf
-import earth2observe.gee as gee
-import earth2observe.utils as utils
+# import earth2observe.chirps as chirps
+# import earth2observe.ecmwf as ecmwf
+# import earth2observe.gee as gee
+# import earth2observe.utils as utils
 
 __doc__ = """
 earth2observe - remote sensing package

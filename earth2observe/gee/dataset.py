@@ -1,37 +1,46 @@
 import datetime as dt
 
-import ee
+# import ee
+from geopandas.geodataframe import GeoDataFrame
 
 from earth2observe.gee.data import getCatalog
+from earth2observe.gee.gee import GEE
 
 catalog = getCatalog()
 default_date_format = "%Y-%m-%d"
 
-class Dataset:
-    """
-    Dataset
-    """
-    def __init__(self, dataset_id: str, start_date: str, end_date: str, date_format: str = "%Y-%m-%d"):
+
+class Dataset(GEE):
+    """Dataset."""
+
+    def __init__(
+        self,
+        dataset_id: str,
+        start_date: str,
+        end_date: str,
+        date_format: str = "%Y-%m-%d",
+    ):
         if dataset_id not in catalog["dataset"].tolist():
-            raise ValueError(f"the given dataset: {dataset_id} does nor exist in the catalog")
+            raise ValueError(
+                f"the given dataset: {dataset_id} does nor exist in the catalog"
+            )
         else:
             self.metadata = catalog.loc[catalog["dataset"] == dataset_id, :]
             self.id = id
 
-        self.start_date, self.end_date = self.getDate(dataset_id, start_date, end_date, date_format)
-        self.catalog = catalog
-        pass
-
-
-
-
+        self.start_date, self.end_date = self.getDate(
+            dataset_id, start_date, end_date, date_format
+        )
+        # self.catalog = catalog
+        self.boundary = None
 
     @staticmethod
     def getDate(
-            dataset_id: str,
-            start_date: str = None,
-            end_date: str = None,
-            date_format: str = default_date_format):
+        dataset_id: str,
+        start_date: str = None,
+        end_date: str = None,
+        date_format: str = default_date_format,
+    ):
         """getDate.
 
             getDate retrieves the start and end date of a dataset
@@ -57,7 +66,9 @@ class Dataset:
         """
         data = catalog.loc[catalog["dataset"] == dataset_id, :]
 
-        dataset_start_date = dt.datetime.strptime(data["start_date"].values[0], default_date_format)
+        dataset_start_date = dt.datetime.strptime(
+            data["start_date"].values[0], default_date_format
+        )
         dataset_end_date = data["end_date"].values[0]
         if dataset_end_date == "Now":
             dataset_end_date = dt.datetime.now().date()
@@ -77,3 +88,26 @@ class Dataset:
             end_date = dataset_end_date
 
         return start_date, end_date
+
+    def addBoundary(self, gdf: GeoDataFrame):
+        """addBoundary.
+
+            addBoundary
+
+        Parameters
+        ----------
+        gdf
+        """
+        self.boundary = gdf.copy()
+
+    def filterByRegion(self, gdf: GeoDataFrame = None):
+        """filterByRegion.
+
+            filterByRegion
+
+        Parameters
+        ----------
+        gdf
+        """
+        if gdf:
+            self.addBoundary(gdf)

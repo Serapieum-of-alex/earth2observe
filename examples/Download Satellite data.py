@@ -1,14 +1,12 @@
-"""
-Download Satellite data
-ECMWF
-Installation of ECMWF API key
+"""Download Satellite data ECMWF Installation of ECMWF API key.
+
 1 - to be able to use Hapi to download ECMWF data you need to register and setup your account in the ECMWF website (https://apps.ecmwf.int/registration/)
 
 2 - Install ECMWF key (instruction are here https://confluence.ecmwf.int/display/WEBAPI/Access+ECMWF+Public+Datasets#AccessECMWFPublicDatasets-key)
 """
 from earth2observe.chirps import CHIRPS
-from earth2observe.ecmwf import ECMWF
-from earth2observe.ecmwf import Variables
+from earth2observe.ecmwf import ECMWF, Variables
+
 #%% precipitation
 start = "2009-01-01"
 end = "2009-01-10"

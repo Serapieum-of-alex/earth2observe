@@ -1,15 +1,16 @@
-import sys
-import os
 import gzip
+import os
+import sys
+
 
 def print_progress_bar(
-        i: int,
-        total: int,
-        prefix: str="",
-        suffix: str="",
-        decimals: int=1,
-        length: int=100,
-        fill: str="█"
+    i: int,
+    total: int,
+    prefix: str = "",
+    suffix: str = "",
+    decimals: int = 1,
+    length: int = 100,
+    fill: str = "█",
 ):
     """print_progress_bar.
 
@@ -45,11 +46,8 @@ def print_progress_bar(
         print()
 
 
-
 def extractFromGZ(input_file, output_file, delete=False):
-    """
-    ExtractFromGZ method extract data from the zip/.gz files,
-    save the data
+    """ExtractFromGZ method extract data from the zip/.gz files, save the data.
 
     Parameters
     ----------

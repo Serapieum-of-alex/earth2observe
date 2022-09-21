@@ -13,7 +13,7 @@ except PackageNotFoundError:  # pragma: no cover
 
 # documentation format
 __author__ = "Mostafa Farrag"
-__email__ = 'moah.farag@gmail.com'
+__email__ = "moah.farag@gmail.com"
 __docformat__ = "restructuredtext"
 
 # Let users know if they're missing any of our hard dependencies
@@ -25,13 +25,16 @@ for dependency in hard_dependencies:
         __import__(dependency)
     except ImportError as e:
         missing_dependencies.append(dependency)
+        print(e)
 
 if missing_dependencies:
     raise ImportError("Missing required dependencies {0}".format(missing_dependencies))
 
-import earth2observe.gee.data as data
-import earth2observe.gee.dataset as dataset
-import earth2observe.gee.gee as gee
+# import earth2observe.gee.data as data
+# import earth2observe.gee.dataset as dataset
+# import earth2observe.gee.features as features
+# import earth2observe.gee.gee as gee
+# import earth2observe.gee.images as images
 
 __doc__ = """
 gee - google earth engine

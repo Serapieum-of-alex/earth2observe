@@ -1,2 +1,1 @@
-
 # collections = ee.ImageCollection(url')

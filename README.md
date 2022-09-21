@@ -25,12 +25,12 @@ earthobserve
 
 Main Features
 -------------
-  - 
+  -
 
 
 Future work
 -------------
-  - 
+  -
 
 
 

@@ -1,11 +1,11 @@
-"""
-Created on Fri Apr  2 06:58:20 2021
+"""Created on Fri Apr  2 06:58:20 2021.
 
 @author: mofarrag
 """
 import calendar
 import datetime as dt
 import os
+
 import numpy as np
 import pandas as pd
 from ecmwfapi import ECMWFDataServer
@@ -13,6 +13,7 @@ from netCDF4 import Dataset
 from pyramids.raster import Raster
 
 from earth2observe.utils import print_progress_bar
+
 
 class ECMWF:
     """RemoteSensing.
@@ -25,18 +26,19 @@ class ECMWF:
         3- API
         4- ListAttributes
     """
+
     def __init__(
-            self,
-            time: str = "daily",
-            start: str = "",
-            end: str = "",
-            path: str = "",
-            variables: list=[],
-            lat_lim: list=[],
-            lon_lim: list=[],
-            fmt: str="%Y-%m-%d",
+        self,
+        time: str = "daily",
+        start: str = "",
+        end: str = "",
+        path: str = "",
+        variables: list = [],
+        lat_lim: list = [],
+        lon_lim: list = [],
+        fmt: str = "%Y-%m-%d",
     ):
-        """RemoteSensing
+        """RemoteSensing.
 
         Parameters
         ----------
@@ -86,9 +88,8 @@ class ECMWF:
         # for ECMWF only
         self.string7 = "%s/to/%s" % (self.start, self.end)
 
-
     def download(self, progress_bar: bool = True):
-        """ECMWF
+        """ECMWF.
 
         ECMWF method downloads ECMWF daily data for a given variable, time
         interval, and spatial extent.
@@ -105,17 +106,17 @@ class ECMWF:
         """
         for var in self.vars:
             # Download data
-            print(f"\nDownload ECMWF {var} data for period {self.start} till {self.end}")
+            print(
+                f"\nDownload ECMWF {var} data for period {self.start} till {self.end}"
+            )
 
             self.downloadData(var, progress_bar)  # CaseParameters=[SumMean, Min, Max]
         # delete the downloaded netcdf
         del_ecmwf_dataset = os.path.join(self.path, "data_interim.nc")
         os.remove(del_ecmwf_dataset)
 
-
     def downloadData(self, var: str, progress_bar: bool):
-        """
-        This function downloads ECMWF six-hourly, daily or monthly data
+        """This function downloads ECMWF six-hourly, daily or monthly data.
 
         Parameters
         ----------
@@ -280,21 +281,20 @@ class ECMWF:
 
         return ()
 
-
     @staticmethod
     def API(
-            output_folder,
-            DownloadType,
-            string1,
-            string2,
-            string3,
-            string4,
-            string5,
-            string6,
-            string7,
-            string8,
-            string9,
-            string10,
+        output_folder,
+        DownloadType,
+        string1,
+        string2,
+        string3,
+        string4,
+        string5,
+        string6,
+        string7,
+        string8,
+        string9,
+        string10,
     ):
 
         os.chdir(output_folder)
@@ -314,9 +314,9 @@ class ECMWF:
                     "time": "%s" % string6,
                     "date": "%s" % string7,
                     "type": "%s"
-                            % string8,  # http://apps.ecmwf.int/codes/grib/format/mars/type/
+                    % string8,  # http://apps.ecmwf.int/codes/grib/format/mars/type/
                     "class": "%s"
-                             % string9,  # http://apps.ecmwf.int/codes/grib/format/mars/class/
+                    % string9,  # http://apps.ecmwf.int/codes/grib/format/mars/class/
                     "area": "%s" % string10,
                     "format": "netcdf",
                     "target": "data_interim.nc",
@@ -336,9 +336,9 @@ class ECMWF:
                     "time": "%s" % string6,
                     "date": "%s" % string7,
                     "type": "%s"
-                            % string8,  # http://apps.ecmwf.int/codes/grib/format/mars/type/
+                    % string8,  # http://apps.ecmwf.int/codes/grib/format/mars/type/
                     "class": "%s"
-                             % string9,  # http://apps.ecmwf.int/codes/grib/format/mars/class/
+                    % string9,  # http://apps.ecmwf.int/codes/grib/format/mars/class/
                     "area": "%s" % string10,
                     "format": "netcdf",
                     "target": "data_interim.nc",
@@ -349,10 +349,8 @@ class ECMWF:
 
 
 class Variables:
-    """
-    This class contains the information about the ECMWF variables
-    http://rda.ucar.edu/cgi-bin/transform?xml=/metadata/ParameterTables/WMO_GRIB1.98-0.128.xml&view=gribdoc
-    """
+    """This class contains the information about the ECMWF variables http://rda.ucar.edu/cgi-bin/transform?xml=/metadata/ParameterTables/WMO_GRIB1.98-0.128.xml&view=gribdoc."""
+
     number_para = {
         "T": 130,
         "2T": 167,
@@ -540,7 +538,6 @@ class Variables:
         "HCC": 1,
     }
 
-
     def __init__(self, step):
 
         # output units after applying factor
@@ -619,17 +616,13 @@ class Variables:
         else:
             raise KeyError("The input time step is not supported")
 
-
     def __str__(self):
         print(
             f"Variable name:\n {self.var_name}\nDescriptions\n{self.descriptions}\nUnits : \n{self.units}"
         )
 
-
     def ListAttributes(self):
-        """
-        Print Attributes List
-        """
+        """Print Attributes List."""
         print("\n")
         print(
             f"Attributes List of: {repr(self.__dict__['name'])} - {self.__class__.__name__} Instance\n"
