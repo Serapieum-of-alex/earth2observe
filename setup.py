@@ -6,8 +6,7 @@ with open("README.md", "r") as readme_file:
 with open("HISTORY.rst") as history_file:
     history = history_file.read()
 
-# requirements = [line.strip() for line in open("requirements.txt").readlines()]
-# requirements = requirements[1:]
+requirements = [line.strip() for line in open("requirements.txt").readlines()]
 
 test_requirements = [
     "pytest>=3",
@@ -15,7 +14,7 @@ test_requirements = [
 
 setup(
     name="earth2observe",
-    version="0.1.1",
+    version="0.1.2",
     description="remote sensing package",
     author="Mostafa Farrag",
     author_email="moah.farag@gmail.come",
@@ -28,7 +27,7 @@ setup(
     packages=find_packages(include=["earth2observe", "earth2observe.*"]),
     test_suite="tests",
     tests_require=test_requirements,
-    # install_requires=requirements,
+    install_requires=requirements,
     # entry_points={
     #     'console_scripts': [
     #         'earth2observe=earth2observe.cli:main',

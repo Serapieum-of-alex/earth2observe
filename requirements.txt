@@ -1,0 +1,7 @@
+earthengine-api >=0.1.324
+ecmwf-api-client >=1.6.3
+loguru >=0.6.0
+netCDF4 >=1.6.1
+numpy >=1.23.3
+pandas >=1.4.4
+pyramids-gis >=0.2.4
