@@ -148,5 +148,3 @@ mo_*
 conda/
 /examples/data/ecmwf/daily/*
 .idea/*
-poetry.lock
-pyproject.toml
