@@ -48,10 +48,10 @@ class CHIRPS:
         # Define timestep for the timedates
         self.lat_lim = []
         self.lon_lim = []
-        if time == "daily":
+        if time.lower() == "daily":
             self.time_freq = "D"
             self.output_folder = os.path.join(path, "Precipitation", "CHIRPS", "Daily")
-        elif time == "monthly":
+        elif time.lower() == "monthly":
             self.time_freq = "MS"
             self.output_folder = os.path.join(
                 path, "Precipitation", "CHIRPS", "Monthly"
@@ -199,7 +199,7 @@ class CHIRPS:
         ftp.login()
 
         # Define FTP path to directory
-        if TimeCase == "daily":
+        if TimeCase.lower() == "daily":
             pathFTP = (
                 "pub/org/chg/products/CHIRPS-2.0/global_daily/tifs/p05/%s/"
                 % Date.strftime("%Y")
@@ -217,7 +217,7 @@ class CHIRPS:
         ftp.retrlines("LIST", listing.append)
 
         # create all the input name (filename) and output (outfilename, filetif, DiFileEnd) names
-        if TimeCase == "daily":
+        if TimeCase.lower() == "daily":
             filename = "chirps-v2.0.%s.%02s.%02s.tif.gz" % (
                 Date.strftime("%Y"),
                 Date.strftime("%m"),

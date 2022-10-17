@@ -1,11 +1,12 @@
 [tool.poetry]
 name = "earth2observe"
-version = "0.1.3"
+version = "0.1.4"
 description = "remote sensing package"
 authors = ["Mostafa Farrag <moah.farag@gmail.com>"]
 license = "GNU General Public License v3"
 repository = "https://github.com/MAfarrag/earth2observe"
 documentation = "https://earth2observe.readthedocs.io/"
+readme = "README.md"
 keywords=["remote sensing", "google earth engine", "ecmwf"]
 classifiers=[
         "Development Status :: 5 - Production/Stable",
@@ -23,18 +24,20 @@ classifiers=[
 
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = ">=3.9,<3.12"
 numpy = "^1.23.3"
 netCDF4 = "^1.6.1"
 pandas = "^1.4.4"
 ecmwf-api-client = "^1.6.3"
 earthengine-api = "^0.1.324"
 loguru = "^0.6.0"
+joblib = "^1.2.0"
 #gdal = "3.4.3"
 gdal = {url = "https://download.lfd.uci.edu/pythonlibs/archived/GDAL-3.4.3-cp39-cp39-win_amd64.whl" }
-pyramids-gis = "^0.2.4"
-#Fiona = "1.8.21"
-fiona = {url = "poetry updhttps://download.lfd.uci.edu/pythonlibs/archived/Fiona-1.8.21-cp39-cp39-win_amd64.whl" }
+pyramids-gis = "^0.2.6"
+Fiona = "1.8.21"
+fiona = {url = "https://download.lfd.uci.edu/pythonlibs/archived/Fiona-1.8.21-cp39-cp39-win_amd64.whl" }
+
 
 
 [tool.poetry.dev-dependencies]
