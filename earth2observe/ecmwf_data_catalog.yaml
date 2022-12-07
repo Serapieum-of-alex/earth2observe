@@ -1,0 +1,228 @@
+version: 1
+# parameter database
+#https://apps.ecmwf.int/codes/grib/param-db/?filter=netcdf
+# units is the units after applying factor
+# available datasets
+#https://confluence.ecmwf.int/display/WEBAPI/Available+ECMWF+Public+Datasets
+datasets: [cams_gfas, cams_nrealtime, cera20c, cera_sat, era15, era20c, era20cm, era20cmv0, era40, geff_reanalysis, icoads, interim, interim_land, ispd, macc, macc_nrealtime, s2s, tigge, uerra, yopp, yotc]
+
+T:
+  descriptions: Temperature [K]
+  units: C
+  types: state
+  temporal resolution: [six hours, daily, monthly]
+  file name: Tair2m
+  download type: 3
+  number_para: 130
+  var_name: t
+  factors_add: -273.15
+  factors_mul: 1
+2T:
+  descriptions: 2 meter Temperature [K]
+  units: C
+  types: state
+  temporal resolution: [six hours, daily, monthly]
+  file name: Tair
+  download type: 1
+  number_para: 167
+  var_name: t2m
+  factors_add: -273.15
+  factors_mul: 1
+SRO:
+  descriptions: Surface Runoff [m]
+  units: mm
+  types: flux
+  temporal resolution: [six hours, daily, monthly]
+  file name: Surf_Runoff
+  download type: 0
+  number_para: 8
+  var_name: sro
+  factors_add: 0
+  factors_mul: 1000
+SSRO:
+  descriptions: Sub-surface Runoff [m]
+  units: mm
+  types: flux
+  temporal resolution: [six hours, daily, monthly]
+  file name: Subsurf_Runoff
+  download type: 0
+  number_para: 9
+  var_name: ssro
+  factors_add: 0
+  factors_mul: 1000
+WIND:
+  descriptions: Wind speed [m s-1]
+  units: m_s-1
+  types: state
+  temporal resolution: [six hours, daily, monthly]
+  file name: Wind
+  download type: 0
+  number_para: 10
+  var_name: wind
+  factors_add: 0
+  factors_mul: 1
+10SI:
+  descriptions: 10 metre windspeed [m s-1]
+  units: m_s-1
+  types: state
+  temporal resolution: [six hours, daily, monthly]
+  file name: Wind10m
+  download type: 0
+  number_para: 207
+  var_name: 10si
+  factors_add: 0
+  factors_mul: 1
+SP:
+  descriptions: Surface Pressure [pa]
+  units: kpa
+  types: state
+  temporal resolution: [six hours, daily, monthly]
+  file name: Psurf
+  download type: 1
+  number_para: 134
+  var_name: sp
+  factors_add: 0
+  factors_mul: 0.001
+Q:
+  descriptions: Specific humidity [kg kg-1]
+  units: kg_kg-1
+  types: state
+  temporal resolution: [six hours, daily, monthly]
+  file name: Qair
+  download type: 3
+  number_para: 133
+  var_name: q
+  factors_add: 0
+  factors_mul: 1
+SSR:
+  descriptions: Surface solar radiation [W m-2 s]
+  units: W_m-2_s
+  types: state
+  temporal resolution: [six hours, daily, monthly]
+  file name: SWnet
+  download type: 2
+  number_para: 176
+  var_name: ssr
+  factors_add: 0
+  factors_mul: 1
+R:
+  descriptions: Relative humidity [%]
+  units: percentage
+  types: state
+  temporal resolution: [six hours, daily, monthly]
+  file name: RelQair
+  download type: 3
+  number_para: 157
+  var_name: r
+  factors_add: 0
+  factors_mul: 1
+E:
+  descriptions: Evaporation [m of water]
+  units: mm
+  types: flux
+  temporal resolution: [six hours, daily, monthly]
+  file name: Evaporation
+  download type: 2
+  number_para: 182
+  var_name: e
+  factors_add: 0
+  factors_mul: 1000
+SUND:
+  descriptions: Sunshine duration [s]
+  units: s
+  types: flux
+  temporal resolution: [six hours, daily, monthly]
+  file name: SunDur
+  download type: 2
+  number_para: 189
+  var_name: sund
+  factors_add: 0
+  factors_mul: 1
+RO:
+  descriptions: Runoff [m]
+  units: mm
+  types: flux
+  temporal resolution: [six hours, daily, monthly]
+  file name: Runoff
+  download type: 2
+  number_para: 205
+  var_name: ro
+  factors_add: 0
+  factors_mul: 1000
+TP:
+  descriptions: Total Precipitation [m]
+  units: mm
+  types: flux
+  temporal resolution: [six hours, daily, monthly]
+  file name: P
+  download type: 2
+  number_para: 228
+  var_name: tp
+  factors_add: 0
+  factors_mul: 1000
+10U:
+  descriptions: 10 metre U wind component [m s-1]
+  units: m_s-1
+  types: state
+  temporal resolution: [six hours, daily, monthly]
+  file name: Wind_U
+  download type: 1
+  number_para: 165
+  var_name: u10
+  factors_add: 0
+  factors_mul: 1
+10V:
+  descriptions: 10 metre V wind component [m s-1]
+  units: m_s-1
+  types: state
+  temporal resolution: [six hours, daily, monthly]
+  file name: Wind_V
+  download type: 1
+  number_para: 166
+  var_name: v10
+  factors_add: 0
+  factors_mul: 1
+2D:
+  descriptions: 2 metre dewpoint temperature [K]
+  units: C
+  types: state
+  temporal resolution: [six hours, daily, monthly]
+  file name: Dewpoint2m
+  download type: 1
+  number_para: 168
+  var_name: d2m
+  factors_add: -273.15
+  factors_mul: 1
+SR:
+  descriptions: Surface roughness [m]
+  units: m
+  types: state
+  temporal resolution: [six hours, daily, monthly]
+  file name: SurfRoughness
+  download type: 1
+  number_para: 173
+  var_name: sr
+  factors_add: 0
+  factors_mul: 1
+AL:
+  descriptions: Albedo []
+  units: unitless
+  types: state
+  temporal resolution: [six hours, daily, monthly]
+  file name: Albedo
+  download type: 1
+  number_para: 174
+  var_name: al
+  factors_add: 0
+  factors_mul: 1
+HCC:
+  descriptions: High cloud cover []
+  units: unitless
+  types: state
+  temporal resolution: [six hours, daily, monthly]
+  file name: HighCloudCover
+  download type: 1
+  number_para: 188
+  var_name: hcc
+  factors_add: 0
+  factors_mul: 1

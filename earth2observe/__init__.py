@@ -47,11 +47,6 @@ def configuration(parent_package="", top_path=None):
     return config
 
 
-# import earth2observe.chirps as chirps
-# import earth2observe.ecmwf as ecmwf
-# import earth2observe.gee as gee
-# import earth2observe.utils as utils
-
 __doc__ = """
 earth2observe - remote sensing package
 """

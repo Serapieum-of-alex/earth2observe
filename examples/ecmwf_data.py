@@ -4,10 +4,12 @@
 
 2 - Install ECMWF key (instruction are here https://confluence.ecmwf.int/display/WEBAPI/Access+ECMWF+Public+Datasets#AccessECMWFPublicDatasets-key)
 """
+import os
 
 from earth2observe.ecmwf import ECMWF, Variables
 
-path = r"examples\data\ecmwf"
+rpath = os.getcwd()
+path = rf"{rpath}\examples\data\ecmwf"
 
 start = "2009-01-01"
 end = "2009-02-01"
@@ -16,11 +18,24 @@ latlim = [4.19, 4.64]
 lonlim = [-75.65, -74.73]
 # %%
 Vars = Variables("daily")
-Vars.__str__()
+print(Vars.catalog)
 # %%
 # Temperature, Evapotranspiration
-variables = ["T", "E"]
+variables = ["E"]  # "T",
 
+Coello = ECMWF(
+    time=time,
+    start=start,
+    end=end,
+    lat_lim=latlim,
+    lon_lim=lonlim,
+    path=path,
+    variables=variables,
+)
+
+Coello.download(dataset="interim")
+#%%
+variables = ["SRO"]
 Coello = ECMWF(
     time=time,
     start=start,
