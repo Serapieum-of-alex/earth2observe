@@ -32,11 +32,11 @@ ecmwf-api-client = "^1.6.3"
 earthengine-api = "^0.1.324"
 loguru = "^0.6.0"
 joblib = "^1.2.0"
-#gdal = "3.4.3"
-gdal = {url = "https://download.lfd.uci.edu/pythonlibs/archived/GDAL-3.4.3-cp39-cp39-win_amd64.whl" }
+gdal = "3.4.3"
+#gdal = {url = "https://download.lfd.uci.edu/pythonlibs/archived/GDAL-3.4.3-cp39-cp39-win_amd64.whl" }
 pyramids-gis = "^0.2.6"
-#Fiona = "1.8.21"
-fiona = {url = "https://download.lfd.uci.edu/pythonlibs/archived/Fiona-1.8.21-cp39-cp39-win_amd64.whl" }
+Fiona = "1.8.21"
+#fiona = {url = "https://download.lfd.uci.edu/pythonlibs/archived/Fiona-1.8.21-cp39-cp39-win_amd64.whl" }
 
 
 

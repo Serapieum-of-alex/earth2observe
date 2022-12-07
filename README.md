@@ -25,12 +25,14 @@ earthobserve
 
 Main Features
 -------------
-  -
+  - ERA Interim Download
+  - CHIRPS Rainfall data Download
 
 
 Future work
 -------------
-  -
+  - Google earth engine 
+  - ERA 5
 
 
 
