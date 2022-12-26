@@ -149,3 +149,4 @@ conda/
 /examples/data/ecmwf/daily/*
 .idea/*
 examples/data/chirps/*
+*.xml
