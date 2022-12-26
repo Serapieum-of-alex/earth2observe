@@ -4,18 +4,12 @@
 
 2 - Install ECMWF key (instruction are here https://confluence.ecmwf.int/display/WEBAPI/Access+ECMWF+Public+Datasets#AccessECMWFPublicDatasets-key)
 """
-<<<<<<< HEAD:examples/ecmwf_data.py
 import os
 
 from earth2observe.ecmwf import ECMWF, Variables
 
 rpath = os.getcwd()
 path = rf"{rpath}\examples\data\ecmwf"
-
-=======
-from earth2observe.chirps import CHIRPS
-from earth2observe.ecmwf import ECMWF, Variables
-
 #%% precipitation
 start = "2009-01-01"
 end = "2009-01-10"
@@ -29,7 +23,6 @@ variables = ["T", "E"]
 Vars = Variables("daily")
 Vars.__str__()
 #%% Temperature
->>>>>>> main:examples/download_satellite_data.py
 start = "2009-01-01"
 end = "2009-02-01"
 time = "daily"
