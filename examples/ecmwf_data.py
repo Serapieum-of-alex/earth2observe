@@ -1,14 +1,15 @@
-"""
-Download Satellite data
-ECMWF
-Installation of ECMWF API key
+"""Download Satellite data ECMWF Installation of ECMWF API key.
+
 1 - to be able to use Hapi to download ECMWF data you need to register and setup your account in the ECMWF website (https://apps.ecmwf.int/registration/)
 
 2 - Install ECMWF key (instruction are here https://confluence.ecmwf.int/display/WEBAPI/Access+ECMWF+Public+Datasets#AccessECMWFPublicDatasets-key)
 """
-from earth2observe.chirps import CHIRPS
+import os
+
 from earth2observe.ecmwf import ECMWF, Variables
 
+rpath = os.getcwd()
+path = rf"{rpath}\examples\data\ecmwf"
 #%% precipitation
 start = "2009-01-01"
 end = "2009-01-10"
@@ -24,12 +25,15 @@ Vars.__str__()
 #%% Temperature
 start = "2009-01-01"
 end = "2009-02-01"
-Time = "daily"
+time = "daily"
 latlim = [4.19, 4.64]
 lonlim = [-75.65, -74.73]
-path = r"C:\MyComputer\01Algorithms\Hydrology\earth2observe\examples\data\ecmwf"
+# %%
+Vars = Variables("daily")
+print(Vars.catalog)
+# %%
 # Temperature, Evapotranspiration
-variables = ["T", "E"]
+variables = ["E"]  # "T",
 
 Coello = ECMWF(
     time=time,
@@ -41,16 +45,17 @@ Coello = ECMWF(
     variables=variables,
 )
 
-Coello.download()
-
+Coello.download(dataset="interim")
 #%%
-path = r"C:\MyComputer\01Algorithms\Hydrology\earth2observe\examples\data\chirps"
-Coello = CHIRPS(
+variables = ["SRO"]
+Coello = ECMWF(
     time=time,
     start=start,
     end=end,
     lat_lim=latlim,
     lon_lim=lonlim,
     path=path,
+    variables=variables,
 )
-Coello.Download()  # cores=4
+
+Coello.download()

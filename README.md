@@ -25,12 +25,14 @@ earthobserve
 
 Main Features
 -------------
-  - 
+  - ERA Interim Download
+  - CHIRPS Rainfall data Download
 
 
 Future work
 -------------
-  - 
+  - Google earth engine
+  - ERA 5
 
 
 
@@ -58,7 +60,7 @@ pip install git+https://github.com/MAfarrag/earthobserve
 ## pip
 to install the last release you can easly use pip
 ```
-pip install earthobserve==0.1.0
+pip install earthobserve==0.1.6
 ```
 
 Quick start

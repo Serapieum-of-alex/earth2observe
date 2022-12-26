@@ -30,23 +30,12 @@ for dependency in hard_dependencies:
 if missing_dependencies:
     raise ImportError("Missing required dependencies {0}".format(missing_dependencies))
 
-
-def configuration(parent_package="", top_path=None):
-
-    from numpy.distutils.misc_util import Configuration
-
-    config = Configuration(None, parent_package, top_path)
-    config.set_options(
-        ignore_setup_xxx_py=True,
-        assume_default_configuration=True,
-        delegate_options_to_subpackages=True,
-        quiet=True,
-    )
-
-    config.add_subpackage("gee")
-    return config
-
+# import earth2observe.gee.data as data
+# import earth2observe.gee.dataset as dataset
+# import earth2observe.gee.features as features
+# import earth2observe.gee.gee as gee
+# import earth2observe.gee.images as images
 
 __doc__ = """
-earth2observe - remote sensing package
+gee - google earth engine
 """

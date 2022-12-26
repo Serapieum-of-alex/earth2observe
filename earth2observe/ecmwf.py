@@ -1,18 +1,22 @@
-"""
-Created on Fri Apr  2 06:58:20 2021
+"""Created on Fri Apr  2 06:58:20 2021.
 
 @author: mofarrag
 """
 import calendar
 import datetime as dt
 import os
+
 import numpy as np
 import pandas as pd
+import yaml
 from ecmwfapi import ECMWFDataServer
+from loguru import logger
 from netCDF4 import Dataset
 from pyramids.raster import Raster
 
+from earth2observe import __path__
 from earth2observe.utils import print_progress_bar
+
 
 class ECMWF:
     """RemoteSensing.
@@ -25,18 +29,19 @@ class ECMWF:
         3- API
         4- ListAttributes
     """
+
     def __init__(
-            self,
-            time: str = "daily",
-            start: str = "",
-            end: str = "",
-            path: str = "",
-            variables: list=[],
-            lat_lim: list=[],
-            lon_lim: list=[],
-            fmt: str="%Y-%m-%d",
+        self,
+        time: str = "daily",
+        start: str = "",
+        end: str = "",
+        path: str = "",
+        variables: list = [],
+        lat_lim: list = [],
+        lon_lim: list = [],
+        fmt: str = "%Y-%m-%d",
     ):
-        """RemoteSensing
+        """RemoteSensing.
 
         Parameters
         ----------
@@ -84,11 +89,10 @@ class ECMWF:
         self.lonlim_corr = [lonlim_corr_one, lonlim_corr_two]
         # TODO move it to the ECMWF method later
         # for ECMWF only
-        self.string7 = "%s/to/%s" % (self.start, self.end)
+        self.date_str = f"{self.start}/to/{self.end}"
 
-
-    def download(self, progress_bar: bool = True):
-        """ECMWF
+    def download(self, dataset: str = "interim", progress_bar: bool = True):
+        """ECMWF.
 
         ECMWF method downloads ECMWF daily data for a given variable, time
         interval, and spatial extent.
@@ -98,6 +102,8 @@ class ECMWF:
         ----------
         progress_bar : TYPE, optional
             0 or 1. to display the progress bar
+        dataset:[str]
+            Default is "interim"
 
         Returns
         -------
@@ -105,96 +111,102 @@ class ECMWF:
         """
         for var in self.vars:
             # Download data
-            print(f"\nDownload ECMWF {var} data for period {self.start} till {self.end}")
-
-            self.downloadData(var, progress_bar)  # CaseParameters=[SumMean, Min, Max]
+            logger.info(
+                f"Download ECMWF {var} data for period {self.start} till {self.end}"
+            )
+            self.downloadData(
+                var, dataset=dataset, progress_bar=progress_bar
+            )  # CaseParameters=[SumMean, Min, Max]
         # delete the downloaded netcdf
         del_ecmwf_dataset = os.path.join(self.path, "data_interim.nc")
         os.remove(del_ecmwf_dataset)
 
-
-    def downloadData(self, var: str, progress_bar: bool):
-        """
-        This function downloads ECMWF six-hourly, daily or monthly data
+    def downloadData(
+        self, var: str, dataset: str = "interim", progress_bar: bool = True
+    ):
+        """This function downloads ECMWF six-hourly, daily or monthly data.
 
         Parameters
         ----------
         var: [str]
             variable name
+        dataset: [str]
+            Default is "interm"
         progress_bar: [bool]
             True if you want to display a progress bar.
         """
         # Load factors / unit / type of variables / accounts
         VarInfo = Variables(self.time)
-        Varname_dir = VarInfo.file_name[var]
-
+        var_info = VarInfo.catalog.get(var)
         # Create Out directory
-        out_dir = os.path.join(self.path, self.time, Varname_dir)
+        out_dir = f"{self.path}, {self.time}, {VarInfo.catalog.get('file name')}"
 
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)
 
-        DownloadType = VarInfo.DownloadType[var]
+        download_type = var_info.get("download type")
+        # https://www.ecmwf.int/en/computing/software/ecmwf-web-api
+        stream = "oper"  # https://apps.ecmwf.int/codes/grib/format/mars/stream/
+        # step is 0, 3, 6, 9, 12
+        # time_str is 0, 6, 12, 18
+        # levtype: sfc for surface, pl for pressure levels (DEFAULT), pv for potential vorticity level
+        # type : 'fc' for forecast field, an for analysis field, ob for Observations, ai for Analysis input,
+        #       im for Satellite images, ofb for ODB observation feedback, mfb for Monitoring feedback,
+        #       oai for ODB analysis input, wp for Weather parameters (in BUFR format)
+        # key words for the API https://confluence.ecmwf.int/display/UDOC/Identification+keywords
+        if download_type == 1:
+            step = "0"
+            time_str = "00:00:00/06:00:00/12:00:00/18:00:00"
+            levtype = "sfc"  # surface
+            type_str = "an"  # analysis field
 
-        if DownloadType == 1:
-            string1 = "oper"
-            string4 = "0"
-            string6 = "00:00:00/06:00:00/12:00:00/18:00:00"
-            string2 = "sfc"
-            string8 = "an"
+        if download_type == 2:
+            step = "12"
+            time_str = "00:00:00/12:00:00"
+            levtype = "sfc"  # surface
+            type_str = "fc"  # forecast field
 
-        if DownloadType == 2:
-            string1 = "oper"
-            string4 = "12"
-            string6 = "00:00:00/12:00:00"
-            string2 = "sfc"
-            string8 = "fc"
+        if download_type == 3:
+            step = "0"
+            time_str = "00:00:00/06:00:00/12:00:00/18:00:00"
+            levtype = "pl"  # pressure levels (DEFAULT)
+            type_str = "an"  # analysis field
 
-        if DownloadType == 3:
-            string1 = "oper"
-            string4 = "0"
-            string6 = "00:00:00/06:00:00/12:00:00/18:00:00"
-            string2 = "pl"
-            string8 = "an"
+        parameter_number = var_info.get("number_para")
 
-        parameter_number = VarInfo.number_para[var]
-
-        string3 = "%03d.128" % (parameter_number)
-        string5 = "0.125/0.125"
-        string9 = "ei"
-        string10 = "%s/%s/%s/%s" % (
-            self.latlim_corr[1],
-            self.lonlim_corr[0],
-            self.latlim_corr[0],
-            self.lonlim_corr[1],
-        )  # N, W, S, E
+        param = f"{parameter_number}.128"
+        grid = "0.125/0.125"
+        class_str = "ei"
+        # N, W, S, E
+        area_str = f"{self.latlim_corr[1]}/{self.lonlim_corr[0]}/{self.latlim_corr[0]}/{self.lonlim_corr[1]}"
 
         # Download data by using the ECMWF API
-        print("Use API ECMWF to collect the data, please wait")
+        logger.info("Use API ECMWF to collect the data, please wait")
         ECMWF.API(
             self.path,
-            DownloadType,
-            string1,
-            string2,
-            string3,
-            string4,
-            string5,
-            string6,
-            self.string7,
-            string8,
-            string9,
-            string10,
+            download_type,
+            stream,
+            levtype,
+            param,
+            step,
+            grid,
+            time_str,
+            self.date_str,
+            type_str,
+            class_str,
+            area_str,
+            dataset=dataset,
         )
 
         # Open the downloaded data
-        NC_filename = os.path.join(self.path, "data_interim.nc")
+        NC_filename = os.path.join(self.path, f"data_{dataset}.nc")
         fh = Dataset(NC_filename, mode="r")
 
         # Get the NC variable parameter
-        parameter_var = VarInfo.var_name[var]
-        Var_unit = VarInfo.units[var]
-        factors_add = VarInfo.factors_add[var]
-        factors_mul = VarInfo.factors_mul[var]
+        parameter_var = var_info.get("var_name")
+        Var_unit = var_info.get("units")
+        factors_add = var_info.get("factors_add")
+        factors_mul = var_info.get("factors_mul")
 
         # Open the NC data
         Data = fh.variables[parameter_var][:]
@@ -203,9 +215,9 @@ class ECMWF:
         lats = fh.variables["latitude"][:]
 
         # Define the georeference information
-        Geo_four = np.nanmax(lats)
-        Geo_one = np.nanmin(lons)
-        Geo_out = tuple([Geo_one, 0.125, 0.0, Geo_four, 0.0, -0.125])
+        geo_four = np.nanmax(lats)
+        geo_one = np.nanmin(lons)
+        geo = tuple([geo_one, 0.125, 0.0, geo_four, 0.0, -0.125])
 
         # Create Waitbar
         if progress_bar:
@@ -247,24 +259,23 @@ class ECMWF:
             )
             Data_one = Data[np.int_(Date_good) == 1, :, :]
 
-            # Calculate the average temperature in celcius degrees
+            # convert the values to the units we want
             Data_end = factors_mul * np.nanmean(Data_one, 0) + factors_add
 
-            if VarInfo.types[var] == "flux":
+            if var_info.get("types") == "flux":
                 Data_end = Data_end * days_later
 
-            VarOutputname = VarInfo.file_name[var]
+            var_output_name = var_info.get("file name")
 
             # Define the out name
             name_out = os.path.join(
                 out_dir,
-                "%s_ECMWF_ERA-Interim_%s_%s_%d.%02d.%02d.tif"
-                % (VarOutputname, Var_unit, self.time, year, month, day),
+                f"%{var_output_name}_ECMWF_ERA-Interim_{Var_unit}_{self.time}_{year}.{month}.{day}.tif",
             )
 
             # Create Tiff files
-            # Raster.Save_as_tiff(name_out, Data_end, Geo_out, "WGS84")
-            Raster.createRaster(path=name_out, arr=Data_end, geo=Geo_out, epsg="WGS84")
+            # Raster.Save_as_tiff(name_out, Data_end, geo, "WGS84")
+            Raster.createRaster(path=name_out, arr=Data_end, geo=geo, epsg="WGS84")
 
             if progress_bar:
                 amount = amount + 1
@@ -278,23 +289,21 @@ class ECMWF:
 
         fh.close()
 
-        return ()
-
-
     @staticmethod
     def API(
-            output_folder,
-            DownloadType,
-            string1,
-            string2,
-            string3,
-            string4,
-            string5,
-            string6,
-            string7,
-            string8,
-            string9,
-            string10,
+        output_folder: str,
+        download_type: str,
+        stream: str,
+        levtype: str,
+        param: str,
+        step: str,
+        grid: str,
+        time_str: str,
+        date_str: str,
+        type_str: str,
+        class_str: str,
+        area_str: str,
+        dataset: str = "interim",
     ):
 
         os.chdir(output_folder)
@@ -302,334 +311,62 @@ class ECMWF:
         # url = os.environ['ECMWF_API_URL'],
         # key = os.environ['ECMWF_API_KEY'],
         # email = os.environ['ECMWF_API_EMAIL'],
-        if DownloadType == 1 or DownloadType == 2:
+        if download_type == 1 or download_type == 2:
             server.retrieve(
                 {
-                    "stream": "%s" % string1,
-                    "levtype": "%s" % string2,
-                    "param": "%s" % string3,
-                    "dataset": "interim",
-                    "step": "%s" % string4,
-                    "grid": "%s" % string5,
-                    "time": "%s" % string6,
-                    "date": "%s" % string7,
-                    "type": "%s"
-                            % string8,  # http://apps.ecmwf.int/codes/grib/format/mars/type/
-                    "class": "%s"
-                             % string9,  # http://apps.ecmwf.int/codes/grib/format/mars/class/
-                    "area": "%s" % string10,
+                    "stream": stream,
+                    "levtype": levtype,
+                    "param": param,
+                    "dataset": dataset,
+                    "step": step,
+                    "grid": grid,
+                    "time": time_str,
+                    "date": date_str,
+                    "type": type_str,  # http://apps.ecmwf.int/codes/grib/format/mars/type/
+                    "class": class_str,  # http://apps.ecmwf.int/codes/grib/format/mars/class/
+                    "area": area_str,
                     "format": "netcdf",
-                    "target": "data_interim.nc",
+                    "target": f"data_{dataset}.nc",
                 }
             )
 
-        if DownloadType == 3:
+        if download_type == 3:
             server.retrieve(
                 {
                     "levelist": "1000",
-                    "stream": "%s" % string1,
-                    "levtype": "%s" % string2,
-                    "param": "%s" % string3,
-                    "dataset": "interim",
-                    "step": "%s" % string4,
-                    "grid": "%s" % string5,
-                    "time": "%s" % string6,
-                    "date": "%s" % string7,
-                    "type": "%s"
-                            % string8,  # http://apps.ecmwf.int/codes/grib/format/mars/type/
-                    "class": "%s"
-                             % string9,  # http://apps.ecmwf.int/codes/grib/format/mars/class/
-                    "area": "%s" % string10,
+                    "stream": stream,
+                    "levtype": levtype,
+                    "param": param,
+                    "dataset": dataset,
+                    "step": step,
+                    "grid": grid,
+                    "time": time_str,
+                    "date": date_str,
+                    "type": type_str,  # http://apps.ecmwf.int/codes/grib/format/mars/type/
+                    "class": class_str,  # http://apps.ecmwf.int/codes/grib/format/mars/class/
+                    "area": area_str,
                     "format": "netcdf",
-                    "target": "data_interim.nc",
+                    "target": f"data_{dataset}.nc",
                 }
             )
 
-        return ()
-
 
 class Variables:
-    """
-    This class contains the information about the ECMWF variables
-    http://rda.ucar.edu/cgi-bin/transform?xml=/metadata/ParameterTables/WMO_GRIB1.98-0.128.xml&view=gribdoc
-    """
-    number_para = {
-        "T": 130,
-        "2T": 167,
-        "SRO": 8,
-        "SSRO": 9,
-        "WIND": 10,
-        "10SI": 207,
-        "SP": 134,
-        "Q": 133,
-        "SSR": 176,
-        "R": 157,
-        "E": 182,
-        "SUND": 189,
-        "RO": 205,
-        "TP": 228,
-        "10U": 165,
-        "10V": 166,
-        "2D": 168,
-        "SR": 173,
-        "AL": 174,
-        "HCC": 188,
-    }
+    """This class contains the information about the ECMWF variables http://rda.ucar.edu/cgi-bin/transform?xml=/metadata/ParameterTables/WMO_GRIB1.98-0.128.xml&view=gribdoc."""
 
-    var_name = {
-        "T": "t",
-        "2T": "t2m",
-        "SRO": "sro",
-        "SSRO": "ssro",
-        "WIND": "wind",
-        "10SI": "10si",
-        "SP": "sp",
-        "Q": "q",
-        "SSR": "ssr",
-        "R": "r",
-        "E": "e",
-        "SUND": "sund",
-        "RO": "ro",
-        "TP": "tp",
-        "10U": "u10",
-        "10V": "v10",
-        "2D": "d2m",
-        "SR": "sr",
-        "AL": "al",
-        "HCC": "hcc",
-    }
+    with open(f"{__path__[0]}/ecmwf_data_catalog.yaml", "r") as stream:
+        catalog = yaml.safe_load(stream)
 
-    # ECMWF data
-    descriptions = {
-        "T": "Temperature [K]",
-        "2T": "2 meter Temperature [K]",
-        "SRO": "Surface Runoff [m]",
-        "SSRO": "Sub-surface Runoff [m]",
-        "WIND": "Wind speed [m s-1]",
-        "10SI": "10 metre windspeed [m s-1]",
-        "SP": "Surface Pressure [pa]",
-        "Q": "Specific humidity [kg kg-1]",
-        "SSR": "Surface solar radiation [W m-2 s]",
-        "R": "Relative humidity [%]",
-        "E": "Evaporation [m of water]",
-        "SUND": "Sunshine duration [s]",
-        "RO": "Runoff [m]",
-        "TP": "Total Precipitation [m]",
-        "10U": "10 metre U wind component [m s-1]",
-        "10V": "10 metre V wind component [m s-1]",
-        "2D": "2 metre dewpoint temperature [K]",
-        "SR": "Surface roughness [m]",
-        "AL": "Albedo []",
-        "HCC": "High cloud cover []",
-    }
+    def __init__(self, step, version: int = 1):
+        self.version = version
 
-    # Factor add to get output
-    factors_add = {
-        "T": -273.15,
-        "2T": -273.15,
-        "SRO": 0,
-        "SSRO": 0,
-        "WIND": 0,
-        "10SI": 0,
-        "SP": 0,
-        "Q": 0,
-        "SSR": 0,
-        "R": 0,
-        "E": 0,
-        "SUND": 0,
-        "RO": 0,
-        "TP": 0,
-        "10U": 0,
-        "10V": 0,
-        "2D": -273.15,
-        "SR": 0,
-        "AL": 0,
-        "HCC": 0,
-    }
-
-    # Factor multiply to get output
-    factors_mul = {
-        "T": 1,
-        "2T": 1,
-        "SRO": 1000,
-        "SSRO": 1000,
-        "WIND": 1,
-        "10SI": 1,
-        "SP": 0.001,
-        "Q": 1,
-        "SSR": 1,
-        "R": 1,
-        "E": 1000,
-        "SUND": 1,
-        "RO": 1000,
-        "TP": 1000,
-        "10U": 1,
-        "10V": 1,
-        "2D": 1,
-        "SR": 1,
-        "AL": 1,
-        "HCC": 1,
-    }
-
-    types = {
-        "T": "state",
-        "2T": "state",
-        "SRO": "flux",
-        "SSRO": "flux",
-        "WIND": "state",
-        "10SI": "state",
-        "SP": "state",
-        "Q": "state",
-        "SSR": "state",
-        "R": "state",
-        "E": "flux",
-        "SUND": "flux",
-        "RO": "flux",
-        "TP": "flux",
-        "10U": "state",
-        "10V": "state",
-        "2D": "state",
-        "SR": "state",
-        "AL": "state",
-        "HCC": "state",
-    }
-
-    file_name = {
-        "T": "Tair2m",
-        "2T": "Tair",
-        "SRO": "Surf_Runoff",
-        "SSRO": "Subsurf_Runoff",
-        "WIND": "Wind",
-        "10SI": "Wind10m",
-        "SP": "Psurf",
-        "Q": "Qair",
-        "SSR": "SWnet",
-        "R": "RelQair",
-        "E": "Evaporation",
-        "SUND": "SunDur",
-        "RO": "Runoff",
-        "TP": "P",
-        "10U": "Wind_U",
-        "10V": "Wind_V",
-        "2D": "Dewpoint2m",
-        "SR": "SurfRoughness",
-        "AL": "Albedo",
-        "HCC": "HighCloudCover",
-    }
-
-    DownloadType = {
-        "T": 3,
-        "2T": 1,
-        "SRO": 0,
-        "SSRO": 0,
-        "WIND": 0,
-        "10SI": 0,
-        "SP": 1,
-        "Q": 3,
-        "SSR": 2,
-        "R": 3,
-        "E": 2,
-        "SUND": 2,
-        "RO": 2,
-        "TP": 2,
-        "10U": 1,
-        "10V": 1,
-        "2D": 1,
-        "SR": 1,
-        "AL": 1,
-        "HCC": 1,
-    }
-
-
-    def __init__(self, step):
-
-        # output units after applying factor
-        if step == "six_hourly":
-            self.units = {
-                "T": "C",
-                "2T": "C",
-                "SRO": "mm",
-                "SSRO": "mm",
-                "WIND": "m_s-1",
-                "10SI": "m_s-1",
-                "SP": "kpa",
-                "Q": "kg_kg-1",
-                "SSR": "W_m-2_s",
-                "R": "percentage",
-                "E": "mm",
-                "SUND": "s",
-                "RO": "mm",
-                "TP": "mm",
-                "10U": "m_s-1",
-                "10V": "m_s-1",
-                "2D": "C",
-                "SR": "m",
-                "AL": "-",
-                "HCC": "-",
-            }
-
-        elif step == "daily":
-            self.units = {
-                "T": "C",
-                "2T": "C",
-                "SRO": "mm",
-                "SSRO": "mm",
-                "WIND": "m_s-1",
-                "10SI": "m_s-1",
-                "SP": "kpa",
-                "Q": "kg_kg-1",
-                "SSR": "W_m-2_s",
-                "R": "percentage",
-                "E": "mm",
-                "SUND": "s",
-                "RO": "mm",
-                "TP": "mm",
-                "10U": "m_s-1",
-                "10V": "m_s-1",
-                "2D": "C",
-                "SR": "m",
-                "AL": "-",
-                "HCC": "-",
-            }
-
-        elif step == "monthly":
-            self.units = {
-                "T": "C",
-                "2T": "C",
-                "SRO": "mm",
-                "SSRO": "mm",
-                "WIND": "m_s-1",
-                "10SI": "m_s-1",
-                "SP": "kpa",
-                "Q": "kg_kg-1",
-                "SSR": "W_m-2_s",
-                "R": "percentage",
-                "E": "mm",
-                "SUND": "s",
-                "RO": "mm",
-                "TP": "mm",
-                "10U": "m_s-1",
-                "10V": "m_s-1",
-                "2D": "C",
-                "SR": "m",
-                "AL": "-",
-                "HCC": "-",
-            }
-
-        else:
-            raise KeyError("The input time step is not supported")
-
-
-    def __str__(self):
-        print(
-            f"Variable name:\n {self.var_name}\nDescriptions\n{self.descriptions}\nUnits : \n{self.units}"
-        )
-
+    # def __str__(self):
+    #     print(
+    #         f"Variable name:\n {self.var_name}\nDescriptions\n{self.descriptions}\nUnits : \n{self.units}"
+    #     )
 
     def ListAttributes(self):
-        """
-        Print Attributes List
-        """
+        """Print Attributes List."""
         print("\n")
         print(
             f"Attributes List of: {repr(self.__dict__['name'])} - {self.__class__.__name__} Instance\n"

@@ -1,27 +1,28 @@
-import os
 import datetime as dt
+import os
+from ftplib import FTP
+
 import numpy as np
 import pandas as pd
-from ftplib import FTP
 from joblib import Parallel, delayed
 from osgeo import gdal
 from pyramids.raster import Raster
-from earth2observe.utils import print_progress_bar, extractFromGZ
+
+from earth2observe.utils import extractFromGZ, print_progress_bar
 
 
 class CHIRPS:
-    """
-    CHIRPS
-    """
+    """CHIRPS."""
+
     def __init__(
-            self,
-            start: str="",
-            end: str="",
-            lat_lim: list=[],
-            lon_lim: list=[],
-            time: str="daily",
-            path: str="",
-            fmt: str="%Y-%m-%d",
+        self,
+        start: str = "",
+        end: str = "",
+        lat_lim: list = [],
+        lon_lim: list = [],
+        time: str = "daily",
+        path: str = "",
+        fmt: str = "%Y-%m-%d",
     ):
         """CHIRPS.
 
@@ -47,12 +48,14 @@ class CHIRPS:
         # Define timestep for the timedates
         self.lat_lim = []
         self.lon_lim = []
-        if time == "daily":
+        if time.lower() == "daily":
             self.time_freq = "D"
             self.output_folder = os.path.join(path, "Precipitation", "CHIRPS", "Daily")
-        elif time == "monthly":
+        elif time.lower() == "monthly":
             self.time_freq = "MS"
-            self.output_folder = os.path.join(path, "Precipitation", "CHIRPS", "Monthly")
+            self.output_folder = os.path.join(
+                path, "Precipitation", "CHIRPS", "Monthly"
+            )
         else:
             raise KeyError("The input time interval is not supported")
         self.time = time
@@ -94,7 +97,9 @@ class CHIRPS:
             self.lon_lim = lon_lim
         # Define IDs
         self.yID = 2000 - np.int16(
-            np.array([np.ceil((lat_lim[1] + 50) * 20), np.floor((lat_lim[0] + 50) * 20)])
+            np.array(
+                [np.ceil((lat_lim[1] + 50) * 20), np.floor((lat_lim[0] + 50) * 20)]
+            )
         )
         self.xID = np.int16(
             np.array(
@@ -102,8 +107,7 @@ class CHIRPS:
             )
         )
 
-
-    def Download(self, progress_bar: bool=True, cores=None):
+    def Download(self, progress_bar: bool = True, cores=None):
         """Download.
 
         Download method downloads CHIRPS data
@@ -162,7 +166,6 @@ class CHIRPS:
             )
         return results
 
-
     @staticmethod
     def RetrieveData(Date, args):
         """RetrieveData.
@@ -196,10 +199,10 @@ class CHIRPS:
         ftp.login()
 
         # Define FTP path to directory
-        if TimeCase == "daily":
+        if TimeCase.lower() == "daily":
             pathFTP = (
-                    "pub/org/chg/products/CHIRPS-2.0/global_daily/tifs/p05/%s/"
-                    % Date.strftime("%Y")
+                "pub/org/chg/products/CHIRPS-2.0/global_daily/tifs/p05/%s/"
+                % Date.strftime("%Y")
             )
         elif TimeCase == "monthly":
             pathFTP = "pub/org/chg/products/CHIRPS-2.0/global_monthly/tifs/"
@@ -214,7 +217,7 @@ class CHIRPS:
         ftp.retrlines("LIST", listing.append)
 
         # create all the input name (filename) and output (outfilename, filetif, DiFileEnd) names
-        if TimeCase == "daily":
+        if TimeCase.lower() == "daily":
             filename = "chirps-v2.0.%s.%02s.%02s.tif.gz" % (
                 Date.strftime("%Y"),
                 Date.strftime("%m"),
@@ -263,7 +266,7 @@ class CHIRPS:
             dataset, NoDataValue = Raster.getRasterData(src)
 
             # clip dataset to the given extent
-            data = dataset[yID[0]: yID[1], xID[0]: xID[1]]
+            data = dataset[yID[0] : yID[1], xID[0] : xID[1]]
             # replace -ve values with -9999
             data[data < 0] = -9999
 
@@ -281,14 +284,13 @@ class CHIRPS:
             os.remove(outfilename)
 
         except PermissionError:
-            print("The file covering the whole world could not be deleted please delete it after the download ends")
+            print(
+                "The file covering the whole world could not be deleted please delete it after the download ends"
+            )
         return True
 
-
     def ListAttributes(self):
-        """
-        Print Attributes List
-        """
+        """Print Attributes List."""
 
         print("\n")
         print(
