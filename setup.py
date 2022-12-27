@@ -7,12 +7,11 @@ with open("HISTORY.rst") as history_file:
     history = history_file.read()
 
 requirements = [line.strip() for line in open("requirements.txt").readlines()]
-requirements = requirements[1:]
 requirements_dev = [line.strip() for line in open("requirements-dev.txt").readlines()]
 
 setup(
     name="earth2observe",
-    version="0.1.6",
+    version="0.1.7",
     description="remote sensing package",
     author="Mostafa Farrag",
     author_email="moah.farag@gmail.come",
