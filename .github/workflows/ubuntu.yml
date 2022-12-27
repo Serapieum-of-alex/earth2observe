@@ -1,35 +1,47 @@
-name: CI
-on: [push, pull_request]
+name: Linux
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
 jobs:
   Run:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest] #, macos-latest, windows-latest
-        python-version: ["3.9" ] # "3.7", "3.8",
+        os: [ ubuntu-latest]
+        python-version: ["3.9", "3.10", "3.11"]
     env:
       OS: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@master
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
           architecture: x64
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          miniconda-version: "latest"
-          channels: conda-forge
-          allow-softlinks: true
-          channel-priority: flexible
-          show-channel-urls: true
 
+      - name: Install GDAL
+        run: |
+            python -m pip install --upgrade pip
+            pip install --no-cache-dir Cython
+            pip install --find-links=https://girder.github.io/large_image_wheels --no-cache GDAL
+      - name: Test GDAL installation
+        run: |
+            python -c "from osgeo import gdal"
+            gdalinfo --version
       - name: Install dependencies
         run: |
-          $CONDA/bin/conda env update --file environment.yml --name base
-          python setup.py install
+            pip install -r requirements.txt -r requirements-dev.txt
+            python setup.py install
 
+#      - name: Install dependencies
+#        run: |
+#          $CONDA/bin/mamba env update --file environment.yml --name base
+#          python setup.py install
 #    - name: Lint with flake8
 #      run: |
 #        # add CONDA/bin/ in front of everything
@@ -42,7 +54,7 @@ jobs:
 #        working-directory: ../
         run: |
           pwd
-          $CONDA/bin/pytest --cov=pyramids --cov-report=xml
+          python -m pytest -vvv --cov=earth2observe --cov-report=xml
 
 #      - name: Upload coverage to Codecov
 #        uses: codecov/codecov-action@v1
@@ -56,10 +68,3 @@ jobs:
 #          fail_ci_if_error: true
 #          path_to_write_report: ./coverage/codecov_report.txt
 #          verbose: true
-
-      - name: Coveralls GitHub Action
-        uses: coverallsapp/github-action@1.1.3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage1.xml,./coverage2.xml
-          directory: ./coverage/reports/
