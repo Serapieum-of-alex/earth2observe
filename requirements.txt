@@ -7,8 +7,5 @@ netCDF4 >=1.6.1
 numpy ==1.23.5
 pandas >=1.4.4
 pip >=22.3.1
-pyramids >=0.2.10
-pytest >=7.2.0
-pytest-cov ==4.0.0
-python >=3.9,<3.15
+pyramids-gis >=0.2.11
 requests >=2.28.1

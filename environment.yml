@@ -1,7 +1,7 @@
 channels:
   - conda-forge
 dependencies:
-  - python >=3.9,<3.15
+  - python >=3.9,<3.11
   - numpy ==1.23.5
   - pip >=22.3.1
   - gdal >=3.5.3
@@ -10,7 +10,7 @@ dependencies:
   - ecmwf-api-client >=1.6.3
   - earthengine-api >=0.1.324
   - joblib >=1.2.0
-  - pyramids >=0.2.10
+  - pyramids >=0.2.11
   - loguru >=0.6.0
   - pytest >=7.2.0
   - pytest-cov ==4.0.0
