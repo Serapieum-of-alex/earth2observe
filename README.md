@@ -4,7 +4,7 @@
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/MAfarrag/Hapi.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/MAfarrag/Hapi/context:python)
 
 
-
+[![codecov](https://codecov.io/gh/Serapieum-of-alex/earth2observe/branch/main/graph/badge.svg?token=2nBcI5ijvB)](https://codecov.io/gh/Serapieum-of-alex/earth2observe)
 ![GitHub last commit](https://img.shields.io/github/last-commit/MAfarrag/earthobserve)
 ![GitHub forks](https://img.shields.io/github/forks/MAfarrag/earthobserve?style=social)
 ![GitHub Repo stars](https://img.shields.io/github/stars/MAfarrag/earthobserve?style=social)
