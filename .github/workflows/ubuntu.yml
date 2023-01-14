@@ -41,6 +41,10 @@ jobs:
             python setup.py install
 
       - name: Generate coverage report
+        env:
+            ECMWF_API_URL: ${{ secrets.ECMWF_API_URL }}
+            ECMWF_API_KEY: ${{ secrets.ECMWF_API_KEY }}
+            ECMWF_API_EMAIL: ${{ secrets.ECMWF_API_EMAIL }}
         run: |
           python -m pytest -vvv --cov=earth2observe --cov-report=xml
 
