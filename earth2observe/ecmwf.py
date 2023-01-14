@@ -56,6 +56,9 @@ class ECMWF(DataSource):
         fmt (str, optional):
             [description]. Defaults to "%Y-%m-%d".
         """
+        # initialize connection with ecmwf server
+        self.initialize()
+
         self.start = dt.datetime.strptime(start, fmt)
         self.end = dt.datetime.strptime(end, fmt)
 
@@ -74,6 +77,18 @@ class ECMWF(DataSource):
 
         self.date_str = f"{self.start}/to/{self.end}"
         self.create_grid(lat_lim, lon_lim)
+
+    def initialize(self):
+        """Initialize connection with ECMWF server"""
+        try:
+            url = os.environ['ECMWF_API_URL']
+            key = os.environ['ECMWF_API_KEY']
+            email = os.environ['ECMWF_API_EMAIL']
+        except KeyError:
+            raise AuthenticationError(f"Please define the following environment variables to successfully establish a "
+                                      f"connection with ecmwf server ECMWF_API_URL, ECMWF_API_KEY, ECMWF_API_EMAIL")
+
+        self.server = ECMWFDataServer(url=url, key=key, email=email)
 
 
     def create_grid(self, lat_lim: list, lon_lim: list):
@@ -237,6 +252,7 @@ class ECMWF(DataSource):
         # Download data by using the ECMWF API
         logger.info("Use API ECMWF to collect the data, please wait")
         self.callAPI(
+            self.server,
             self.path,
             download_type,
             stream,
@@ -255,19 +271,20 @@ class ECMWF(DataSource):
 
     @staticmethod
     def callAPI(
-        output_folder: str,
-        download_type: str,
-        stream: str,
-        levtype: str,
-        param: str,
-        step: str,
-        grid: str,
-        time_str: str,
-        date_str: str,
-        type_str: str,
-        class_str: str,
-        area_str: str,
-        dataset: str = "interim",
+            server,
+            output_folder: str,
+            download_type: str,
+            stream: str,
+            levtype: str,
+            param: str,
+            step: str,
+            grid: str,
+            time_str: str,
+            date_str: str,
+            type_str: str,
+            class_str: str,
+            area_str: str,
+            dataset: str = "interim",
     ):
         """send the request to the server.
 
@@ -290,10 +307,7 @@ class ECMWF(DataSource):
         """
 
         os.chdir(output_folder)
-        server = ECMWFDataServer()
-        # url = os.environ['ECMWF_API_URL'],
-        # key = os.environ['ECMWF_API_KEY'],
-        # email = os.environ['ECMWF_API_EMAIL'],
+
         if download_type == 1 or download_type == 2:
             server.retrieve(
                 {
@@ -470,3 +484,7 @@ class Catalog(CatalogTemplate):
     def get_variable(self, var_name):
         """retrieve a variable form the datasource catalog"""
         return self.catalog.get(var_name)
+
+class AuthenticationError(Exception):
+    """Failed to establish connection with ECMWF server"""
+    pass
