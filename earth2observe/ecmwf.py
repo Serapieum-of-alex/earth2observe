@@ -16,17 +16,12 @@ from pyramids.raster import Raster
 
 from earth2observe import __path__
 from earth2observe.utils import print_progress_bar
+from earth2observe.datasource import DataSource, CatalogTemplate
 
-class ECMWF:
+class ECMWF(DataSource):
     """RemoteSensing.
 
     RemoteSensing class contains methods to download ECMWF data
-
-    Methods:
-        1- main
-        2- DownloadData
-        3- API
-        4- ListAttributes
     """
 
     def __init__(
@@ -44,7 +39,7 @@ class ECMWF:
 
         Parameters
         ----------
-        time (str, optional):
+        temporal_resolution (str, optional):
             [description]. Defaults to 'daily'.
         start (str, optional):
             [description]. Defaults to ''.
@@ -105,9 +100,9 @@ class ECMWF:
 
 
     def download(self, dataset: str = "interim", progress_bar: bool = True):
-        """ECMWF.
+        """Download wrapper over all given variables.
 
-        ECMWF method downloads ECMWF daily data for a given variable, time
+        ECMWF method downloads ECMWF daily data for a given variable, temporal_resolution
         interval, and spatial extent.
 
 
@@ -141,7 +136,9 @@ class ECMWF:
     def downloadDataset(
         self, var_info: Dict[str, str], dataset: str = "interim", progress_bar: bool = True
     ):
-        """This function downloads ECMWF six-hourly, daily or monthly data.
+        """Download a climate variable.
+
+            This function downloads ECMWF six-hourly, daily or monthly data.
 
         Parameters
         ----------
@@ -173,13 +170,13 @@ class ECMWF:
             os.makedirs(out_dir)
 
         # trigger the request to the server
-        self.api(var_info, dataset)
+        self.API(var_info, dataset)
         # process the downloaded data
         self.post_download(var_info, out_dir, dataset, progress_bar)
 
 
 
-    def api(self, var_info, dataset):
+    def API(self, var_info, dataset):
         """form the request url abd trigger the request
 
         Parameters
@@ -239,7 +236,7 @@ class ECMWF:
 
         # Download data by using the ECMWF API
         logger.info("Use API ECMWF to collect the data, please wait")
-        self.call_api(
+        self.callAPI(
             self.path,
             download_type,
             stream,
@@ -257,7 +254,7 @@ class ECMWF:
 
 
     @staticmethod
-    def call_api(
+    def callAPI(
         output_folder: str,
         download_type: str,
         stream: str,
@@ -272,6 +269,25 @@ class ECMWF:
         area_str: str,
         dataset: str = "interim",
     ):
+        """send the request to the server.
+
+        Parameters
+        ----------
+        output_folder: [str]
+            directory where files will be saved
+        download_type: [int]
+        stream
+        levtype
+        param
+        step
+        grid
+        time_str
+        date_str
+        type_str
+        class_str
+        area_str
+        dataset
+        """
 
         os.chdir(output_folder)
         server = ECMWFDataServer()
@@ -287,7 +303,7 @@ class ECMWF:
                     "dataset": dataset,
                     "step": step,
                     "grid": grid,
-                    "time": time_str,
+                    "temporal_resolution": time_str,
                     "date": date_str,
                     "type": type_str,  # http://apps.ecmwf.int/codes/grib/format/mars/type/
                     "class": class_str,  # http://apps.ecmwf.int/codes/grib/format/mars/class/
@@ -307,7 +323,7 @@ class ECMWF:
                     "dataset": dataset,
                     "step": step,
                     "grid": grid,
-                    "time": time_str,
+                    "temporal_resolution": time_str,
                     "date": date_str,
                     "type": type_str,  # http://apps.ecmwf.int/codes/grib/format/mars/type/
                     "class": class_str,  # http://apps.ecmwf.int/codes/grib/format/mars/class/
@@ -336,6 +352,8 @@ class ECMWF:
             >>>     'factors_add': 0,
             >>>     'factors_mul': 1000
             >>> }
+        out_dir: [str]
+            root directory for where the files will be saved.
         dataset: [str]
             dataset name. Default is interm
         progress_bar: [bool]
@@ -353,7 +371,7 @@ class ECMWF:
 
         # Open the NC data
         Data = fh.variables[parameter_var][:]
-        Data_time = fh.variables["time"][:]
+        Data_time = fh.variables["temporal_resolution"][:]
         lons = fh.variables["longitude"][:]
         lats = fh.variables["latitude"][:]
 
@@ -432,19 +450,22 @@ class ECMWF:
 
         fh.close()
 
-class Catalog:
-    """This class contains the information about the ECMWF variables
+class Catalog(CatalogTemplate):
+    """ECMWF data catalog
+    This class contains the information about the ECMWF variables
     http://rda.ucar.edu/cgi-bin/transform?xml=/metadata/ParameterTables/WMO_GRIB1.98-0.128.xml&view=gribdoc.
     """
-
     def __init__(self, version: int = 1):
         # get the catalog
+        self.catalog = self.get_catalog()
+        self.version = version
+
+
+    def get_catalog(self):
+        """readthe data catalog from disk"""
         with open(f"{__path__[0]}/ecmwf_data_catalog.yaml", "r") as stream:
             catalog = yaml.safe_load(stream)
-
-        self.catalog = catalog
-
-        self.version = version
+        return catalog
 
     def get_variable(self, var_name):
         """retrieve a variable form the datasource catalog"""

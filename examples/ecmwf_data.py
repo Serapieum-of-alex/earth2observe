@@ -19,7 +19,7 @@ lon = [-75.649243, -74.727286]
 # Temperature, Evapotranspiration
 variables = ["T", "E"]
 #%%
-Vars = Catalog() #"daily"
+Vars = Catalog()
 print(Vars.catalog)
 #%% Temperature
 start = "2009-01-01"
