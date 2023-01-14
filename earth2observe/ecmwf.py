@@ -26,7 +26,7 @@ class ECMWF(DataSource):
 
     def __init__(
         self,
-        time: str = "daily",
+        temporal_resolution: str = "daily",
         start: str = None,
         end: str = None,
         path: str = "",
@@ -59,16 +59,16 @@ class ECMWF(DataSource):
         self.start = dt.datetime.strptime(start, fmt)
         self.end = dt.datetime.strptime(end, fmt)
 
-        if time == "six_hourly":
+        if temporal_resolution == "six_hourly":
             # Set required data for the three hourly option
             self.string1 = "oper"
         # Set required data for the daily option
-        elif time == "daily":
+        elif temporal_resolution == "daily":
             self.Dates = pd.date_range(self.start, self.end, freq="D")
-        elif time == "monthly":
+        elif temporal_resolution == "monthly":
             self.Dates = pd.date_range(self.start, self.end, freq="MS")
 
-        self.time = time
+        self.time = temporal_resolution
         self.path = path
         self.vars = variables
 
@@ -303,7 +303,7 @@ class ECMWF(DataSource):
                     "dataset": dataset,
                     "step": step,
                     "grid": grid,
-                    "temporal_resolution": time_str,
+                    "time": time_str,
                     "date": date_str,
                     "type": type_str,  # http://apps.ecmwf.int/codes/grib/format/mars/type/
                     "class": class_str,  # http://apps.ecmwf.int/codes/grib/format/mars/class/
@@ -323,7 +323,7 @@ class ECMWF(DataSource):
                     "dataset": dataset,
                     "step": step,
                     "grid": grid,
-                    "temporal_resolution": time_str,
+                    "time": time_str,
                     "date": date_str,
                     "type": type_str,  # http://apps.ecmwf.int/codes/grib/format/mars/type/
                     "class": class_str,  # http://apps.ecmwf.int/codes/grib/format/mars/class/
@@ -371,7 +371,7 @@ class ECMWF(DataSource):
 
         # Open the NC data
         Data = fh.variables[parameter_var][:]
-        Data_time = fh.variables["temporal_resolution"][:]
+        Data_time = fh.variables["time"][:]
         lons = fh.variables["longitude"][:]
         lats = fh.variables["latitude"][:]
 
