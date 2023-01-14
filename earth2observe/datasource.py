@@ -24,9 +24,8 @@ class DataSource(ABC):
         pass
 
 
-    @abstractmethod
     def initialize(self):
-        """Initialize connection with the data source server"""
+        """Initialize connection with the data source server (for non ftp servers)"""
         pass
 
     @abstractmethod

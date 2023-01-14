@@ -88,15 +88,6 @@ class CHIRPS(DataSource):
         self.create_grid(lat_lim, lon_lim)
 
 
-    def initialize(self):
-        """Initialize connection with chirps ftp server"""
-        # open ftp server
-        # ftp = FTP("chg-ftpout.geog.ucsb.edu", "", "")
-        ftp = FTP(CHIRPS.api_url)
-        ftp.login()
-        self.server = ftp
-
-
     def create_grid(self, lat_lim: list, lon_lim: list):
         """Create_grid
 
@@ -248,12 +239,12 @@ class CHIRPS(DataSource):
         else:
             raise KeyError("The input temporal_resolution interval is not supported")
 
-        self.callAPI(self.server, pathFTP, output_folder, filename)
+        self.callAPI(pathFTP, output_folder, filename)
         self.post_download(output_folder, filename, lon_lim, latlim, xID, yID, outfilename, DirFileEnd)
 
 
     @staticmethod
-    def callAPI(ftp, pathFTP: str, output_folder: str, filename: str):
+    def callAPI(pathFTP: str, output_folder: str, filename: str):
         """send the request to the server.
 
         RetrieveData method retrieves CHIRPS data for a given date from the
@@ -276,7 +267,8 @@ class CHIRPS(DataSource):
         bool
             DESCRIPTION.
         """
-
+        ftp = FTP(CHIRPS.api_url)
+        ftp.login()
         # find the document name in this directory
         ftp.cwd(pathFTP)
         listing = []
