@@ -1,3 +1,4 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/73d9a05cee264e4093a7bcca5b21a3a6)](https://app.codacy.com/gh/Serapieum-of-alex/earth2observe?utm_source=github.com&utm_medium=referral&utm_content=Serapieum-of-alex/earth2observe&utm_campaign=Badge_Grade_Settings)
 [![Python Versions](https://img.shields.io/pypi/pyversions/earthobserve.png)](https://img.shields.io/pypi/pyversions/earthobserve)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
