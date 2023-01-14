@@ -16,10 +16,15 @@ from earth2observe.utils import print_progress_bar
 class CHIRPS(DataSource):
     """CHIRPS."""
     api_url: str = "data.chc.ucsb.edu"
+    start_date: str = "1981-01-01"
+    end_date: str = "Now"
+    temporal_resolution = ["daily", "monthly"]
+    lat_bondaries = [-50, 50]
+    lon_boundaries = [-180, 180]
 
     def __init__(
             self,
-            time: str = "daily",
+            temporal_resolution: str = "daily",
             start: str = None,
             end: str = None,
             path: str = "",
@@ -31,7 +36,7 @@ class CHIRPS(DataSource):
 
         Parameters
         ----------
-        time (str, optional):
+        temporal_resolution (str, optional):
             'daily' or 'monthly'. Defaults to 'daily'.
         start (str, optional):
             [description]. Defaults to ''.
@@ -49,35 +54,35 @@ class CHIRPS(DataSource):
             [description]. Defaults to "%Y-%m-%d".
         """
         # Define timestep for the timedates
-        if time.lower() == "daily":
+        if temporal_resolution.lower() == "daily":
             self.time_freq = "D"
             self.output_folder = os.path.join(path, "Precipitation", "CHIRPS", "Daily")
-        elif time.lower() == "monthly":
+        elif temporal_resolution.lower() == "monthly":
             self.time_freq = "MS"
             self.output_folder = os.path.join(
                 path, "Precipitation", "CHIRPS", "Monthly"
             )
         else:
-            raise KeyError("The input time interval is not supported")
+            raise KeyError("The input temporal_resolution interval is not supported")
 
-        self.time = time
+        self.time = temporal_resolution
 
         # make directory if it not exists
         if not os.path.exists(self.output_folder):
             os.makedirs(self.output_folder)
 
-        # check time variables
+        # check temporal_resolution variables
         if start is None:
-            self.start = pd.Timestamp("1981-01-01")
+            self.start = pd.Timestamp(self.start_date)
         else:
             self.start = dt.datetime.strptime(start, fmt)
 
         if end is None:
-            self.end = pd.Timestamp("Now")
+            self.end = pd.Timestamp(self.end_date)
         else:
             self.end = dt.datetime.strptime(end, fmt)
         # Create days
-        self.Dates = pd.date_range(self.start, self.end, freq=self.time_freq)
+        self.dates = pd.date_range(self.start, self.end, freq=self.time_freq)
         self.create_grid(lat_lim, lon_lim)
 
 
@@ -96,23 +101,26 @@ class CHIRPS(DataSource):
         self.lat_lim = []
         self.lon_lim = []
         # Check space variables
-        if lat_lim[0] < -50 or lat_lim[1] > 50:
+        # -50 , 50
+        if lat_lim[0] < self.lat_bondaries[0] or lat_lim[1] > self.lat_bondaries[1]:
             print(
                 "Latitude above 50N or below 50S is not possible."
                 " Value set to maximum"
             )
-            self.lat_lim[0] = np.max(lat_lim[0], -50)
-            self.lat_lim[1] = np.min(lon_lim[1], 50)
-        if lon_lim[0] < -180 or lon_lim[1] > 180:
+            self.lat_lim[0] = np.max(lat_lim[0], self.lat_bondaries[0])
+            self.lat_lim[1] = np.min(lon_lim[1], self.lat_bondaries[1])
+        # -180, 180
+        if lon_lim[0] < self.lon_boundaries[0] or lon_lim[1] > self.lon_boundaries[1]:
             print(
                 "Longitude must be between 180E and 180W."
                 " Now value is set to maximum"
             )
-            self.lon_lim[0] = np.max(lat_lim[0], -180)
-            self.lon_lim[1] = np.min(lon_lim[1], 180)
+            self.lon_lim[0] = np.max(lat_lim[0], self.lon_boundaries[0])
+            self.lon_lim[1] = np.min(lon_lim[1], self.lon_boundaries[1])
         else:
             self.lat_lim = lat_lim
             self.lon_lim = lon_lim
+
         # Define IDs
         self.yID = 2000 - np.int16(
             np.array(
@@ -157,7 +165,7 @@ class CHIRPS(DataSource):
         if not cores:
             # Create Waitbar
             if progress_bar:
-                total_amount = len(self.Dates)
+                total_amount = len(self.dates)
                 amount = 0
                 print_progress_bar(
                     amount,
@@ -167,8 +175,8 @@ class CHIRPS(DataSource):
                     length=50,
                 )
 
-            for Date in self.Dates:
-                self.API(Date, args)
+            for date in self.dates:
+                self.API(date, args)
                 if progress_bar:
                     amount = amount + 1
                     print_progress_bar(
@@ -181,16 +189,16 @@ class CHIRPS(DataSource):
             results = True
         else:
             results = Parallel(n_jobs=cores)(
-                delayed(self.API)(Date, args) for Date in self.Dates
+                delayed(self.API)(date, args) for date in self.dates
             )
         return results
 
-    def API(self, Date, args):
+    def API(self, date, args):
         """form the request url abd trigger the request
 
         Parameters
         ----------
-        Date:
+        date:
 
         args: [list]
 
@@ -199,35 +207,35 @@ class CHIRPS(DataSource):
 
         # Define FTP path to directory
         if TimeCase.lower() == "daily":
-            pathFTP = f"pub/org/chg/products/CHIRPS-2.0/global_daily/tifs/p05/{Date.strftime('%Y')}/"
+            pathFTP = f"pub/org/chg/products/CHIRPS-2.0/global_daily/tifs/p05/{date.strftime('%Y')}/"
         elif TimeCase == "monthly":
             pathFTP = "pub/org/chg/products/CHIRPS-2.0/global_monthly/tifs/"
         else:
-            raise KeyError("The input time interval is not supported")
+            raise KeyError("The input temporal_resolution interval is not supported")
 
         # create all the input name (filename) and output (outfilename, filetif, DiFileEnd) names
         if TimeCase.lower() == "daily":
-            filename = f"chirps-v2.0.{Date.strftime('%Y')}.{Date.strftime('%m')}.{Date.strftime('%d')}.tif.gz"
+            filename = f"chirps-v2.0.{date.strftime('%Y')}.{date.strftime('%m')}.{date.strftime('%d')}.tif.gz"
             outfilename = os.path.join(
                 output_folder,
-                f"chirps-v2.0.{Date.strftime('%Y')}.{Date.strftime('%m')}.{Date.strftime('%d')}.tif"
+                f"chirps-v2.0.{date.strftime('%Y')}.{date.strftime('%m')}.{date.strftime('%d')}.tif"
             )
             DirFileEnd = os.path.join(
                 output_folder,
-                f"P_CHIRPS.v2.0_mm-day-1_daily_{Date.strftime('%Y')}.{Date.strftime('%m')}.{Date.strftime('%d')}.tif"
+                f"P_CHIRPS.v2.0_mm-day-1_daily_{date.strftime('%Y')}.{date.strftime('%m')}.{date.strftime('%d')}.tif"
             )
         elif TimeCase == "monthly":
-            filename = f"chirps-v2.0.{Date.strftime('%Y')}.{Date.strftime('%m')}.tif.gz"
+            filename = f"chirps-v2.0.{date.strftime('%Y')}.{date.strftime('%m')}.tif.gz"
             outfilename = os.path.join(
                 output_folder,
-                f"chirps-v2.0.{Date.strftime('%Y')}.{Date.strftime('%m')}.tif"
+                f"chirps-v2.0.{date.strftime('%Y')}.{date.strftime('%m')}.tif"
             )
             DirFileEnd = os.path.join(
                 output_folder,
-                f"P_CHIRPS.v2.0_mm-month-1_monthly_{Date.strftime('%Y')}.{Date.strftime('%m')}.{Date.strftime('%d')}.tif"
+                f"P_CHIRPS.v2.0_mm-month-1_monthly_{date.strftime('%Y')}.{date.strftime('%m')}.{date.strftime('%d')}.tif"
             )
         else:
-            raise KeyError("The input time interval is not supported")
+            raise KeyError("The input temporal_resolution interval is not supported")
 
         self.callAPI(pathFTP, output_folder, filename)
         self.post_download(output_folder, filename, lon_lim, latlim, xID, yID, outfilename, DirFileEnd)
@@ -350,8 +358,8 @@ class Catalog(CatalogTemplate):
         """return the catalog"""
         return {
             "Precipitation": {
-                "descriptions": "rainfall [mm/time step]",
-                "units": "mm/time step",
+                "descriptions": "rainfall [mm/temporal_resolution step]",
+                "units": "mm/temporal_resolution step",
                 "temporal resolution": ["daily", "monthly"],
                 "file name": "rainfall",
                 "var_name": "R",
