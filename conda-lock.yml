@@ -15,9 +15,9 @@ metadata:
   - url: conda-forge
     used_env_vars: []
   content_hash:
-    linux-64: 325708bf05f854c0b78eb537ecc928f7cff57e17261dc6942378dcf91b5352ea
-    osx-64: c47df51583e2b16668de1e761099728753d342aa01140e6349997debacd7ffe4
-    win-64: 4450a3d68bc233c59053d29dc7ac201816e729cbafc2d414282992263aea23ab
+    linux-64: 254a8ec847efd0a02a050ea9fc62f1a75932bb3645fa638fc79971d4b8f35430
+    osx-64: d8e507a190f5b7c996b48cd0a82bc6c4ed5fed5a8279ee8d4157cb3c39be60c3
+    win-64: cc58bac7c0731eff5cf8ea05e67e60e4ddf69f70dfdf9d0080a8a7faa1a4d316
   platforms:
   - linux-64
   - osx-64
@@ -1704,6 +1704,19 @@ package:
   platform: linux-64
   url: https://conda.anaconda.org/conda-forge/noarch/packaging-23.0-pyhd8ed1ab_0.conda
   version: '23.0'
+- category: main
+  dependencies:
+    python: '>=3.10,<3.11.0a0'
+    python_abi: 3.10.* *_cp310
+  hash:
+    md5: 8136eda9039ea7d038f5f567b3d36edc
+    sha256: 133a357c3d7f4e401a7fec91cba7a29d923ca27f7db1411144d07795fca6af71
+  manager: conda
+  name: pathlib
+  optional: false
+  platform: linux-64
+  url: https://conda.anaconda.org/conda-forge/linux-64/pathlib-1.0.1-py310hff52083_7.tar.bz2
+  version: 1.0.1
 - category: main
   dependencies:
     python: '>=3.8'
@@ -4667,6 +4680,19 @@ package:
   version: '23.0'
 - category: main
   dependencies:
+    python: '>=3.10,<3.11.0a0'
+    python_abi: 3.10.* *_cp310
+  hash:
+    md5: 14854f5255d4f6b7e2b778c3bbae1bd3
+    sha256: 980be3d027c0bb6840f1b0943971513c47899840344752ef7bc4602fa8329d75
+  manager: conda
+  name: pathlib
+  optional: false
+  platform: osx-64
+  url: https://conda.anaconda.org/conda-forge/osx-64/pathlib-1.0.1-py310h2ec42d9_7.tar.bz2
+  version: 1.0.1
+- category: main
+  dependencies:
     python: '>=3.8'
   hash:
     md5: 7d301a0d25f424d96175f810935f0da9
@@ -7564,6 +7590,19 @@ package:
   platform: win-64
   url: https://conda.anaconda.org/conda-forge/noarch/packaging-23.0-pyhd8ed1ab_0.conda
   version: '23.0'
+- category: main
+  dependencies:
+    python: '>=3.10,<3.11.0a0'
+    python_abi: 3.10.* *_cp310
+  hash:
+    md5: 418ff71cea0e1072490e9b39b6766d2b
+    sha256: 4d28297d67b19cce3b8efc27b74958d17c07f777d323db2e654ea88787173bb8
+  manager: conda
+  name: pathlib
+  optional: false
+  platform: win-64
+  url: https://conda.anaconda.org/conda-forge/win-64/pathlib-1.0.1-py310h5588dad_7.tar.bz2
+  version: 1.0.1
 - category: main
   dependencies:
     python: '>=3.8'
