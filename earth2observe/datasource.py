@@ -23,7 +23,6 @@ class DataSource(ABC):
         """send/recieve request to the dataset server"""
         pass
 
-
     @abstractmethod
     def create_grid(self):
         """create a grid from the lat/lon boundaries"""
@@ -33,12 +32,10 @@ class DataSource(ABC):
 class CatalogTemplate(ABC):
     """abstrach class for the datasource catalog"""
 
-
     @abstractmethod
     def get_catalog(self):
         """read the catalog of the datasource from disk or retrieve it from server"""
         pass
-
 
     @abstractmethod
     def get_variable(self, var_name) -> Dict[str, str]:
