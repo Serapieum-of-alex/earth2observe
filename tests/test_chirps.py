@@ -36,7 +36,10 @@ def test_download(
         chirps_base_dir: str,
 ):
     test_download_chirps.download()
-    filelist = glob.glob(os.path.join(f"{chirps_base_dir}/Precipitation/CHIRPS/Daily", "chirps*.tif"))
+    print(os.listdir(os.path.join(f"{chirps_base_dir}/precipitation/chirps/daily")))
+    filelist = glob.glob(os.path.join(f"{chirps_base_dir}/precipitation/chirps/daily", "chirps*.tif"))
+
     assert len(filelist) == 10
     # delete the files
-    [os.remove(i) for i in filelist]
+    # [os.remove(i) for i in filelist]
+    shutil.rmtree(f"{chirps_base_dir}/precipitation")

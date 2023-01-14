@@ -56,7 +56,7 @@ class CHIRPS(DataSource):
         # Define timestep for the timedates
         if temporal_resolution.lower() == "daily":
             self.time_freq = "D"
-            self.output_folder = os.path.join(path, "Precipitation", "CHIRPS", "Daily")
+            self.output_folder = os.path.join(path, "precipitation", "chirps", "daily")
         elif temporal_resolution.lower() == "monthly":
             self.time_freq = "MS"
             self.output_folder = os.path.join(
