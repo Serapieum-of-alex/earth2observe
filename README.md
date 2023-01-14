@@ -5,6 +5,7 @@
 
 
 [![codecov](https://codecov.io/gh/Serapieum-of-alex/earth2observe/branch/main/graph/badge.svg?token=2nBcI5ijvB)](https://codecov.io/gh/Serapieum-of-alex/earth2observe)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/4c95cf4c0dd044e4b451e08355fe6ee7)](https://www.codacy.com/gh/Serapieum-of-alex/earth2observe/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Serapieum-of-alex/earth2observe&amp;utm_campaign=Badge_Grade)
 ![GitHub last commit](https://img.shields.io/github/last-commit/MAfarrag/earthobserve)
 ![GitHub forks](https://img.shields.io/github/forks/MAfarrag/earthobserve?style=social)
 ![GitHub Repo stars](https://img.shields.io/github/stars/MAfarrag/earthobserve?style=social)
