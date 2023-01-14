@@ -15,9 +15,9 @@ metadata:
   - url: conda-forge
     used_env_vars: []
   content_hash:
-    linux-64: c03a2ae4429c0be064cfc9bfe6ca40013bd6a76fa524e2a683875d8ddf92f8ec
-    osx-64: 2555d349819e4da12527af854a47a625c748a9bdee7617ac11c91db5e7cb2177
-    win-64: 07e55835584bb9e19c718819833a15235fad3eed30776a83019f6058b52bb9d7
+    linux-64: 325708bf05f854c0b78eb537ecc928f7cff57e17261dc6942378dcf91b5352ea
+    osx-64: c47df51583e2b16668de1e761099728753d342aa01140e6349997debacd7ffe4
+    win-64: 4450a3d68bc233c59053d29dc7ac201816e729cbafc2d414282992263aea23ab
   platforms:
   - linux-64
   - osx-64
@@ -778,6 +778,18 @@ package:
   platform: linux-64
   url: https://conda.anaconda.org/conda-forge/linux-64/xz-5.2.6-h166bdaf_0.tar.bz2
   version: 5.2.6
+- category: main
+  dependencies:
+    libgcc-ng: '>=9.4.0'
+  hash:
+    md5: 4cb3ad778ec2d5a7acbdf254eb1c42ae
+    sha256: a4e34c710eeb26945bdbdaba82d3d74f60a78f54a874ec10d373811a5d217535
+  manager: conda
+  name: yaml
+  optional: false
+  platform: linux-64
+  url: https://conda.anaconda.org/conda-forge/linux-64/yaml-0.2.5-h7f98852_2.tar.bz2
+  version: 0.2.5
 - category: main
   dependencies:
     libopenblas: '>=0.3.21,<1.0a0'
@@ -1752,6 +1764,21 @@ package:
   platform: linux-64
   url: https://conda.anaconda.org/conda-forge/noarch/pytz-2022.7-pyhd8ed1ab_0.conda
   version: '2022.7'
+- category: main
+  dependencies:
+    libgcc-ng: '>=12'
+    python: '>=3.10,<3.11.0a0'
+    python_abi: 3.10.* *_cp310
+    yaml: '>=0.2.5,<0.3.0a0'
+  hash:
+    md5: 9e68d2ff6d98737c855b65f48dd3c597
+    sha256: 602d68ee4544274b12fb6d13b8d5fc61d0ebbee190292c21d8be10a4e68185bd
+  manager: conda
+  name: pyyaml
+  optional: false
+  platform: linux-64
+  url: https://conda.anaconda.org/conda-forge/linux-64/pyyaml-6.0-py310h5764c6d_5.tar.bz2
+  version: '6.0'
 - category: main
   dependencies:
     libspatialindex: '>=1.9.3,<1.9.4.0a0'
@@ -3609,6 +3636,17 @@ package:
   url: https://conda.anaconda.org/conda-forge/osx-64/xz-5.2.6-h775f41a_0.tar.bz2
   version: 5.2.6
 - category: main
+  dependencies: {}
+  hash:
+    md5: d7e08fcf8259d742156188e8762b4d20
+    sha256: 5301417e2c8dea45b401ffee8df3957d2447d4ce80c83c5ff151fc6bfe1c4148
+  manager: conda
+  name: yaml
+  optional: false
+  platform: osx-64
+  url: https://conda.anaconda.org/conda-forge/osx-64/yaml-0.2.5-h0d85af4_2.tar.bz2
+  version: 0.2.5
+- category: main
   dependencies:
     libcxx: '>=14.0.4'
   hash:
@@ -4687,6 +4725,20 @@ package:
   platform: osx-64
   url: https://conda.anaconda.org/conda-forge/noarch/pytz-2022.7-pyhd8ed1ab_0.conda
   version: '2022.7'
+- category: main
+  dependencies:
+    python: '>=3.10,<3.11.0a0'
+    python_abi: 3.10.* *_cp310
+    yaml: '>=0.2.5,<0.3.0a0'
+  hash:
+    md5: e0ba2009f52ccda088c63dedf0d1c5ec
+    sha256: ab7b2b8fef9adc4211834054d004f3e286161bb3e1dcb17d4b974fae4f87b31b
+  manager: conda
+  name: pyyaml
+  optional: false
+  platform: osx-64
+  url: https://conda.anaconda.org/conda-forge/osx-64/pyyaml-6.0-py310h90acd4f_5.tar.bz2
+  version: '6.0'
 - category: main
   dependencies:
     libspatialindex: '>=1.9.3,<1.9.4.0a0'
@@ -6781,6 +6833,19 @@ package:
   version: 5.2.6
 - category: main
   dependencies:
+    vc: '>=14.1,<15.0a0'
+    vs2015_runtime: '>=14.16.27012'
+  hash:
+    md5: adbfb9f45d1004a26763652246a33764
+    sha256: 4e2246383003acbad9682c7c63178e2e715ad0eb84f03a8df1fbfba455dfedc5
+  manager: conda
+  name: yaml
+  optional: false
+  platform: win-64
+  url: https://conda.anaconda.org/conda-forge/win-64/yaml-0.2.5-h8ffe710_2.tar.bz2
+  version: 0.2.5
+- category: main
+  dependencies:
     libiconv: '>=1.17,<2.0.0a0'
     vc: '>=14.2,<15'
     vs2015_runtime: '>=14.29.30139'
@@ -7571,6 +7636,23 @@ package:
   platform: win-64
   url: https://conda.anaconda.org/conda-forge/noarch/pytz-2022.7-pyhd8ed1ab_0.conda
   version: '2022.7'
+- category: main
+  dependencies:
+    python: '>=3.10,<3.11.0a0'
+    python_abi: 3.10.* *_cp310
+    ucrt: '>=10.0.20348.0'
+    vc: '>=14.2,<15'
+    vs2015_runtime: '>=14.29.30139'
+    yaml: '>=0.2.5,<0.3.0a0'
+  hash:
+    md5: d0daf3eed98dd2bf4337ed08d8011eb8
+    sha256: 7d948a99bf7af50c9823a248267fce75ac555e4f357de166f65a75fab8549f3c
+  manager: conda
+  name: pyyaml
+  optional: false
+  platform: win-64
+  url: https://conda.anaconda.org/conda-forge/win-64/pyyaml-6.0-py310h8d17308_5.tar.bz2
+  version: '6.0'
 - category: main
   dependencies:
     libspatialindex: '>=1.9.3,<1.9.4.0a0'
