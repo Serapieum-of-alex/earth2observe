@@ -34,4 +34,4 @@ def test_download(
     filelist = glob.glob(os.path.join(f"{ecmwf_base_dir}/daily/Evaporation/", f"*.tif"))
     assert len(filelist) == 10
     # delete the files
-    shutil.rmtree(f"{ecmwf_base_dir}")
+    shutil.rmtree(f"{ecmwf_base_dir}/daily")
