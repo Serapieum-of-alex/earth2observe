@@ -5,7 +5,7 @@
 import calendar
 import datetime as dt
 import os
-
+from typing import Dict
 import numpy as np
 import pandas as pd
 import yaml
@@ -16,7 +16,6 @@ from pyramids.raster import Raster
 
 from earth2observe import __path__
 from earth2observe.utils import print_progress_bar
-
 
 class ECMWF:
     """RemoteSensing.
@@ -33,12 +32,12 @@ class ECMWF:
     def __init__(
         self,
         time: str = "daily",
-        start: str = "",
-        end: str = "",
+        start: str = None,
+        end: str = None,
         path: str = "",
-        variables: list = [],
-        lat_lim: list = [],
-        lon_lim: list = [],
+        variables: list = None,
+        lat_lim: list = None,
+        lon_lim: list = None,
         fmt: str = "%Y-%m-%d",
     ):
         """RemoteSensing.
@@ -56,9 +55,9 @@ class ECMWF:
         variables (list, optional):
             Variable code: VariablesInfo('day').descriptions.keys(). Defaults to [].
         lat_lim (list, optional):
-            [ymin, ymax]. Defaults to [].
+            [ymin, ymax]. Defaults to None.
         lon_lim (list, optional):
-            [xmin, xmax]. Defaults to [].
+            [xmin, xmax]. Defaults to None.
         fmt (str, optional):
             [description]. Defaults to "%Y-%m-%d".
         """
@@ -78,6 +77,22 @@ class ECMWF:
         self.path = path
         self.vars = variables
 
+        self.date_str = f"{self.start}/to/{self.end}"
+        self.create_grid(lat_lim, lon_lim)
+
+
+    def create_grid(self, lat_lim: list, lon_lim: list):
+        """Create_grid
+
+            create grid from the lat/lon boundaries
+
+        Parameters
+        ----------
+        lat_lim: []
+            latitude boundaries
+        lon_lim: []
+            longitude boundaries
+        """
         # correct latitude and longitude limits
         latlim_corr_one = np.floor(lat_lim[0] / 0.125) * 0.125
         latlim_corr_two = np.ceil(lat_lim[1] / 0.125) * 0.125
@@ -87,9 +102,7 @@ class ECMWF:
         lonlim_corr_one = np.floor(lon_lim[0] / 0.125) * 0.125
         lonlim_corr_two = np.ceil(lon_lim[1] / 0.125) * 0.125
         self.lonlim_corr = [lonlim_corr_one, lonlim_corr_two]
-        # TODO move it to the ECMWF method later
-        # for ECMWF only
-        self.date_str = f"{self.start}/to/{self.end}"
+
 
     def download(self, dataset: str = "interim", progress_bar: bool = True):
         """ECMWF.
@@ -109,41 +122,85 @@ class ECMWF:
         -------
         None.
         """
+        # read the datasource catalog
+        catalog = Catalog()
+
         for var in self.vars:
             # Download data
             logger.info(
                 f"Download ECMWF {var} data for period {self.start} till {self.end}"
             )
-            self.downloadData(
-                var, dataset=dataset, progress_bar=progress_bar
+            var_info = catalog.get_variable(var)
+            self.downloadDataset(
+                var_info, dataset=dataset, progress_bar=progress_bar
             )  # CaseParameters=[SumMean, Min, Max]
         # delete the downloaded netcdf
         del_ecmwf_dataset = os.path.join(self.path, "data_interim.nc")
         os.remove(del_ecmwf_dataset)
 
-    def downloadData(
-        self, var: str, dataset: str = "interim", progress_bar: bool = True
+    def downloadDataset(
+        self, var_info: Dict[str, str], dataset: str = "interim", progress_bar: bool = True
     ):
         """This function downloads ECMWF six-hourly, daily or monthly data.
 
         Parameters
         ----------
-        var: [str]
-            variable name
+        var_info: [str]
+            variable detailed information
+            >>> {
+            >>>     'descriptions': 'Evaporation [m of water]',
+            >>>     'units': 'mm',
+            >>>     'types': 'flux',
+            >>>     'temporal resolution': ['six hours', 'daily', 'monthly'],
+            >>>     'file name': 'Evaporation',
+            >>>     'download type': 2,
+            >>>     'number_para': 182,
+            >>>     'var_name': 'e',
+            >>>     'factors_add': 0,
+            >>>     'factors_mul': 1000
+            >>> }
         dataset: [str]
             Default is "interm"
         progress_bar: [bool]
             True if you want to display a progress bar.
         """
         # Load factors / unit / type of variables / accounts
-        VarInfo = Variables(self.time)
-        var_info = VarInfo.catalog.get(var)
+
         # Create Out directory
-        out_dir = f"{self.path}, {self.time}, {VarInfo.catalog.get('file name')}"
+        out_dir = f"{self.path}/{self.time}/{var_info.get('file name')}"
 
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)
 
+        # trigger the request to the server
+        self.api(var_info, dataset)
+        # process the downloaded data
+        self.post_download(var_info, out_dir, dataset, progress_bar)
+
+
+
+    def api(self, var_info, dataset):
+        """form the request url abd trigger the request
+
+        Parameters
+        ----------
+        dataset: [str]
+            dataset name
+        var_info: [str]
+            variable detailed information
+            >>> {
+            >>>     'descriptions': 'Evaporation [m of water]',
+            >>>     'units': 'mm',
+            >>>     'types': 'flux',
+            >>>     'temporal resolution': ['six hours', 'daily', 'monthly'],
+            >>>     'file name': 'Evaporation',
+            >>>     'download type': 2,
+            >>>     'number_para': 182,
+            >>>     'var_name': 'e',
+            >>>     'factors_add': 0,
+            >>>     'factors_mul': 1000
+            >>> }
+        """
         download_type = var_info.get("download type")
         # https://www.ecmwf.int/en/computing/software/ecmwf-web-api
         stream = "oper"  # https://apps.ecmwf.int/codes/grib/format/mars/stream/
@@ -182,7 +239,7 @@ class ECMWF:
 
         # Download data by using the ECMWF API
         logger.info("Use API ECMWF to collect the data, please wait")
-        ECMWF.API(
+        self.call_api(
             self.path,
             download_type,
             stream,
@@ -198,6 +255,92 @@ class ECMWF:
             dataset=dataset,
         )
 
+
+    @staticmethod
+    def call_api(
+        output_folder: str,
+        download_type: str,
+        stream: str,
+        levtype: str,
+        param: str,
+        step: str,
+        grid: str,
+        time_str: str,
+        date_str: str,
+        type_str: str,
+        class_str: str,
+        area_str: str,
+        dataset: str = "interim",
+    ):
+
+        os.chdir(output_folder)
+        server = ECMWFDataServer()
+        # url = os.environ['ECMWF_API_URL'],
+        # key = os.environ['ECMWF_API_KEY'],
+        # email = os.environ['ECMWF_API_EMAIL'],
+        if download_type == 1 or download_type == 2:
+            server.retrieve(
+                {
+                    "stream": stream,
+                    "levtype": levtype,
+                    "param": param,
+                    "dataset": dataset,
+                    "step": step,
+                    "grid": grid,
+                    "time": time_str,
+                    "date": date_str,
+                    "type": type_str,  # http://apps.ecmwf.int/codes/grib/format/mars/type/
+                    "class": class_str,  # http://apps.ecmwf.int/codes/grib/format/mars/class/
+                    "area": area_str,
+                    "format": "netcdf",
+                    "target": f"data_{dataset}.nc",
+                }
+            )
+
+        if download_type == 3:
+            server.retrieve(
+                {
+                    "levelist": "1000",
+                    "stream": stream,
+                    "levtype": levtype,
+                    "param": param,
+                    "dataset": dataset,
+                    "step": step,
+                    "grid": grid,
+                    "time": time_str,
+                    "date": date_str,
+                    "type": type_str,  # http://apps.ecmwf.int/codes/grib/format/mars/type/
+                    "class": class_str,  # http://apps.ecmwf.int/codes/grib/format/mars/class/
+                    "area": area_str,
+                    "format": "netcdf",
+                    "target": f"data_{dataset}.nc",
+                }
+            )
+
+    def post_download(self, var_info: Dict[str, str], out_dir, dataset: str, progress_bar: bool=True):
+        """ clip the downloaded data to the extent we want
+
+        Parameters
+        ----------
+        var_info: [str]
+            variable detailed information
+            >>> {
+            >>>     'descriptions': 'Evaporation [m of water]',
+            >>>     'units': 'mm',
+            >>>     'types': 'flux',
+            >>>     'temporal resolution': ['six hours', 'daily', 'monthly'],
+            >>>     'file name': 'Evaporation',
+            >>>     'download type': 2,
+            >>>     'number_para': 182,
+            >>>     'var_name': 'e',
+            >>>     'factors_add': 0,
+            >>>     'factors_mul': 1000
+            >>> }
+        dataset: [str]
+            dataset name. Default is interm
+        progress_bar: [bool]
+            True to display a progress bar
+        """
         # Open the downloaded data
         NC_filename = os.path.join(self.path, f"data_{dataset}.nc")
         fh = Dataset(NC_filename, mode="r")
@@ -289,96 +432,20 @@ class ECMWF:
 
         fh.close()
 
-    @staticmethod
-    def API(
-        output_folder: str,
-        download_type: str,
-        stream: str,
-        levtype: str,
-        param: str,
-        step: str,
-        grid: str,
-        time_str: str,
-        date_str: str,
-        type_str: str,
-        class_str: str,
-        area_str: str,
-        dataset: str = "interim",
-    ):
+class Catalog:
+    """This class contains the information about the ECMWF variables
+    http://rda.ucar.edu/cgi-bin/transform?xml=/metadata/ParameterTables/WMO_GRIB1.98-0.128.xml&view=gribdoc.
+    """
 
-        os.chdir(output_folder)
-        server = ECMWFDataServer()
-        # url = os.environ['ECMWF_API_URL'],
-        # key = os.environ['ECMWF_API_KEY'],
-        # email = os.environ['ECMWF_API_EMAIL'],
-        if download_type == 1 or download_type == 2:
-            server.retrieve(
-                {
-                    "stream": stream,
-                    "levtype": levtype,
-                    "param": param,
-                    "dataset": dataset,
-                    "step": step,
-                    "grid": grid,
-                    "time": time_str,
-                    "date": date_str,
-                    "type": type_str,  # http://apps.ecmwf.int/codes/grib/format/mars/type/
-                    "class": class_str,  # http://apps.ecmwf.int/codes/grib/format/mars/class/
-                    "area": area_str,
-                    "format": "netcdf",
-                    "target": f"data_{dataset}.nc",
-                }
-            )
+    def __init__(self, version: int = 1):
+        # get the catalog
+        with open(f"{__path__[0]}/ecmwf_data_catalog.yaml", "r") as stream:
+            catalog = yaml.safe_load(stream)
 
-        if download_type == 3:
-            server.retrieve(
-                {
-                    "levelist": "1000",
-                    "stream": stream,
-                    "levtype": levtype,
-                    "param": param,
-                    "dataset": dataset,
-                    "step": step,
-                    "grid": grid,
-                    "time": time_str,
-                    "date": date_str,
-                    "type": type_str,  # http://apps.ecmwf.int/codes/grib/format/mars/type/
-                    "class": class_str,  # http://apps.ecmwf.int/codes/grib/format/mars/class/
-                    "area": area_str,
-                    "format": "netcdf",
-                    "target": f"data_{dataset}.nc",
-                }
-            )
+        self.catalog = catalog
 
-
-class Variables:
-    """This class contains the information about the ECMWF variables http://rda.ucar.edu/cgi-bin/transform?xml=/metadata/ParameterTables/WMO_GRIB1.98-0.128.xml&view=gribdoc."""
-
-    with open(f"{__path__[0]}/ecmwf_data_catalog.yaml", "r") as stream:
-        catalog = yaml.safe_load(stream)
-
-    def __init__(self, step, version: int = 1):
         self.version = version
 
-    # def __str__(self):
-    #     print(
-    #         f"Variable name:\n {self.var_name}\nDescriptions\n{self.descriptions}\nUnits : \n{self.units}"
-    #     )
-
-    def ListAttributes(self):
-        """Print Attributes List."""
-        print("\n")
-        print(
-            f"Attributes List of: {repr(self.__dict__['name'])} - {self.__class__.__name__} Instance\n"
-        )
-        self_keys = list(self.__dict__.keys())
-        self_keys.sort()
-        for key in self_keys:
-            if key != "name":
-                print(str(key) + " : " + repr(self.__dict__[key]))
-
-        print("\n")
-
-
-# class MSWEP():
-"http://www.gloh2o.org/mswx/"
+    def get_variable(self, var_name):
+        """retrieve a variable form the datasource catalog"""
+        return self.catalog.get(var_name)

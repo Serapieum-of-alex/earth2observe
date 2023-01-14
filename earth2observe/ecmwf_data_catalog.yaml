@@ -5,6 +5,7 @@ version: 1
 # available datasets
 #https://confluence.ecmwf.int/display/WEBAPI/Available+ECMWF+Public+Datasets
 datasets: [cams_gfas, cams_nrealtime, cera20c, cera_sat, era15, era20c, era20cm, era20cmv0, era40, geff_reanalysis, icoads, interim, interim_land, ispd, macc, macc_nrealtime, s2s, tigge, uerra, yopp, yotc]
+variables: [T, 2T, SRO, SSRO, WIND, 10SI, SP, Q, SSR, R, E, SUND, RO, TP, 10U, 10V, 2D, SR, AL, HCC]
 
 T:
   descriptions: Temperature [K]
