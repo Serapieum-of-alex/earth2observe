@@ -23,6 +23,12 @@ class DataSource(ABC):
         """send/recieve request to the dataset server"""
         pass
 
+
+    @abstractmethod
+    def initialize(self):
+        """Initialize connection with the data source server"""
+        pass
+
     @abstractmethod
     def create_grid(self):
         """create a grid from the lat/lon boundaries"""
