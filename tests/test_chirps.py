@@ -35,10 +35,10 @@ def test_download(
         test_download_chirps: CHIRPS,
         chirps_base_dir: str,
 ):
+    fname = test_download_chirps.clipped_fname
     test_download_chirps.download()
-    print(os.listdir(os.path.join(f"{chirps_base_dir}/precipitation/chirps/daily")))
-    filelist = glob.glob(os.path.join(f"{chirps_base_dir}/precipitation/chirps/daily", "chirps*.tif"))
 
+    filelist = glob.glob(os.path.join(f"{chirps_base_dir}/precipitation/chirps/daily", f"{fname}*.tif"))
     assert len(filelist) == 10
     # delete the files
     # [os.remove(i) for i in filelist]

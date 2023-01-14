@@ -21,6 +21,8 @@ class CHIRPS(DataSource):
     temporal_resolution = ["daily", "monthly"]
     lat_bondaries = [-50, 50]
     lon_boundaries = [-180, 180]
+    globe_fname = "chirps-v2.0"
+    clipped_fname = "P_CHIRPS.v2.0"
 
     def __init__(
             self,
@@ -203,36 +205,36 @@ class CHIRPS(DataSource):
         args: [list]
 
         """
-        [output_folder, TimeCase, xID, yID, lon_lim, latlim] = args
+        [output_folder, temp_resolution, xID, yID, lon_lim, latlim] = args
 
         # Define FTP path to directory
-        if TimeCase.lower() == "daily":
+        if temp_resolution.lower() == "daily":
             pathFTP = f"pub/org/chg/products/CHIRPS-2.0/global_daily/tifs/p05/{date.strftime('%Y')}/"
-        elif TimeCase == "monthly":
+        elif temp_resolution == "monthly":
             pathFTP = "pub/org/chg/products/CHIRPS-2.0/global_monthly/tifs/"
         else:
             raise KeyError("The input temporal_resolution interval is not supported")
 
         # create all the input name (filename) and output (outfilename, filetif, DiFileEnd) names
-        if TimeCase.lower() == "daily":
-            filename = f"chirps-v2.0.{date.strftime('%Y')}.{date.strftime('%m')}.{date.strftime('%d')}.tif.gz"
+        if temp_resolution.lower() == "daily":
+            filename = f"{self.globe_fname}.{date.strftime('%Y')}.{date.strftime('%m')}.{date.strftime('%d')}.tif.gz"
             outfilename = os.path.join(
                 output_folder,
-                f"chirps-v2.0.{date.strftime('%Y')}.{date.strftime('%m')}.{date.strftime('%d')}.tif"
+                f"{self.globe_fname}.{date.strftime('%Y')}.{date.strftime('%m')}.{date.strftime('%d')}.tif"
             )
             DirFileEnd = os.path.join(
                 output_folder,
-                f"P_CHIRPS.v2.0_mm-day-1_daily_{date.strftime('%Y')}.{date.strftime('%m')}.{date.strftime('%d')}.tif"
+                f"{self.clipped_fname}_mm-day-1_daily_{date.strftime('%Y')}.{date.strftime('%m')}.{date.strftime('%d')}.tif"
             )
-        elif TimeCase == "monthly":
-            filename = f"chirps-v2.0.{date.strftime('%Y')}.{date.strftime('%m')}.tif.gz"
+        elif temp_resolution == "monthly":
+            filename = f"{self.globe_fname}.{date.strftime('%Y')}.{date.strftime('%m')}.tif.gz"
             outfilename = os.path.join(
                 output_folder,
-                f"chirps-v2.0.{date.strftime('%Y')}.{date.strftime('%m')}.tif"
+                f"{self.globe_fname}.{date.strftime('%Y')}.{date.strftime('%m')}.tif"
             )
             DirFileEnd = os.path.join(
                 output_folder,
-                f"P_CHIRPS.v2.0_mm-month-1_monthly_{date.strftime('%Y')}.{date.strftime('%m')}.{date.strftime('%d')}.tif"
+                f"{self.clipped_fname}_mm-month-1_monthly_{date.strftime('%Y')}.{date.strftime('%m')}.{date.strftime('%d')}.tif"
             )
         else:
             raise KeyError("The input temporal_resolution interval is not supported")
