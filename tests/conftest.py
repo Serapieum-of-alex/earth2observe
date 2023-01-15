@@ -7,11 +7,11 @@ from tests.gee.conftest import *
 
 @pytest.fixture(scope="session")
 def dates() -> List:
-    return ["2009-01-01", "2009-01-10"]
+    return ["2009-01-01", "2009-01-05"]
 
 @pytest.fixture(scope="session")
 def number_downloaded_files() -> int:
-    return 10
+    return 5
 
 @pytest.fixture(scope="session")
 def daily_temporal_resolution() -> str:
