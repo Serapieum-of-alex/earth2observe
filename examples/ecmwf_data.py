@@ -31,11 +31,11 @@ lonlim = [-75.65, -74.73]
 # Temperature, Evapotranspiration
 variables = ["E"]  # "T",
 
-Coello = ECMWF(time=time, start=start, end=end, path=path, variables=variables, lat_lim=latlim, lon_lim=lonlim)
+Coello = ECMWF(temporal_resolution=time, start=start, end=end, path=path, variables=variables, lat_lim=latlim, lon_lim=lonlim)
 
 Coello.download(dataset="interim")
 #%%
 variables = ["SRO"]
-Coello = ECMWF(time=time, start=start, end=end, path=path, variables=variables, lat_lim=latlim, lon_lim=lonlim)
+Coello = ECMWF(temporal_resolution=time, start=start, end=end, path=path, variables=variables, lat_lim=latlim, lon_lim=lonlim)
 
 Coello.download()
