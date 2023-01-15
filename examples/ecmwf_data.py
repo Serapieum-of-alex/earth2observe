@@ -38,7 +38,7 @@ Coello = ECMWF(
     path=path,
     variables=variables,
     lat_lim=latlim,
-    lon_lim=lonlim
+    lon_lim=lonlim,
 )
 
 Coello.download(dataset="interim")
@@ -51,7 +51,7 @@ Coello = ECMWF(
     path=path,
     variables=variables,
     lat_lim=latlim,
-    lon_lim=lonlim
+    lon_lim=lonlim,
 )
 
 Coello.download()

@@ -16,7 +16,7 @@ e2o = Earth2Observe(
     lat_lim=latlim,
     lon_lim=lonlim,
     temporal_resolution=temporal_resolution,
-    path=path
+    path=path,
 )
 # e2o.download()
 #%%
@@ -30,7 +30,7 @@ e2o = Earth2Observe(
     lat_lim=latlim,
     lon_lim=lonlim,
     temporal_resolution=temporal_resolution,
-    path=path
+    path=path,
 )
 # e2o.download(cores=4)
 #%%
@@ -46,6 +46,6 @@ e2o = Earth2Observe(
     lat_lim=latlim,
     lon_lim=lonlim,
     temporal_resolution=temporal_resolution,
-    path=path
+    path=path,
 )
 e2o.download()
