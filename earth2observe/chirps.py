@@ -1,8 +1,7 @@
-from typing import List
 import datetime as dt
 import os
-from pathlib import Path
 from ftplib import FTP
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -10,12 +9,14 @@ from joblib import Parallel, delayed
 from osgeo import gdal
 from pyramids.raster import Raster
 from pyramids.utils import extractFromGZ
-from earth2observe.abstractdatasource import AbstractDataSource, AbstractCatalog
+
+from earth2observe.abstractdatasource import AbstractCatalog, AbstractDataSource
 from earth2observe.utils import print_progress_bar
 
 
 class CHIRPS(AbstractDataSource):
     """CHIRPS."""
+
     api_url: str = "data.chc.ucsb.edu"
     start_date: str = "1981-01-01"
     end_date: str = "Now"
@@ -26,15 +27,15 @@ class CHIRPS(AbstractDataSource):
     clipped_fname = "P_CHIRPS.v2.0"
 
     def __init__(
-            self,
-            temporal_resolution: str = "daily",
-            start: str = None,
-            end: str = None,
-            path: str = "",
-            variables: list = None,
-            lat_lim: list = None,
-            lon_lim: list = None,
-            fmt: str = "%Y-%m-%d",
+        self,
+        temporal_resolution: str = "daily",
+        start: str = None,
+        end: str = None,
+        path: str = "",
+        variables: list = None,
+        lat_lim: list = None,
+        lon_lim: list = None,
+        fmt: str = "%Y-%m-%d",
     ):
         """CHIRPS.
 
@@ -66,16 +67,18 @@ class CHIRPS(AbstractDataSource):
             lon_lim=lon_lim,
             fmt=fmt,
         )
-        self.output_folder = os.path.join(Path(path).absolute(), "chirps", "precipitation")
+        self.output_folder = os.path.join(
+            Path(path).absolute(), "chirps", "precipitation"
+        )
 
         # make directory if it not exists
         if not os.path.exists(self.output_folder):
             os.makedirs(self.output_folder)
 
-
-
-    def check_input_dates(self, start: str, end: str, temporal_resolution: str, fmt: str):
-        """check validity of input dates
+    def check_input_dates(
+        self, start: str, end: str, temporal_resolution: str, fmt: str
+    ):
+        """check validity of input dates.
 
         Parameters
         ----------
@@ -115,12 +118,12 @@ class CHIRPS(AbstractDataSource):
         self.dates = pd.date_range(self.start, self.end, freq=self.time_freq)
 
     def initialize(self):
-        """Initialize FTP server"""
+        """Initialize FTP server."""
         print("FTP server datasources does not need server initialization")
         pass
 
     def create_grid(self, lat_lim: list, lon_lim: list):
-        """Create_grid
+        """Create_grid.
 
             create grid from the lat/lon boundaries
 
@@ -165,7 +168,6 @@ class CHIRPS(AbstractDataSource):
                 [np.floor((lon_lim[0] + 180) * 20), np.ceil((lon_lim[1] + 180) * 20)]
             )
         )
-
 
     def download(self, progress_bar: bool = True, cores=None, *args, **kwargs):
         """Download.
@@ -228,14 +230,13 @@ class CHIRPS(AbstractDataSource):
         return results
 
     def API(self, date, args):
-        """form the request url abd trigger the request
+        """form the request url abd trigger the request.
 
         Parameters
         ----------
         date:
 
         args: [list]
-
         """
         [output_folder, temp_resolution, xID, yID, lon_lim, latlim] = args
 
@@ -252,28 +253,31 @@ class CHIRPS(AbstractDataSource):
             filename = f"{self.globe_fname}.{date.strftime('%Y')}.{date.strftime('%m')}.{date.strftime('%d')}.tif.gz"
             outfilename = os.path.join(
                 output_folder,
-                f"{self.globe_fname}.{date.strftime('%Y')}.{date.strftime('%m')}.{date.strftime('%d')}.tif"
+                f"{self.globe_fname}.{date.strftime('%Y')}.{date.strftime('%m')}.{date.strftime('%d')}.tif",
             )
             DirFileEnd = os.path.join(
                 output_folder,
-                f"{self.clipped_fname}_mm-day-1_daily_{date.strftime('%Y')}.{date.strftime('%m')}.{date.strftime('%d')}.tif"
+                f"{self.clipped_fname}_mm-day-1_daily_{date.strftime('%Y')}.{date.strftime('%m')}.{date.strftime('%d')}.tif",
             )
         elif temp_resolution == "monthly":
-            filename = f"{self.globe_fname}.{date.strftime('%Y')}.{date.strftime('%m')}.tif.gz"
+            filename = (
+                f"{self.globe_fname}.{date.strftime('%Y')}.{date.strftime('%m')}.tif.gz"
+            )
             outfilename = os.path.join(
                 output_folder,
-                f"{self.globe_fname}.{date.strftime('%Y')}.{date.strftime('%m')}.tif"
+                f"{self.globe_fname}.{date.strftime('%Y')}.{date.strftime('%m')}.tif",
             )
             DirFileEnd = os.path.join(
                 output_folder,
-                f"{self.clipped_fname}_mm-month-1_monthly_{date.strftime('%Y')}.{date.strftime('%m')}.{date.strftime('%d')}.tif"
+                f"{self.clipped_fname}_mm-month-1_monthly_{date.strftime('%Y')}.{date.strftime('%m')}.{date.strftime('%d')}.tif",
             )
         else:
             raise KeyError("The input temporal_resolution interval is not supported")
 
         self.callAPI(pathFTP, output_folder, filename)
-        self.post_download(output_folder, filename, lon_lim, latlim, xID, yID, outfilename, DirFileEnd)
-
+        self.post_download(
+            output_folder, filename, lon_lim, latlim, xID, yID, outfilename, DirFileEnd
+        )
 
     @staticmethod
     def callAPI(pathFTP: str, output_folder: str, filename: str):
@@ -314,9 +318,18 @@ class CHIRPS(AbstractDataSource):
         ftp.retrbinary("RETR " + filename, lf.write, 8192)
         lf.close()
 
-
-    def post_download(self, output_folder, filename, lon_lim, latlim, xID, yID, outfilename, DirFileEnd):
-        """clip the downloaded data to the extent we want
+    def post_download(
+        self,
+        output_folder,
+        filename,
+        lon_lim,
+        latlim,
+        xID,
+        yID,
+        outfilename,
+        DirFileEnd,
+    ):
+        """clip the downloaded data to the extent we want.
 
         Parameters
         ----------
@@ -379,14 +392,15 @@ class CHIRPS(AbstractDataSource):
 
         print("\n")
 
+
 class Catalog(AbstractCatalog):
-    """ CHIRPS data catalog"""
+    """CHIRPS data catalog."""
 
     def __init__(self):
         self.catalog = self.get_catalog()
 
     def get_catalog(self):
-        """return the catalog"""
+        """return the catalog."""
         return {
             "Precipitation": {
                 "descriptions": "rainfall [mm/temporal_resolution step]",
@@ -394,9 +408,9 @@ class Catalog(AbstractCatalog):
                 "temporal resolution": ["daily", "monthly"],
                 "file name": "rainfall",
                 "var_name": "R",
-                }
+            }
         }
 
     def get_variable(self, var_name):
-        """get the details of a specific variable"""
+        """get the details of a specific variable."""
         return self.catalog.get(var_name)

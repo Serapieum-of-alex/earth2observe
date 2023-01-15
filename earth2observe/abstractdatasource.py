@@ -1,21 +1,20 @@
-from typing import Dict
 from abc import ABC, abstractmethod
+from typing import Dict
 
 
 class AbstractDataSource(ABC):
-    """
-    Bluebrint for all class for different datasources
-    """
+    """Bluebrint for all class for different datasources."""
+
     def __init__(
-            self,
-            start: str = None,
-            end: str = None,
-            variables: list = None,
-            temporal_resolution: str = "daily",
-            lat_lim: list = None,
-            lon_lim: list = None,
-            fmt: str = "%Y-%m-%d",
-            # path: str = "",
+        self,
+        start: str = None,
+        end: str = None,
+        variables: list = None,
+        temporal_resolution: str = "daily",
+        lat_lim: list = None,
+        lon_lim: list = None,
+        fmt: str = "%Y-%m-%d",
+        # path: str = "",
     ):
         """
 
@@ -50,7 +49,7 @@ class AbstractDataSource(ABC):
 
     @abstractmethod
     def check_input_dates(self):
-        """Check validity of input dates"""
+        """Check validity of input dates."""
         pass
 
     @abstractmethod
@@ -60,7 +59,7 @@ class AbstractDataSource(ABC):
 
     @abstractmethod
     def create_grid(self):
-        """create a grid from the lat/lon boundaries"""
+        """create a grid from the lat/lon boundaries."""
         pass
 
     @abstractmethod
@@ -70,29 +69,27 @@ class AbstractDataSource(ABC):
         # list of dates
         pass
 
-
     # @abstractmethod
     def downloadDataset(self):
-        """Download single variable/dataset"""
+        """Download single variable/dataset."""
         # used for non ftp servers
         pass
 
     @abstractmethod
     def API(self):
-        """send/recieve request to the dataset server"""
+        """send/recieve request to the dataset server."""
         pass
 
 
-
 class AbstractCatalog(ABC):
-    """abstrach class for the datasource catalog"""
+    """abstrach class for the datasource catalog."""
 
     @abstractmethod
     def get_catalog(self):
-        """read the catalog of the datasource from disk or retrieve it from server"""
+        """read the catalog of the datasource from disk or retrieve it from server."""
         pass
 
     @abstractmethod
     def get_variable(self, var_name) -> Dict[str, str]:
-        """get the details of a specific variable"""
+        """get the details of a specific variable."""
         pass

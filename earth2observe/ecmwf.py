@@ -5,27 +5,31 @@
 import calendar
 import datetime as dt
 import os
+from pathlib import Path
 from typing import Dict
-from loguru import logger
-import yaml
+
 import numpy as np
 import pandas as pd
-from pathlib import Path
+import yaml
 from ecmwfapi import ECMWFDataServer
+from loguru import logger
 from netCDF4 import Dataset
-
 from pyramids.raster import Raster
+
 from earth2observe import __path__
+from earth2observe.abstractdatasource import AbstractCatalog, AbstractDataSource
 from earth2observe.utils import print_progress_bar
-from earth2observe.abstractdatasource import AbstractDataSource, AbstractCatalog
+
 
 class ECMWF(AbstractDataSource):
     """RemoteSensing.
 
     RemoteSensing class contains methods to download ECMWF data
     """
+
     temporal_resolution = ["daily", "monthly"]
     spatial_resolution = 0.125
+
     def __init__(
         self,
         temporal_resolution: str = "daily",
@@ -69,9 +73,10 @@ class ECMWF(AbstractDataSource):
         )
         self.path = Path(path).absolute()
 
-
-    def check_input_dates(self, start: str, end: str, temporal_resolution: str, fmt: str):
-        """check validity of input dates
+    def check_input_dates(
+        self, start: str, end: str, temporal_resolution: str, fmt: str
+    ):
+        """check validity of input dates.
 
         Parameters
         ----------
@@ -98,22 +103,22 @@ class ECMWF(AbstractDataSource):
 
         self.date_str = f"{self.start}/to/{self.end}"
 
-
     def initialize(self):
-        """Initialize connection with ECMWF server"""
+        """Initialize connection with ECMWF server."""
         try:
-            url = os.environ['ECMWF_API_URL']
-            key = os.environ['ECMWF_API_KEY']
-            email = os.environ['ECMWF_API_EMAIL']
+            url = os.environ["ECMWF_API_URL"]
+            key = os.environ["ECMWF_API_KEY"]
+            email = os.environ["ECMWF_API_EMAIL"]
         except KeyError:
-            raise AuthenticationError(f"Please define the following environment variables to successfully establish a "
-                                      f"connection with ecmwf server ECMWF_API_URL, ECMWF_API_KEY, ECMWF_API_EMAIL")
+            raise AuthenticationError(
+                "Please define the following environment variables to successfully establish a "
+                "connection with ecmwf server ECMWF_API_URL, ECMWF_API_KEY, ECMWF_API_EMAIL"
+            )
 
         self.server = ECMWFDataServer(url=url, key=key, email=email)
 
-
     def create_grid(self, lat_lim: list, lon_lim: list):
-        """Create_grid
+        """Create_grid.
 
             create grid from the lat/lon boundaries
 
@@ -135,8 +140,9 @@ class ECMWF(AbstractDataSource):
         lonlim_corr_two = np.ceil(lon_lim[1] / cell_size) * cell_size
         self.lonlim_corr = [lonlim_corr_one, lonlim_corr_two]
 
-
-    def download(self, dataset: str = "interim", progress_bar: bool = True, *args, **kwargs):
+    def download(
+        self, dataset: str = "interim", progress_bar: bool = True, *args, **kwargs
+    ):
         """Download wrapper over all given variables.
 
         ECMWF method downloads ECMWF daily data for a given variable, temporal_resolution
@@ -171,7 +177,10 @@ class ECMWF(AbstractDataSource):
         os.remove(del_ecmwf_dataset)
 
     def downloadDataset(
-        self, var_info: Dict[str, str], dataset: str = "interim", progress_bar: bool = True
+        self,
+        var_info: Dict[str, str],
+        dataset: str = "interim",
+        progress_bar: bool = True,
     ):
         """Download a climate variable.
 
@@ -209,10 +218,8 @@ class ECMWF(AbstractDataSource):
         # process the downloaded data
         self.post_download(var_info, out_dir, dataset, progress_bar)
 
-
-
     def API(self, var_info, dataset):
-        """form the request url abd trigger the request
+        """form the request url abd trigger the request.
 
         Parameters
         ----------
@@ -288,23 +295,22 @@ class ECMWF(AbstractDataSource):
             dataset=dataset,
         )
 
-
     @staticmethod
     def callAPI(
-            server,
-            output_folder: str,
-            download_type: str,
-            stream: str,
-            levtype: str,
-            param: str,
-            step: str,
-            grid: str,
-            time_str: str,
-            date_str: str,
-            type_str: str,
-            class_str: str,
-            area_str: str,
-            dataset: str = "interim",
+        server,
+        output_folder: str,
+        download_type: str,
+        stream: str,
+        levtype: str,
+        param: str,
+        step: str,
+        grid: str,
+        time_str: str,
+        date_str: str,
+        type_str: str,
+        class_str: str,
+        area_str: str,
+        dataset: str = "interim",
     ):
         """send the request to the server.
 
@@ -367,8 +373,10 @@ class ECMWF(AbstractDataSource):
                 }
             )
 
-    def post_download(self, var_info: Dict[str, str], out_dir, dataset: str, progress_bar: bool=True):
-        """ clip the downloaded data to the extent we want
+    def post_download(
+        self, var_info: Dict[str, str], out_dir, dataset: str, progress_bar: bool = True
+    ):
+        """clip the downloaded data to the extent we want.
 
         Parameters
         ----------
@@ -412,7 +420,16 @@ class ECMWF(AbstractDataSource):
         # Define the georeference information
         geo_four = np.nanmax(lats)
         geo_one = np.nanmin(lons)
-        geo = tuple([geo_one, self.spatial_resolution, 0.0, geo_four, 0.0, -1 * self.spatial_resolution])
+        geo = tuple(
+            [
+                geo_one,
+                self.spatial_resolution,
+                0.0,
+                geo_four,
+                0.0,
+                -1 * self.spatial_resolution,
+            ]
+        )
 
         # Create Waitbar
         if progress_bar:
@@ -484,27 +501,27 @@ class ECMWF(AbstractDataSource):
 
         fh.close()
 
+
 class Catalog(AbstractCatalog):
-    """ECMWF data catalog
-    This class contains the information about the ECMWF variables
-    http://rda.ucar.edu/cgi-bin/transform?xml=/metadata/ParameterTables/WMO_GRIB1.98-0.128.xml&view=gribdoc.
-    """
+    """ECMWF data catalog This class contains the information about the ECMWF variables http://rda.ucar.edu/cgi-bin/transform?xml=/metadata/ParameterTables/WMO_GRIB1.98-0.128.xml&view=gribdoc."""
+
     def __init__(self, version: int = 1):
         # get the catalog
         self.catalog = self.get_catalog()
         self.version = version
 
-
     def get_catalog(self):
-        """readthe data catalog from disk"""
+        """readthe data catalog from disk."""
         with open(f"{__path__[0]}/ecmwf_data_catalog.yaml", "r") as stream:
             catalog = yaml.safe_load(stream)
         return catalog
 
     def get_variable(self, var_name):
-        """retrieve a variable form the datasource catalog"""
+        """retrieve a variable form the datasource catalog."""
         return self.catalog.get(var_name)
 
+
 class AuthenticationError(Exception):
-    """Failed to establish connection with ECMWF server"""
+    """Failed to establish connection with ECMWF server."""
+
     pass
