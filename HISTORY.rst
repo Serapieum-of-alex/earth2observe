@@ -18,3 +18,11 @@ History
 
 * fix pypi package names in the requirements.txt file
 * fix python version in requirement.txt
+
+0.2.0 (2023-01-15)
+------------------
+
+* bump up numpy and pyramids versions
+* create an abstract class for datasource and catalog as a bluebrint for all data sources
+* test all classes in CI
+* use pathlib to deal with paths

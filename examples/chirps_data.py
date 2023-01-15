@@ -9,14 +9,14 @@ lonlim = [-75.65, -74.73]
 
 path = r"examples\data\chirps"
 Coello = CHIRPS(
-    time=time,
     start=start,
     end=end,
     lat_lim=latlim,
     lon_lim=lonlim,
+    temporal_resolution=time,
     path=path,
 )
 #%%
-# Coello.Download()  # cores=4
+Coello.download()  # cores=4
 #%%
-Coello.Download(cores=4)
+# Coello.download(cores=4)
