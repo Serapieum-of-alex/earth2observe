@@ -61,7 +61,7 @@ pip install git+https://github.com/MAfarrag/earthobserve
 ## pip
 to install the last release you can easly use pip
 ```
-pip install earthobserve==0.1.7
+pip install earthobserve==0.2.0
 ```
 
 Quick start
