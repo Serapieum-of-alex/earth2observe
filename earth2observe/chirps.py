@@ -1,6 +1,7 @@
 from typing import List
 import datetime as dt
 import os
+from pathlib import Path
 from ftplib import FTP
 
 import numpy as np
@@ -30,6 +31,7 @@ class CHIRPS(AbstractDataSource):
             start: str = None,
             end: str = None,
             path: str = "",
+            variables: list = None,
             lat_lim: list = None,
             lon_lim: list = None,
             fmt: str = "%Y-%m-%d",
@@ -58,16 +60,18 @@ class CHIRPS(AbstractDataSource):
         super().__init__(
             start=start,
             end=end,
+            variables=variables,
             temporal_resolution=temporal_resolution,
             lat_lim=lat_lim,
             lon_lim=lon_lim,
             fmt=fmt,
         )
-        self.output_folder = os.path.join(path, "chirps", "precipitation")
+        self.output_folder = os.path.join(Path(path).absolute(), "chirps", "precipitation")
 
         # make directory if it not exists
         if not os.path.exists(self.output_folder):
             os.makedirs(self.output_folder)
+
 
 
     def check_input_dates(self, start: str, end: str, temporal_resolution: str, fmt: str):
@@ -163,7 +167,7 @@ class CHIRPS(AbstractDataSource):
         )
 
 
-    def download(self, progress_bar: bool = True, cores=None):
+    def download(self, progress_bar: bool = True, cores=None, *args, **kwargs):
         """Download.
 
             downloads CHIRPS data
@@ -206,6 +210,7 @@ class CHIRPS(AbstractDataSource):
 
             for date in self.dates:
                 self.API(date, args)
+
                 if progress_bar:
                     amount = amount + 1
                     print_progress_bar(

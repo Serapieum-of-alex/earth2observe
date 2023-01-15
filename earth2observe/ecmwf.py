@@ -6,14 +6,15 @@ import calendar
 import datetime as dt
 import os
 from typing import Dict
+from loguru import logger
+import yaml
 import numpy as np
 import pandas as pd
-import yaml
+from pathlib import Path
 from ecmwfapi import ECMWFDataServer
-from loguru import logger
 from netCDF4 import Dataset
-from pyramids.raster import Raster
 
+from pyramids.raster import Raster
 from earth2observe import __path__
 from earth2observe.utils import print_progress_bar
 from earth2observe.abstractdatasource import AbstractDataSource, AbstractCatalog
@@ -60,13 +61,13 @@ class ECMWF(AbstractDataSource):
         super().__init__(
             start=start,
             end=end,
+            variables=variables,
             temporal_resolution=temporal_resolution,
             lat_lim=lat_lim,
             lon_lim=lon_lim,
             fmt=fmt,
         )
-        self.path = path
-        self.vars = variables
+        self.path = Path(path).absolute()
 
 
     def check_input_dates(self, start: str, end: str, temporal_resolution: str, fmt: str):
@@ -135,7 +136,7 @@ class ECMWF(AbstractDataSource):
         self.lonlim_corr = [lonlim_corr_one, lonlim_corr_two]
 
 
-    def download(self, dataset: str = "interim", progress_bar: bool = True):
+    def download(self, dataset: str = "interim", progress_bar: bool = True, *args, **kwargs):
         """Download wrapper over all given variables.
 
         ECMWF method downloads ECMWF daily data for a given variable, temporal_resolution
