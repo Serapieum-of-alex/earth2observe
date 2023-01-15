@@ -29,7 +29,7 @@ jobs:
             python -m pip install --upgrade pip
             pip install --no-cache-dir Cython
             pip install --find-links=https://girder.github.io/large_image_wheels --no-cache GDAL
-            
+
       - name: Test GDAL installation
         run: |
             python -c "from osgeo import gdal"

@@ -1,17 +1,20 @@
-import pytest
-import os
 import glob
+import os
 import shutil
 from typing import List
+
+import pytest
+
 from earth2observe.ecmwf import ECMWF
+
 
 @pytest.fixture(scope="session")
 def test_create_ecmwf_object(
-        dates: List,
-        lat_bounds: List,
-        lon_bounds: List,
-        ecmwf_base_dir: str,
-        ecmwf_variables: List[str],
+    dates: List,
+    lat_bounds: List,
+    lon_bounds: List,
+    ecmwf_base_dir: str,
+    ecmwf_variables: List[str],
 ):
     Coello = ECMWF(
         start=dates[0],
@@ -26,9 +29,9 @@ def test_create_ecmwf_object(
 
 
 def test_download(
-        test_create_ecmwf_object: ECMWF,
-        ecmwf_base_dir: str,
-        number_downloaded_files: int,
+    test_create_ecmwf_object: ECMWF,
+    ecmwf_base_dir: str,
+    number_downloaded_files: int,
 ):
     test_create_ecmwf_object.download()
     filelist = glob.glob(os.path.join(f"{ecmwf_base_dir}/daily/Evaporation/", f"*.tif"))

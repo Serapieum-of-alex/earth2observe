@@ -1,19 +1,21 @@
-import os
-from typing import List
 import glob
+import os
 import shutil
+from typing import List
+
 import pytest
+
 from earth2observe.chirps import CHIRPS
 
 
 @pytest.fixture(scope="session")
 def test_create_chirps_object(
-        dates: List,
-        daily_temporal_resolution: str,
-        chirps_variables: List[str],
-        lat_bounds: List,
-        lon_bounds: List,
-        chirps_base_dir: str,
+    dates: List,
+    daily_temporal_resolution: str,
+    chirps_variables: List[str],
+    lat_bounds: List,
+    lon_bounds: List,
+    chirps_base_dir: str,
 ):
     Coello = CHIRPS(
         start=dates[0],
@@ -22,7 +24,7 @@ def test_create_chirps_object(
         lon_lim=lon_bounds,
         variables=chirps_variables,
         temporal_resolution=daily_temporal_resolution,
-        path=chirps_base_dir
+        path=chirps_base_dir,
     )
     assert Coello.api_url == "data.chc.ucsb.edu"
     assert Coello.lon_boundaries == [-180, 180]
@@ -34,14 +36,16 @@ def test_create_chirps_object(
 
 
 def test_download(
-        test_create_chirps_object: CHIRPS,
-        chirps_base_dir: str,
-        number_downloaded_files: int,
+    test_create_chirps_object: CHIRPS,
+    chirps_base_dir: str,
+    number_downloaded_files: int,
 ):
     fname = test_create_chirps_object.clipped_fname
     test_create_chirps_object.download()
 
-    filelist = glob.glob(os.path.join(f"{chirps_base_dir}/chirps/precipitation", f"{fname}*.tif"))
+    filelist = glob.glob(
+        os.path.join(f"{chirps_base_dir}/chirps/precipitation", f"{fname}*.tif")
+    )
     assert len(filelist) == number_downloaded_files
     # delete the files
     shutil.rmtree(f"{chirps_base_dir}/chirps/precipitation")
