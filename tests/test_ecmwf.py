@@ -28,10 +28,10 @@ def test_create_ecmwf_object(
 def test_download(
         test_create_ecmwf_object: ECMWF,
         ecmwf_base_dir: str,
+        number_downloaded_files: int,
 ):
-
     test_create_ecmwf_object.download()
     filelist = glob.glob(os.path.join(f"{ecmwf_base_dir}/daily/Evaporation/", f"*.tif"))
-    assert len(filelist) == 10
+    assert len(filelist) == number_downloaded_files
     # delete the files
     shutil.rmtree(f"{ecmwf_base_dir}/daily")
