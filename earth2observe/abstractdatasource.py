@@ -8,14 +8,14 @@ class AbstractDataSource(ABC):
     """
     def __init__(
             self,
-            temporal_resolution: str = "daily",
             start: str = None,
             end: str = None,
-            # path: str = "",
-            # variables: list = None,
+            variables: list = None,
+            temporal_resolution: str = "daily",
             lat_lim: list = None,
             lon_lim: list = None,
             fmt: str = "%Y-%m-%d",
+            # path: str = "",
     ):
         """
 
@@ -41,32 +41,17 @@ class AbstractDataSource(ABC):
         # initialize connection with ecmwf server
         self.initialize()
         self.temporal_resolution = temporal_resolution
+        # TODO: create a function to check if the given variable exists in the catalog
+        self.vars = variables
 
         self.create_grid(lat_lim, lon_lim)
         self.check_input_dates(start, end, temporal_resolution, fmt)
         pass
 
-
     @abstractmethod
     def check_input_dates(self):
+        """Check validity of input dates"""
         pass
-
-    @abstractmethod
-    def download(self):
-        """Wrapper over all the given variables."""
-        pass
-
-
-    # @abstractmethod
-    def downloadDataset(self):
-        """Download single variable/dataset"""
-        pass
-
-    @abstractmethod
-    def API(self):
-        """send/recieve request to the dataset server"""
-        pass
-
 
     @abstractmethod
     def initialize(self):
@@ -77,6 +62,26 @@ class AbstractDataSource(ABC):
     def create_grid(self):
         """create a grid from the lat/lon boundaries"""
         pass
+
+    @abstractmethod
+    def download(self):
+        """Wrapper over all the given variables."""
+        # loop over dates if the downloaded rasters/netcdf are for a specific date out of the required
+        # list of dates
+        pass
+
+
+    # @abstractmethod
+    def downloadDataset(self):
+        """Download single variable/dataset"""
+        # used for non ftp servers
+        pass
+
+    @abstractmethod
+    def API(self):
+        """send/recieve request to the dataset server"""
+        pass
+
 
 
 class AbstractCatalog(ABC):
