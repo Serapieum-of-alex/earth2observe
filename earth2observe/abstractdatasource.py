@@ -11,8 +11,8 @@ class AbstractDataSource(ABC):
             temporal_resolution: str = "daily",
             start: str = None,
             end: str = None,
-            path: str = "",
-            variables: list = None,
+            # path: str = "",
+            # variables: list = None,
             lat_lim: list = None,
             lon_lim: list = None,
             fmt: str = "%Y-%m-%d",
@@ -38,6 +38,17 @@ class AbstractDataSource(ABC):
         fmt (str, optional):
             [description]. Defaults to "%Y-%m-%d".
         """
+        # initialize connection with ecmwf server
+        self.initialize()
+        self.temporal_resolution = temporal_resolution
+
+        self.create_grid(lat_lim, lon_lim)
+        self.check_input_dates(start, end, temporal_resolution, fmt)
+        pass
+
+
+    @abstractmethod
+    def check_input_dates(self):
         pass
 
     @abstractmethod

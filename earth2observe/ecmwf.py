@@ -57,9 +57,32 @@ class ECMWF(AbstractDataSource):
         fmt (str, optional):
             [description]. Defaults to "%Y-%m-%d".
         """
-        # initialize connection with ecmwf server
-        self.initialize()
+        super().__init__(
+            start=start,
+            end=end,
+            temporal_resolution=temporal_resolution,
+            lat_lim=lat_lim,
+            lon_lim=lon_lim,
+            fmt=fmt,
+        )
+        self.path = path
+        self.vars = variables
 
+
+    def check_input_dates(self, start: str, end: str, temporal_resolution: str, fmt: str):
+        """check validity of input dates
+
+        Parameters
+        ----------
+        temporal_resolution: (str, optional)
+            [description]. Defaults to 'daily'.
+        start: (str, optional)
+            [description]. Defaults to ''.
+        end: (str, optional)
+            [description]. Defaults to ''.
+        fmt: (str, optional)
+            [description]. Defaults to "%Y-%m-%d".
+        """
         self.start = dt.datetime.strptime(start, fmt)
         self.end = dt.datetime.strptime(end, fmt)
 
@@ -72,12 +95,8 @@ class ECMWF(AbstractDataSource):
         elif temporal_resolution == "monthly":
             self.dates = pd.date_range(self.start, self.end, freq="MS")
 
-        self.time = temporal_resolution
-        self.path = path
-        self.vars = variables
-
         self.date_str = f"{self.start}/to/{self.end}"
-        self.create_grid(lat_lim, lon_lim)
+
 
     def initialize(self):
         """Initialize connection with ECMWF server"""
@@ -178,10 +197,8 @@ class ECMWF(AbstractDataSource):
         progress_bar: [bool]
             True if you want to display a progress bar.
         """
-        # Load factors / unit / type of variables / accounts
-
-        # Create Out directory
-        out_dir = f"{self.path}/{self.time}/{var_info.get('file name')}"
+        # Create the directory
+        out_dir = f"{self.path}/{self.temporal_resolution}/{var_info.get('file name')}"
 
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)
@@ -419,9 +436,9 @@ class ECMWF(AbstractDataSource):
 
             Date_good = np.zeros(len(Data_time))
 
-            if self.time == "daily":
+            if self.temporal_resolution == "daily":
                 days_later = 1
-            if self.time == "monthly":
+            if self.temporal_resolution == "monthly":
                 days_later = calendar.monthrange(year, month)[1]
 
             Date_good[
@@ -447,7 +464,7 @@ class ECMWF(AbstractDataSource):
             # Define the out name
             name_out = os.path.join(
                 out_dir,
-                f"%{var_output_name}_ECMWF_ERA-Interim_{Var_unit}_{self.time}_{year}.{month}.{day}.tif",
+                f"%{var_output_name}_ECMWF_ERA-Interim_{Var_unit}_{self.temporal_resolution}_{year}.{month}.{day}.tif",
             )
 
             # Create Tiff files

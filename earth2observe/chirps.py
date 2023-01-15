@@ -55,24 +55,35 @@ class CHIRPS(AbstractDataSource):
         fmt (str, optional):
             [description]. Defaults to "%Y-%m-%d".
         """
-        # Define timestep for the timedates
-        if temporal_resolution.lower() == "daily":
-            self.time_freq = "D"
-            self.output_folder = os.path.join(path, "precipitation", "chirps", "daily")
-        elif temporal_resolution.lower() == "monthly":
-            self.time_freq = "MS"
-            self.output_folder = os.path.join(
-                path, "Precipitation", "CHIRPS", "Monthly"
-            )
-        else:
-            raise KeyError("The input temporal_resolution interval is not supported")
-
-        self.time = temporal_resolution
+        super().__init__(
+            start=start,
+            end=end,
+            temporal_resolution=temporal_resolution,
+            lat_lim=lat_lim,
+            lon_lim=lon_lim,
+            fmt=fmt,
+        )
+        self.output_folder = os.path.join(path, "chirps", "precipitation")
 
         # make directory if it not exists
         if not os.path.exists(self.output_folder):
             os.makedirs(self.output_folder)
 
+
+    def check_input_dates(self, start: str, end: str, temporal_resolution: str, fmt: str):
+        """check validity of input dates
+
+        Parameters
+        ----------
+        temporal_resolution: (str, optional)
+            [description]. Defaults to 'daily'.
+        start: (str, optional)
+            [description]. Defaults to ''.
+        end: (str, optional)
+            [description]. Defaults to ''.
+        fmt: (str, optional)
+            [description]. Defaults to "%Y-%m-%d".
+        """
         # check temporal_resolution variables
         if start is None:
             self.start = pd.Timestamp(self.start_date)
@@ -83,9 +94,21 @@ class CHIRPS(AbstractDataSource):
             self.end = pd.Timestamp(self.end_date)
         else:
             self.end = dt.datetime.strptime(end, fmt)
+
+        # Define timestep for the timedates
+        if temporal_resolution.lower() == "daily":
+            self.time_freq = "D"
+            # self.output_folder = os.path.join(path, "precipitation", "chirps", "daily")
+        elif temporal_resolution.lower() == "monthly":
+            self.time_freq = "MS"
+            # self.output_folder = os.path.join(
+            #     path, "Precipitation", "CHIRPS", "Monthly"
+            # )
+        else:
+            raise KeyError("The input temporal_resolution interval is not supported")
+
         # Create days
         self.dates = pd.date_range(self.start, self.end, freq=self.time_freq)
-        self.create_grid(lat_lim, lon_lim)
 
     def initialize(self):
         """Initialize FTP server"""
@@ -161,7 +184,7 @@ class CHIRPS(AbstractDataSource):
         # Pass variables to parallel function and run
         args = [
             self.output_folder,
-            self.time,
+            self.temporal_resolution,
             self.xID,
             self.yID,
             self.lon_lim,

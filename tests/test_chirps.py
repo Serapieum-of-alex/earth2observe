@@ -38,7 +38,7 @@ def test_download(
     fname = test_create_chirps_object.clipped_fname
     test_create_chirps_object.download()
 
-    filelist = glob.glob(os.path.join(f"{chirps_base_dir}/precipitation/chirps/daily", f"{fname}*.tif"))
+    filelist = glob.glob(os.path.join(f"{chirps_base_dir}/chirps/precipitation", f"{fname}*.tif"))
     assert len(filelist) == 10
     # delete the files
-    shutil.rmtree(f"{chirps_base_dir}/precipitation")
+    shutil.rmtree(f"{chirps_base_dir}/chirps/precipitation")
