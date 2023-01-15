@@ -28,12 +28,12 @@ def lon_bounds() -> List:
 
 @pytest.fixture(scope="session")
 def chirps_base_dir() -> str:
-    return "tests/data/chirps"
+    return "tests/data/delete/chirps"
 
 
 @pytest.fixture(scope="session")
 def ecmwf_base_dir() -> Path:
-    return Path("tests/data/ecmwf").absolute()
+    return Path("tests/data/delete/ecmwf").absolute()
 
 
 @pytest.fixture(scope="session")
@@ -50,7 +50,7 @@ def ecmwf_data_source() -> str:
 
 @pytest.fixture(scope="session")
 def ecmwf_data_source_output_dir() -> str:
-    return Path("tests/data/ecmwf-backend").absolute()
+    return Path("tests/data/delete/ecmwf-backend").absolute()
 
 @pytest.fixture(scope="session")
 def chirps_data_source() -> str:
@@ -58,4 +58,4 @@ def chirps_data_source() -> str:
 
 @pytest.fixture(scope="session")
 def chirps_data_source_output_dir() -> str:
-    return Path("tests/data/chirps-backend").absolute()
+    return Path("tests/data/delete/chirps-backend").absolute()

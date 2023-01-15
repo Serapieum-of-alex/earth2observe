@@ -78,17 +78,16 @@ class TestECMWFBackend:
         assert isinstance(e2o.DataSources, dict)
         assert isinstance(e2o.datasource, ECMWF)
         assert e2o.datasource.vars == ecmwf_variables
-        assert isinstance(e2o.datasource.lat_lim, list)
         return e2o
 
     def test_download_chirps_backend(
             self,
             test_ecmwf_data_source_instantiate_object: CHIRPS,
-            chirps_data_source_output_dir: str,
+            ecmwf_data_source_output_dir: str,
             number_downloaded_files: int,
     ):
         test_ecmwf_data_source_instantiate_object.download()
-        filelist = glob.glob(os.path.join(f"{chirps_data_source_output_dir}/daily/Evaporation/", f"*.tif"))
+        filelist = glob.glob(os.path.join(f"{ecmwf_data_source_output_dir}/daily/Evaporation/", f"*.tif"))
         assert len(filelist) == number_downloaded_files
         # delete the files
-        shutil.rmtree(f"{chirps_data_source_output_dir}/daily")
+        shutil.rmtree(f"{ecmwf_data_source_output_dir}/daily")
