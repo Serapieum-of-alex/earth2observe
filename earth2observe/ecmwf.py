@@ -16,14 +16,15 @@ from pyramids.raster import Raster
 
 from earth2observe import __path__
 from earth2observe.utils import print_progress_bar
-from earth2observe.datasource import DataSource, CatalogTemplate
+from earth2observe.abstractdatasource import AbstractDataSource, AbstractCatalog
 
-class ECMWF(DataSource):
+class ECMWF(AbstractDataSource):
     """RemoteSensing.
 
     RemoteSensing class contains methods to download ECMWF data
     """
-
+    temporal_resolution = ["daily", "monthly"]
+    spatial_resolution = 0.125
     def __init__(
         self,
         temporal_resolution: str = "daily",
@@ -67,9 +68,9 @@ class ECMWF(DataSource):
             self.string1 = "oper"
         # Set required data for the daily option
         elif temporal_resolution == "daily":
-            self.Dates = pd.date_range(self.start, self.end, freq="D")
+            self.dates = pd.date_range(self.start, self.end, freq="D")
         elif temporal_resolution == "monthly":
-            self.Dates = pd.date_range(self.start, self.end, freq="MS")
+            self.dates = pd.date_range(self.start, self.end, freq="MS")
 
         self.time = temporal_resolution
         self.path = path
@@ -103,14 +104,15 @@ class ECMWF(DataSource):
         lon_lim: []
             longitude boundaries
         """
+        cell_size = self.spatial_resolution
         # correct latitude and longitude limits
-        latlim_corr_one = np.floor(lat_lim[0] / 0.125) * 0.125
-        latlim_corr_two = np.ceil(lat_lim[1] / 0.125) * 0.125
+        latlim_corr_one = np.floor(lat_lim[0] / cell_size) * cell_size
+        latlim_corr_two = np.ceil(lat_lim[1] / cell_size) * cell_size
         self.latlim_corr = [latlim_corr_one, latlim_corr_two]
 
         # correct latitude and longitude limits
-        lonlim_corr_one = np.floor(lon_lim[0] / 0.125) * 0.125
-        lonlim_corr_two = np.ceil(lon_lim[1] / 0.125) * 0.125
+        lonlim_corr_one = np.floor(lon_lim[0] / cell_size) * cell_size
+        lonlim_corr_two = np.ceil(lon_lim[1] / cell_size) * cell_size
         self.lonlim_corr = [lonlim_corr_one, lonlim_corr_two]
 
 
@@ -244,7 +246,7 @@ class ECMWF(DataSource):
         parameter_number = var_info.get("number_para")
 
         param = f"{parameter_number}.128"
-        grid = "0.125/0.125"
+        grid = f"{self.spatial_resolution}/{self.spatial_resolution}"
         class_str = "ei"
         # N, W, S, E
         area_str = f"{self.latlim_corr[1]}/{self.lonlim_corr[0]}/{self.latlim_corr[0]}/{self.lonlim_corr[1]}"
@@ -392,17 +394,17 @@ class ECMWF(DataSource):
         # Define the georeference information
         geo_four = np.nanmax(lats)
         geo_one = np.nanmin(lons)
-        geo = tuple([geo_one, 0.125, 0.0, geo_four, 0.0, -0.125])
+        geo = tuple([geo_one, self.spatial_resolution, 0.0, geo_four, 0.0, -1 * self.spatial_resolution])
 
         # Create Waitbar
         if progress_bar:
-            total_amount = len(self.Dates)
+            total_amount = len(self.dates)
             amount = 0
             print_progress_bar(
                 amount, total_amount, prefix="Progress:", suffix="Complete", length=50
             )
 
-        for date in self.Dates:
+        for date in self.dates:
 
             # Define the year, month and day
             year = date.year
@@ -464,7 +466,7 @@ class ECMWF(DataSource):
 
         fh.close()
 
-class Catalog(CatalogTemplate):
+class Catalog(AbstractCatalog):
     """ECMWF data catalog
     This class contains the information about the ECMWF variables
     http://rda.ucar.edu/cgi-bin/transform?xml=/metadata/ParameterTables/WMO_GRIB1.98-0.128.xml&view=gribdoc.

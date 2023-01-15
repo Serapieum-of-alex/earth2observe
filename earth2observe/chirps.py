@@ -9,11 +9,11 @@ from joblib import Parallel, delayed
 from osgeo import gdal
 from pyramids.raster import Raster
 from pyramids.utils import extractFromGZ
-from earth2observe.datasource import DataSource, CatalogTemplate
+from earth2observe.abstractdatasource import AbstractDataSource, AbstractCatalog
 from earth2observe.utils import print_progress_bar
 
 
-class CHIRPS(DataSource):
+class CHIRPS(AbstractDataSource):
     """CHIRPS."""
     api_url: str = "data.chc.ucsb.edu"
     start_date: str = "1981-01-01"
@@ -87,6 +87,10 @@ class CHIRPS(DataSource):
         self.dates = pd.date_range(self.start, self.end, freq=self.time_freq)
         self.create_grid(lat_lim, lon_lim)
 
+    def initialize(self):
+        """Initialize FTP server"""
+        print("FTP server datasources does not need server initialization")
+        pass
 
     def create_grid(self, lat_lim: list, lon_lim: list):
         """Create_grid
@@ -347,7 +351,7 @@ class CHIRPS(DataSource):
 
         print("\n")
 
-class Catalog(CatalogTemplate):
+class Catalog(AbstractCatalog):
     """ CHIRPS data catalog"""
 
     def __init__(self):
