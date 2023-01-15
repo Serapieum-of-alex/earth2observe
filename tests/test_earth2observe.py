@@ -5,6 +5,7 @@ import shutil
 import pytest
 from earth2observe.earth2observe import Earth2Observe
 from earth2observe.chirps import CHIRPS
+from earth2observe.ecmwf import ECMWF
 
 class TestChirpsBackend:
 
@@ -75,7 +76,7 @@ class TestECMWFBackend:
             path=ecmwf_data_source_output_dir
         )
         assert isinstance(e2o.DataSources, dict)
-        assert isinstance(e2o.datasource, CHIRPS)
+        assert isinstance(e2o.datasource, ECMWF)
         assert e2o.datasource.vars == ecmwf_variables
         assert isinstance(e2o.datasource.lat_lim, list)
         return e2o
