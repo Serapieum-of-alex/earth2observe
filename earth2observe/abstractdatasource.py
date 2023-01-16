@@ -48,17 +48,17 @@ class AbstractDataSource(ABC):
         pass
 
     @abstractmethod
-    def check_input_dates(self):
+    def check_input_dates(self, start: str, end: str, temporal_resolution: str, fmt: str):
         """Check validity of input dates."""
         pass
 
     @abstractmethod
-    def initialize(self):
+    def initialize(self, *args, **kwargs):
         """Initialize connection with the data source server (for non ftp servers)"""
         pass
 
     @abstractmethod
-    def create_grid(self):
+    def create_grid(self, lat_lim: list, lon_lim: list):
         """create a grid from the lat/lon boundaries."""
         pass
 
@@ -84,6 +84,8 @@ class AbstractDataSource(ABC):
 class AbstractCatalog(ABC):
     """abstrach class for the datasource catalog."""
 
+    def __init__(self):
+        self.catalog = self.get_catalog()
     @abstractmethod
     def get_catalog(self):
         """read the catalog of the datasource from disk or retrieve it from server."""
@@ -92,4 +94,4 @@ class AbstractCatalog(ABC):
     @abstractmethod
     def get_variable(self, var_name) -> Dict[str, str]:
         """get the details of a specific variable."""
-        pass
+        return self.catalog.get(var_name)
