@@ -1,19 +1,21 @@
-"""Amazon S3"""
-import os
-from typing import Dict, List
-from pathlib import Path
+"""Amazon S3."""
 import datetime as dt
-import pandas as pd
+import os
+from pathlib import Path
+from typing import Dict, List
+
 import boto3
 import botocore
+import pandas as pd
 from botocore import exceptions
-from earth2observe.utils import print_progress_bar
+
 from earth2observe.abstractdatasource import AbstractCatalog, AbstractDataSource
+from earth2observe.utils import print_progress_bar
+
 
 class S3(AbstractDataSource):
-    """
-    Amazon S3 data source.
-    """
+    """Amazon S3 data source."""
+
     def __init__(
         self,
         temporal_resolution: str = "daily",
@@ -61,7 +63,7 @@ class S3(AbstractDataSource):
         if not os.path.exists(self.output_folder):
             os.makedirs(self.output_folder)
 
-    def initialize(self, bucket: str = 'era5-pds') -> object:
+    def initialize(self, bucket: str = "era5-pds") -> object:
         """initialize connection with amazon s3 and create a client.
 
         Parameters
@@ -79,7 +81,9 @@ class S3(AbstractDataSource):
         # bucket = s3.Bucket(era5_bucket)
 
         # No AWS keys required
-        client = boto3.client('s3', config=botocore.client.Config(signature_version=botocore.UNSIGNED))
+        client = boto3.client(
+            "s3", config=botocore.client.Config(signature_version=botocore.UNSIGNED)
+        )
         self.client = client
         return client
 
@@ -134,10 +138,7 @@ class S3(AbstractDataSource):
         for var in self.vars:
             var_info = catalog.get_variable(var)
             var_s3_name = var_info.get("bucket_name")
-            self.downloadDataset(
-                var_s3_name
-            )
-
+            self.downloadDataset(var_s3_name)
 
     def downloadDataset(self, var: str, progress_bar: bool = True):
         """Download a climate variable.
@@ -173,8 +174,8 @@ class S3(AbstractDataSource):
             year = date.strftime("%Y")
             month = date.strftime("%m")
             # file path patterns for remote S3 objects and corresponding local file
-            s3_data_key = f'{year}/{month}/data/{var}.nc'
-            downloaded_file_dir = f'{self.output_folder}/{year}{month}_{self.temporal_resolution}_{var}.nc'
+            s3_data_key = f"{year}/{month}/data/{var}.nc"
+            downloaded_file_dir = f"{self.output_folder}/{year}{month}_{self.temporal_resolution}_{var}.nc"
 
             self.API(s3_data_key, downloaded_file_dir)
 
@@ -188,7 +189,7 @@ class S3(AbstractDataSource):
                     length=50,
                 )
 
-    def API(self, s3_file_path: str, local_dir_fname: str, bucket: str = 'era5-pds'):
+    def API(self, s3_file_path: str, local_dir_fname: str, bucket: str = "era5-pds"):
         """Download file from s3 bucket.
 
         Parameters
@@ -209,14 +210,15 @@ class S3(AbstractDataSource):
             try:
                 self.client.download_file(bucket, s3_file_path, local_dir_fname)
             except exceptions.ClientError:
-                print(f"Error while downloading the {s3_file_path} please check the file name")
+                print(
+                    f"Error while downloading the {s3_file_path} please check the file name"
+                )
         else:
             print(f"The file {local_dir_fname} already in your local directory")
 
-
     @staticmethod
     def parse_response_metadata(response: Dict[str, str]):
-        """parse client response
+        """parse client response.
 
         Parameters
         ----------
@@ -235,16 +237,18 @@ class S3(AbstractDataSource):
         >>>     'RetryAttempts': 0
         >>> }
         """
-        response_meta = response.get('ResponseMetadata')
+        response_meta = response.get("ResponseMetadata")
         keys = []
-        if response_meta.get('HTTPStatusCode') == 200:
-            contents_list = response.get('Contents')
+        if response_meta.get("HTTPStatusCode") == 200:
+            contents_list = response.get("Contents")
             if contents_list is None:
-                print(f"No objects are available")  # {date.strftime('%B, %Y')}
+                print("No objects are available")  # {date.strftime('%B, %Y')}
             else:
                 for obj in contents_list:
-                    keys.append(obj.get('Key'))
-                print(f"There are {len(keys)} objects available for\n--")  # {date.strftime('%B, %Y')}
+                    keys.append(obj.get("Key"))
+                print(
+                    f"There are {len(keys)} objects available for\n--"
+                )  # {date.strftime('%B, %Y')}
                 for k in keys:
                     print(k)
         else:
@@ -253,10 +257,10 @@ class S3(AbstractDataSource):
         return keys
 
 
-
 class Catalog(AbstractCatalog):
-    """S3 data catalog"""
-    def __init__(self, bucket: str = 'era5-pds'):
+    """S3 data catalog."""
+
+    def __init__(self, bucket: str = "era5-pds"):
         """
 
         Parameters
@@ -267,7 +271,7 @@ class Catalog(AbstractCatalog):
         self.client = self.initialize(bucket=bucket)
 
     @staticmethod
-    def initialize(bucket: str = 'era5-pds') -> object:
+    def initialize(bucket: str = "era5-pds") -> object:
         """initialize connection with amazon s3 and create a client.
 
         Parameters
@@ -285,29 +289,30 @@ class Catalog(AbstractCatalog):
         # bucket = s3.Bucket(era5_bucket)
 
         # No AWS keys required
-        client = boto3.client('s3', config=botocore.client.Config(signature_version=botocore.UNSIGNED))
+        client = boto3.client(
+            "s3", config=botocore.client.Config(signature_version=botocore.UNSIGNED)
+        )
         return client
 
     def get_catalog(self):
         """return the catalog."""
-        return {"precipitation":{
-            "descriptions": "rainfall [mm/temporal_resolution]",
-            "units": "mm/temporal_resolution",
-            "temporal resolution": ["daily", "monthly"],
-            "file name": "rainfall",
-            "var_name": "R",
-            "bucket_name": "precipitation_amount_1hour_Accumulation"
+        return {
+            "precipitation": {
+                "descriptions": "rainfall [mm/temporal_resolution]",
+                "units": "mm/temporal_resolution",
+                "temporal resolution": ["daily", "monthly"],
+                "file name": "rainfall",
+                "var_name": "R",
+                "bucket_name": "precipitation_amount_1hour_Accumulation",
+            }
         }
 
-        }
     def get_variable(self, var_name) -> Dict[str, str]:
         """get the details of a specific variable."""
         return super().get_variable(var_name)
 
-
-    def get_available_years(self, bucket: str = 'era5-pds'):
-        """
-        The ERA5 data is chunked into distinct NetCDF files per variable, each containing a month of hourly data. These files are organized in the S3 bucket by year, month, and variable name.
+    def get_available_years(self, bucket: str = "era5-pds"):
+        """The ERA5 data is chunked into distinct NetCDF files per variable, each containing a month of hourly data. These files are organized in the S3 bucket by year, month, and variable name.
 
         The data is structured as follows:
 
@@ -329,22 +334,21 @@ class Catalog(AbstractCatalog):
         List:
             list of years that have available data.
         """
-        paginator = self.client.get_paginator('list_objects')
-        result = paginator.paginate(Bucket=bucket, Delimiter='/')
+        paginator = self.client.get_paginator("list_objects")
+        result = paginator.paginate(Bucket=bucket, Delimiter="/")
         # for prefix in result.search('CommonPrefixes'):
         #     print(prefix.get('Prefix'))
-        years = [i.get('Prefix')[:-1] for i in result.search('CommonPrefixes')]
+        years = [i.get("Prefix")[:-1] for i in result.search("CommonPrefixes")]
         return years
 
-
     def get_available_data(
-            self,
-            date: str,
-            bucket: str = 'era5-pds',
-            fmt: str = "%Y-%m-%d",
-            absolute_path: bool = False,
+        self,
+        date: str,
+        bucket: str = "era5-pds",
+        fmt: str = "%Y-%m-%d",
+        absolute_path: bool = False,
     ) -> List[str]:
-        """get the available data at a given year
+        """get the available data at a given year.
 
         - Granule variable structure and metadata attributes are stored in main.nc. This file contains coordinate and
         auxiliary variable data. This file is also annotated using NetCDF CF metadata conventions.
@@ -385,7 +389,7 @@ class Catalog(AbstractCatalog):
         """
         date_obj = dt.datetime.strptime(date, fmt)
         # date = dt.date(2022,5,1) # update to desired date
-        prefix = date_obj.strftime('%Y/%m/')
+        prefix = date_obj.strftime("%Y/%m/")
         response = self.client.list_objects_v2(Bucket=bucket, Prefix=prefix)
         keys = S3.parse_response_metadata(response)
         if absolute_path:

@@ -48,7 +48,9 @@ class AbstractDataSource(ABC):
         pass
 
     @abstractmethod
-    def check_input_dates(self, start: str, end: str, temporal_resolution: str, fmt: str):
+    def check_input_dates(
+        self, start: str, end: str, temporal_resolution: str, fmt: str
+    ):
         """Check validity of input dates."""
         pass
 
@@ -86,6 +88,7 @@ class AbstractCatalog(ABC):
 
     def __init__(self):
         self.catalog = self.get_catalog()
+
     @abstractmethod
     def get_catalog(self):
         """read the catalog of the datasource from disk or retrieve it from server."""
