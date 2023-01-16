@@ -397,14 +397,14 @@ class Catalog(AbstractCatalog):
     """CHIRPS data catalog."""
 
     def __init__(self):
-        self.catalog = self.get_catalog()
+        super().__init__()
 
     def get_catalog(self):
         """return the catalog."""
         return {
             "Precipitation": {
-                "descriptions": "rainfall [mm/temporal_resolution step]",
-                "units": "mm/temporal_resolution step",
+                "descriptions": "rainfall [mm/temporal_resolution]",
+                "units": "mm/temporal_resolution",
                 "temporal resolution": ["daily", "monthly"],
                 "file name": "rainfall",
                 "var_name": "R",
@@ -413,4 +413,4 @@ class Catalog(AbstractCatalog):
 
     def get_variable(self, var_name):
         """get the details of a specific variable."""
-        return self.catalog.get(var_name)
+        return super().get_variable(var_name)
