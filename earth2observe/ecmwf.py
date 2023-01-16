@@ -171,7 +171,7 @@ class ECMWF(AbstractDataSource):
             var_info = catalog.get_variable(var)
             self.downloadDataset(
                 var_info, dataset=dataset, progress_bar=progress_bar
-            )  # CaseParameters=[SumMean, Min, Max]
+            )
         # delete the downloaded netcdf
         del_ecmwf_dataset = os.path.join(self.path, "data_interim.nc")
         os.remove(del_ecmwf_dataset)
@@ -209,6 +209,8 @@ class ECMWF(AbstractDataSource):
         """
         # Create the directory
         out_dir = f"{self.path}/{self.temporal_resolution}/{var_info.get('file name')}"
+        # out_dir = f"{self.path}/{self.temporal_resolution}/{var_info.get('file name')}"
+        # files = f"{out_dir}/{self.temporal_resolution}_{var_info.get('file name')}"
 
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)
@@ -505,10 +507,10 @@ class ECMWF(AbstractDataSource):
 class Catalog(AbstractCatalog):
     """ECMWF data catalog This class contains the information about the ECMWF variables http://rda.ucar.edu/cgi-bin/transform?xml=/metadata/ParameterTables/WMO_GRIB1.98-0.128.xml&view=gribdoc."""
 
-    def __init__(self, version: int = 1):
+    def __init__(self):
         # get the catalog
-        self.catalog = self.get_catalog()
-        self.version = version
+        super().__init__()
+        pass
 
     def get_catalog(self):
         """readthe data catalog from disk."""
@@ -518,7 +520,7 @@ class Catalog(AbstractCatalog):
 
     def get_variable(self, var_name):
         """retrieve a variable form the datasource catalog."""
-        return self.catalog.get(var_name)
+        pass
 
 
 class AuthenticationError(Exception):
