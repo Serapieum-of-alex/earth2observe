@@ -49,13 +49,13 @@ class TestChirpsBackend:
         fname = "P_CHIRPS"
         filelist = glob.glob(
             os.path.join(
-                f"{chirps_data_source_output_dir}/chirps/precipitation", f"{fname}*.tif"
+                f"{chirps_data_source_output_dir}", f"{fname}*.tif"
             )
         )
         assert len(filelist) == number_downloaded_files
         # delete the files
         try:
-            shutil.rmtree(f"{chirps_data_source_output_dir}/chirps/precipitation")
+            shutil.rmtree(f"{chirps_data_source_output_dir}")
         except PermissionError:
             print("the downloaded files could not be deleted")
 
@@ -95,12 +95,12 @@ class TestECMWFBackend:
     ):
         test_ecmwf_data_source_instantiate_object.download()
         filelist = glob.glob(
-            os.path.join(f"{ecmwf_data_source_output_dir}/daily/Evaporation/", f"*.tif")
+            os.path.join(f"{ecmwf_data_source_output_dir}", f"*.tif")
         )
         assert len(filelist) == number_downloaded_files
         # delete the files
         try:
-            shutil.rmtree(f"{ecmwf_data_source_output_dir}/daily")
+            shutil.rmtree(f"{ecmwf_data_source_output_dir}")
         except PermissionError:
             print("the downloaded files could not be deleted")
 

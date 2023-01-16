@@ -48,4 +48,7 @@ def test_download(
     )
     assert len(filelist) == number_downloaded_files
     # delete the files
-    shutil.rmtree(f"{chirps_base_dir}")
+    try:
+        shutil.rmtree(f"{chirps_base_dir}")
+    except PermissionError:
+        print("the downloaded files could not be deleted")
