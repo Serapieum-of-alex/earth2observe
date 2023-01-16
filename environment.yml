@@ -12,7 +12,7 @@ dependencies:
   - boto3 >=1.26.50
   - joblib >=1.2.0
   - pyramids >=0.2.12
-  - serapeum_utils >=0.1.0
+  - serapeum_utils >=0.1.1
   - loguru >=0.6.0
   - PyYAML >=6.0
   - pathlib >=1.0.1
