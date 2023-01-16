@@ -8,7 +8,7 @@ import pytest
 from earth2observe.ecmwf import ECMWF
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def test_create_ecmwf_object(
     dates: List,
     lat_bounds: List,

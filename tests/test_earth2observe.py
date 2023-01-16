@@ -12,7 +12,7 @@ from earth2observe.s3 import S3
 
 
 class TestChirpsBackend:
-    @pytest.fixture(scope="session")
+    @pytest.fixture(scope="module")
     def test_chirps_data_source_instantiate_object(
         self,
         chirps_data_source: str,
@@ -61,7 +61,7 @@ class TestChirpsBackend:
 
 
 class TestECMWFBackend:
-    @pytest.fixture(scope="session")
+    @pytest.fixture(scope="module")
     def test_ecmwf_data_source_instantiate_object(
         self,
         ecmwf_data_source: str,
@@ -106,7 +106,7 @@ class TestECMWFBackend:
 
 
 class TestS3Backend:
-    @pytest.fixture(scope="session")
+    @pytest.fixture(scope="module")
     def test_s3_data_source_instantiate_object(
         self,
         s3_data_source: str,

@@ -8,7 +8,7 @@ import pytest
 from earth2observe.chirps import CHIRPS
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def test_create_chirps_object(
     dates: List,
     daily_temporal_resolution: str,
