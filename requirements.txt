@@ -1,5 +1,6 @@
 earthengine-api >=0.1.324
 ecmwf-api-client >=1.6.3
+boto3 >=1.26.50
 gdal >=3.5.3
 joblib >=1.2.0
 loguru >=0.6.0

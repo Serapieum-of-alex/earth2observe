@@ -9,6 +9,7 @@ dependencies:
   - pandas >=1.4.4
   - ecmwf-api-client >=1.6.3
   - earthengine-api >=0.1.324
+  - boto3 >=1.26.50
   - joblib >=1.2.0
   - pyramids >=0.2.12
   - loguru >=0.6.0
