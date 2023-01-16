@@ -1,6 +1,5 @@
+import os
 from pathlib import Path
-from typing import List
-
 import pytest
 
 from tests.gee.conftest import *
@@ -42,16 +41,28 @@ def lon_bounds() -> List:
 
 @pytest.fixture(scope="session")
 def chirps_base_dir() -> str:
-    return "tests/data/delete/chirps"
+    path = "tests/data/delete/chirps"
+    return path
+    # if not os.path.exists(path):
+    #     os.mkdir(path)
+    # return Path(path).absolute()
 
 
 @pytest.fixture(scope="session")
 def ecmwf_base_dir() -> Path:
-    return Path("tests/data/delete/ecmwf").absolute()
+    path = "tests/data/delete/ecmwf"
+    return path
+    # if not os.path.exists(path):
+    #     os.mkdir(path)
+    # return Path(path).absolute()
 
 @pytest.fixture(scope="session")
 def s3_era5_base_dir() -> Path:
-    return Path("tests/data/delete/s3/era5").absolute()
+    path = "tests/data/delete/s3/era5"
+    return path
+    # if not os.path.exists(path):
+    #     os.mkdir(path)
+    # return Path(path).absolute()
 
 @pytest.fixture(scope="session")
 def chirps_variables() -> List[str]:
@@ -81,13 +92,25 @@ def s3_data_source() -> str:
 
 @pytest.fixture(scope="session")
 def ecmwf_data_source_output_dir() -> str:
-    return Path("tests/data/delete/ecmwf-backend").absolute()
+    path = "tests/data/delete/ecmwf-backend"
+    return path
+    # if not os.path.exists(path):
+    #     os.mkdir(path)
+    # return Path(path).absolute()
 
 
 @pytest.fixture(scope="session")
 def chirps_data_source_output_dir() -> str:
-    return Path("tests/data/delete/chirps-backend").absolute()
+    path = "tests/data/delete/chirps-backend"
+    return path
+    # if not os.path.exists(path):
+    #     os.mkdir(path)
+    # return Path(path).absolute()
 
 @pytest.fixture(scope="session")
 def s3_era5_data_source_output_dir() -> str:
-    return Path("tests/data/delete/s3-era5").absolute()
+    path = "tests/data/delete/s3-era5"
+    return path
+    # if not os.path.exists(path):
+    #     os.mkdir(path)
+    # return Path(path).absolute()
