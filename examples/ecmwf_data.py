@@ -19,8 +19,10 @@ lon = [-75.649243, -74.727286]
 # Temperature, Evapotranspiration
 variables = ["T", "E"]
 #%%
-Vars = Catalog()
-print(Vars.catalog)
+var = "T"
+catalog = Catalog()
+print(catalog.catalog)
+catalog.get_variable(var)
 #%% Temperature
 start = "2009-01-01"
 end = "2009-02-01"

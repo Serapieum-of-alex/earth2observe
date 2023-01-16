@@ -520,7 +520,7 @@ class Catalog(AbstractCatalog):
 
     def get_variable(self, var_name):
         """retrieve a variable form the datasource catalog."""
-        pass
+        return super().get_variable(var_name)
 
 
 class AuthenticationError(Exception):

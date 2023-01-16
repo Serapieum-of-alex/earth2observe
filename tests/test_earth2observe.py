@@ -83,7 +83,7 @@ class TestECMWFBackend:
         assert e2o.datasource.vars == ecmwf_variables
         return e2o
 
-    def test_download_chirps_backend(
+    def test_download_ecmwf_backend(
         self,
         test_ecmwf_data_source_instantiate_object: CHIRPS,
         ecmwf_data_source_output_dir: str,

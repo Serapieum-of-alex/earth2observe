@@ -1,5 +1,8 @@
-from earth2observe.chirps import CHIRPS
+from earth2observe.chirps import CHIRPS, Catalog
 
+#%%
+chirps_catalog = Catalog()
+print(chirps_catalog.catalog)
 # %% precipitation
 start = "2009-01-01"
 end = "2009-01-10"
