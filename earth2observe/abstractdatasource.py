@@ -1,5 +1,7 @@
-from abc import ABC, abstractmethod
+import os
 from typing import Dict
+from pathlib import Path
+from abc import ABC, abstractmethod
 
 
 class AbstractDataSource(ABC):
@@ -14,7 +16,7 @@ class AbstractDataSource(ABC):
         lat_lim: list = None,
         lon_lim: list = None,
         fmt: str = "%Y-%m-%d",
-        # path: str = "",
+        path: str = "",
     ):
         """
 
@@ -45,6 +47,11 @@ class AbstractDataSource(ABC):
 
         self.create_grid(lat_lim, lon_lim)
         self.check_input_dates(start, end, temporal_resolution, fmt)
+        self.path = Path(path).absolute()
+        # Create the directory
+        if not os.path.exists(self.path):
+            os.makedirs(self.path)
+
         pass
 
     @abstractmethod

@@ -18,7 +18,7 @@ lat = [4.190755, 4.643963]
 lon = [-75.649243, -74.727286]
 variables = ["precipitation"]
 rpath = os.getcwd()
-path = rf"{rpath}/examples/data/s3/era5"
+path = rf"{rpath}/examples/data/delete/s3/era5"
 
 s3_era5 = S3(
     temporal_resolution=time,

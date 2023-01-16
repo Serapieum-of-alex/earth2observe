@@ -20,7 +20,6 @@ from earth2observe import __path__
 from earth2observe.abstractdatasource import AbstractCatalog, AbstractDataSource
 from serapeum_utils.utils import print_progress_bar
 
-
 class ECMWF(AbstractDataSource):
     """RemoteSensing.
 
@@ -70,8 +69,8 @@ class ECMWF(AbstractDataSource):
             lat_lim=lat_lim,
             lon_lim=lon_lim,
             fmt=fmt,
+            path=path,
         )
-        self.path = Path(path).absolute()
 
     def check_input_dates(
         self, start: str, end: str, temporal_resolution: str, fmt: str
@@ -205,18 +204,10 @@ class ECMWF(AbstractDataSource):
         progress_bar: [bool]
             True if you want to display a progress bar.
         """
-        # Create the directory
-        out_dir = f"{self.path}/{self.temporal_resolution}/{var_info.get('file name')}"
-        # out_dir = f"{self.path}/{self.temporal_resolution}/{var_info.get('file name')}"
-        # files = f"{out_dir}/{self.temporal_resolution}_{var_info.get('file name')}"
-
-        if not os.path.exists(out_dir):
-            os.makedirs(out_dir)
-
         # trigger the request to the server
         self.API(var_info, dataset)
         # process the downloaded data
-        self.post_download(var_info, out_dir, dataset, progress_bar)
+        self.post_download(var_info, self.path, dataset, progress_bar)
 
     def API(self, var_info, dataset):
         """form the request url abd trigger the request.
@@ -482,7 +473,7 @@ class ECMWF(AbstractDataSource):
             # Define the out name
             name_out = os.path.join(
                 out_dir,
-                f"%{var_output_name}_ECMWF_ERA-Interim_{Var_unit}_{self.temporal_resolution}_{year}.{month}.{day}.tif",
+                f"{var_output_name}_ECMWF_ERA-Interim_{Var_unit}_{self.temporal_resolution}_{year}.{month}.{day}.tif",
             )
 
             # Create Tiff files

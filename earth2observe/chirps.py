@@ -66,14 +66,8 @@ class CHIRPS(AbstractDataSource):
             lat_lim=lat_lim,
             lon_lim=lon_lim,
             fmt=fmt,
+            path=path,
         )
-        self.output_folder = os.path.join(
-            Path(path).absolute(), "chirps", "precipitation"
-        )
-
-        # make directory if it not exists
-        if not os.path.exists(self.output_folder):
-            os.makedirs(self.output_folder)
 
     def check_input_dates(
         self, start: str, end: str, temporal_resolution: str, fmt: str
@@ -105,10 +99,10 @@ class CHIRPS(AbstractDataSource):
         # Define timestep for the timedates
         if temporal_resolution.lower() == "daily":
             self.time_freq = "D"
-            # self.output_folder = os.path.join(path, "precipitation", "chirps", "daily")
+            # self.path = os.path.join(path, "precipitation", "chirps", "daily")
         elif temporal_resolution.lower() == "monthly":
             self.time_freq = "MS"
-            # self.output_folder = os.path.join(
+            # self.path = os.path.join(
             #     path, "Precipitation", "CHIRPS", "Monthly"
             # )
         else:
@@ -189,7 +183,7 @@ class CHIRPS(AbstractDataSource):
         """
         # Pass variables to parallel function and run
         args = [
-            self.output_folder,
+            self.path,
             self.temporal_resolution,
             self.xID,
             self.yID,
@@ -238,7 +232,7 @@ class CHIRPS(AbstractDataSource):
 
         args: [list]
         """
-        [output_folder, temp_resolution, xID, yID, lon_lim, latlim] = args
+        [path, temp_resolution, xID, yID, lon_lim, latlim] = args
 
         # Define FTP path to directory
         if temp_resolution.lower() == "daily":
@@ -252,11 +246,11 @@ class CHIRPS(AbstractDataSource):
         if temp_resolution.lower() == "daily":
             filename = f"{self.globe_fname}.{date.strftime('%Y')}.{date.strftime('%m')}.{date.strftime('%d')}.tif.gz"
             outfilename = os.path.join(
-                output_folder,
+                path,
                 f"{self.globe_fname}.{date.strftime('%Y')}.{date.strftime('%m')}.{date.strftime('%d')}.tif",
             )
             DirFileEnd = os.path.join(
-                output_folder,
+                path,
                 f"{self.clipped_fname}_mm-day-1_daily_{date.strftime('%Y')}.{date.strftime('%m')}.{date.strftime('%d')}.tif",
             )
         elif temp_resolution == "monthly":
@@ -264,23 +258,23 @@ class CHIRPS(AbstractDataSource):
                 f"{self.globe_fname}.{date.strftime('%Y')}.{date.strftime('%m')}.tif.gz"
             )
             outfilename = os.path.join(
-                output_folder,
+                path,
                 f"{self.globe_fname}.{date.strftime('%Y')}.{date.strftime('%m')}.tif",
             )
             DirFileEnd = os.path.join(
-                output_folder,
+                path,
                 f"{self.clipped_fname}_mm-month-1_monthly_{date.strftime('%Y')}.{date.strftime('%m')}.{date.strftime('%d')}.tif",
             )
         else:
             raise KeyError("The input temporal_resolution interval is not supported")
 
-        self.callAPI(pathFTP, output_folder, filename)
+        self.callAPI(pathFTP, path, filename)
         self.post_download(
-            output_folder, filename, lon_lim, latlim, xID, yID, outfilename, DirFileEnd
+            path, filename, lon_lim, latlim, xID, yID, outfilename, DirFileEnd
         )
 
     @staticmethod
-    def callAPI(pathFTP: str, output_folder: str, filename: str):
+    def callAPI(pathFTP: str, path: str, filename: str):
         """send the request to the server.
 
         RetrieveData method retrieves CHIRPS data for a given date from the
@@ -289,7 +283,7 @@ class CHIRPS(AbstractDataSource):
         Parameters
         ----------
         filename
-        output_folder
+        path
         pathFTP
 
 
@@ -313,14 +307,14 @@ class CHIRPS(AbstractDataSource):
         ftp.retrlines("LIST", listing.append)
 
         # download the global rainfall file
-        local_filename = os.path.join(output_folder, filename)
+        local_filename = os.path.join(path, filename)
         lf = open(local_filename, "wb")
         ftp.retrbinary("RETR " + filename, lf.write, 8192)
         lf.close()
 
     def post_download(
         self,
-        output_folder,
+        path,
         filename,
         lon_lim,
         latlim,
@@ -333,7 +327,7 @@ class CHIRPS(AbstractDataSource):
 
         Parameters
         ----------
-        output_folder: [str]
+        path: [str]
             directory where files will be saved
         filename: [str]
             file name
@@ -346,7 +340,7 @@ class CHIRPS(AbstractDataSource):
         """
         try:
             # unzip the file
-            zip_filename = os.path.join(output_folder, filename)
+            zip_filename = os.path.join(path, filename)
             extractFromGZ(zip_filename, outfilename, delete=True)
 
             # open tiff file

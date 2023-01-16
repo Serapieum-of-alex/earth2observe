@@ -18,7 +18,7 @@ class S3(AbstractDataSource):
 
     def __init__(
         self,
-        temporal_resolution: str = "daily",
+        temporal_resolution: str = "monthly",
         start: str = None,
         end: str = None,
         path: str = "",
@@ -56,12 +56,8 @@ class S3(AbstractDataSource):
             lat_lim=lat_lim,
             lon_lim=lon_lim,
             fmt=fmt,
+            path=path,
         )
-        self.output_folder = Path(path).absolute()
-
-        # make directory if it not exists
-        if not os.path.exists(self.output_folder):
-            os.makedirs(self.output_folder)
 
     def initialize(self, bucket: str = "era5-pds") -> object:
         """initialize connection with amazon s3 and create a client.
@@ -116,7 +112,7 @@ class S3(AbstractDataSource):
         elif temporal_resolution == "monthly":
             self.dates = pd.date_range(self.start, self.end, freq="MS")
 
-    def download(self):
+    def download(self, progress_bar: bool = True):
         """Download wrapper over all given variables.
 
         ECMWF method downloads ECMWF daily data for a given variable, temporal_resolution
@@ -138,7 +134,7 @@ class S3(AbstractDataSource):
         for var in self.vars:
             var_info = catalog.get_variable(var)
             var_s3_name = var_info.get("bucket_name")
-            self.downloadDataset(var_s3_name)
+            self.downloadDataset(var_s3_name, progress_bar=progress_bar)
 
     def downloadDataset(self, var: str, progress_bar: bool = True):
         """Download a climate variable.
@@ -175,7 +171,7 @@ class S3(AbstractDataSource):
             month = date.strftime("%m")
             # file path patterns for remote S3 objects and corresponding local file
             s3_data_key = f"{year}/{month}/data/{var}.nc"
-            downloaded_file_dir = f"{self.output_folder}/{year}{month}_{self.temporal_resolution}_{var}.nc"
+            downloaded_file_dir = f"{self.path}/{year}{month}_{self.temporal_resolution}_{var}.nc"
 
             self.API(s3_data_key, downloaded_file_dir)
 

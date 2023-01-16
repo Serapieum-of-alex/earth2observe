@@ -1,12 +1,13 @@
 """Front end module that runs each data source backend."""
 from earth2observe.chirps import CHIRPS
 from earth2observe.ecmwf import ECMWF
+from earth2observe.s3 import S3
 
 
 class Earth2Observe:
     """End user class to call all the data source classes abailable in earth2observe."""
 
-    DataSources = {"ecmwf": ECMWF, "chirps": CHIRPS}
+    DataSources = {"ecmwf": ECMWF, "chirps": CHIRPS, "amazon-s3": S3}
 
     def __init__(
         self,

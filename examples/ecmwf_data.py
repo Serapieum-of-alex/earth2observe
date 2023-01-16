@@ -9,7 +9,7 @@ import os
 from earth2observe.ecmwf import ECMWF, Catalog
 
 rpath = os.getcwd()
-path = rf"{rpath}\examples\data\ecmwf"
+path = rf"{rpath}\delete\data\ecmwf"
 #%% precipitation
 start = "2009-01-01"
 end = "2009-01-10"
