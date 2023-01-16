@@ -11,7 +11,7 @@ from pyramids.raster import Raster
 from pyramids.utils import extractFromGZ
 
 from earth2observe.abstractdatasource import AbstractCatalog, AbstractDataSource
-from earth2observe.utils import print_progress_bar
+from serapeum_utils.utils import print_progress_bar
 
 
 class CHIRPS(AbstractDataSource):

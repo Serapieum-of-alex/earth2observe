@@ -18,7 +18,7 @@ from pyramids.raster import Raster
 
 from earth2observe import __path__
 from earth2observe.abstractdatasource import AbstractCatalog, AbstractDataSource
-from earth2observe.utils import print_progress_bar
+from serapeum_utils.utils import print_progress_bar
 
 
 class ECMWF(AbstractDataSource):

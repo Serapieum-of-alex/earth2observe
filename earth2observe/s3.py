@@ -10,7 +10,7 @@ import pandas as pd
 from botocore import exceptions
 
 from earth2observe.abstractdatasource import AbstractCatalog, AbstractDataSource
-from earth2observe.utils import print_progress_bar
+from serapeum_utils.utils import print_progress_bar
 
 
 class S3(AbstractDataSource):
