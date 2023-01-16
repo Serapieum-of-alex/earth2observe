@@ -132,7 +132,7 @@ class TestS3Backend:
         assert e2o.datasource.vars == s3_era5_variables
         return e2o
 
-    def test_download_ecmwf_backend(
+    def test_download_s3_backend(
         self,
         test_s3_data_source_instantiate_object: S3,
         s3_era5_data_source_output_dir: str,
