@@ -322,9 +322,6 @@ class ECMWF(AbstractDataSource):
         area_str
         dataset
         """
-
-        os.chdir(output_folder)
-
         if download_type == 1 or download_type == 2:
             server.retrieve(
                 {
@@ -340,7 +337,7 @@ class ECMWF(AbstractDataSource):
                     "class": class_str,  # http://apps.ecmwf.int/codes/grib/format/mars/class/
                     "area": area_str,
                     "format": "netcdf",
-                    "target": f"data_{dataset}.nc",
+                    "target": f"{output_folder}/data_{dataset}.nc",
                 }
             )
 
@@ -360,7 +357,7 @@ class ECMWF(AbstractDataSource):
                     "class": class_str,  # http://apps.ecmwf.int/codes/grib/format/mars/class/
                     "area": area_str,
                     "format": "netcdf",
-                    "target": f"data_{dataset}.nc",
+                    "target": f"{output_folder}/data_{dataset}.nc",
                 }
             )
 
