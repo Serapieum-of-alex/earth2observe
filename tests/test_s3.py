@@ -5,7 +5,7 @@ import shutil
 import pytest
 from earth2observe.s3 import S3
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def test_create_s3_object(
     monthly_dates: List,
     lat_bounds: List,
