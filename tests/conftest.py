@@ -57,7 +57,7 @@ def ecmwf_base_dir() -> str:
 
 @pytest.fixture(scope="module")
 def s3_era5_base_dir() -> str:
-    path = "tests/data/delete/s3/era5"
+    path = "tests/data/delete/s3-era5"
     if not os.path.exists(path):
         os.makedirs(path)
     return Path(path).absolute()
@@ -106,7 +106,7 @@ def chirps_data_source_output_dir() -> str:
 
 @pytest.fixture(scope="module")
 def s3_era5_data_source_output_dir() -> str:
-    path = "tests/data/delete/s3-era5000"
+    path = "tests/data/delete/s3-era5-backend"
     if not os.path.exists(path):
         os.makedirs(path)
     return Path(path).absolute()
