@@ -1,7 +1,6 @@
 import datetime as dt
 import os
 from ftplib import FTP
-from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -9,9 +8,9 @@ from joblib import Parallel, delayed
 from osgeo import gdal
 from pyramids.raster import Raster
 from pyramids.utils import extractFromGZ
+from serapeum_utils.utils import print_progress_bar
 
 from earth2observe.abstractdatasource import AbstractCatalog, AbstractDataSource
-from serapeum_utils.utils import print_progress_bar
 
 
 class CHIRPS(AbstractDataSource):

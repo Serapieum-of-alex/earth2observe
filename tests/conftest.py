@@ -1,7 +1,8 @@
 import os
+from pathlib import Path
 
 import pytest
-from pathlib import Path
+
 from tests.gee.conftest import *
 
 
@@ -23,6 +24,7 @@ def number_downloaded_files() -> int:
 @pytest.fixture(scope="session")
 def daily_temporal_resolution() -> str:
     return "daily"
+
 
 @pytest.fixture(scope="session")
 def monthly_temporal_resolution() -> str:
@@ -62,13 +64,16 @@ def s3_era5_base_dir() -> str:
         os.makedirs(path)
     return Path(path).absolute()
 
+
 @pytest.fixture(scope="session")
 def chirps_variables() -> List[str]:
     return ["precipitation"]  # "T",
 
+
 @pytest.fixture(scope="session")
 def ecmwf_variables() -> List[str]:
     return ["E"]  # "T",
+
 
 @pytest.fixture(scope="session")
 def s3_era5_variables() -> List[str]:
@@ -79,9 +84,11 @@ def s3_era5_variables() -> List[str]:
 def ecmwf_data_source() -> str:
     return "ecmwf"
 
+
 @pytest.fixture(scope="session")
 def chirps_data_source() -> str:
     return "chirps"
+
 
 @pytest.fixture(scope="session")
 def s3_data_source() -> str:
@@ -110,4 +117,3 @@ def s3_era5_data_source_output_dir() -> str:
     if not os.path.exists(path):
         os.makedirs(path)
     return Path(path).absolute()
-
