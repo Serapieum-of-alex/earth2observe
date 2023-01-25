@@ -85,5 +85,5 @@ Main Features
    :hidden:
    :maxdepth: 1
 
-   Installation <00Installation.rst>
-   Tutorial <03tutorial.rst>
+   Installation <installation.rst>
+   Data Sources <all_data_sources.rst>
