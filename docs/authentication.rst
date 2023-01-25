@@ -1,32 +1,16 @@
-***********************************************
-Unified API for all remote sensinf data sources
-***********************************************
-
-`earth2observe` provides a unified API for all available data sources
-- ECMWF
-- CHIRPS
-- Amazon-S3
-
-The API takes few parameters to determine the domain of your data
-- The date range you want to download the data within in the form of `start`, `end`, and the `temporal_resolution`
-- The
+*****
+ECMWF
+*****
 
 .. code-block:: py
     :linenos:
+
     from earth2observe.earth2observe import Earth2Observe
     start = "2009-01-01"
     end = "2009-01-10"
     temporal_resolution = "daily"
     latlim = [4.19, 4.64]
     lonlim = [-75.65, -74.73]
-
------
-ECMWF
------
-
-.. code-block:: py
-    :linenos:
-
     source = "ecmwf"
     path = r"examples\data\ecmwf"
     variables = ["precipitation"]
@@ -43,9 +27,9 @@ ECMWF
     )
     e2o.download()
 
-------
+******
 CHIRPS
-------
+******
 
 .. code-block:: py
     :linenos:
@@ -72,6 +56,7 @@ parallel download
     :linenos:
 
     path = r"examples\data\chirps-cores"
+
     e2o = Earth2Observe(
         data_source=source,
         start=start,
@@ -84,9 +69,9 @@ parallel download
     )
     e2o.download(cores=4)
 
----------
+*********
 Amazon-S3
----------
+*********
 
 .. code-block:: py
     :linenos:

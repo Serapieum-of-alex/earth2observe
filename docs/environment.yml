@@ -5,6 +5,3 @@ dependencies:
   - numpy ==1.24.1
   - pip >=22.3.1
   - pandas >=1.4.4
-  - ecmwf-api-client >=1.6.3
-  - pyramids >=0.3.1
-  - serapeum_utils >=0.1.1
