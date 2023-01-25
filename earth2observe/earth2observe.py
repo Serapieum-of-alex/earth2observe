@@ -3,7 +3,8 @@ from earth2observe.chirps import CHIRPS
 from earth2observe.ecmwf import ECMWF
 from earth2observe.s3 import S3
 
-
+DEFAULT_LONGITUDE_LIMIT = [-180, 180]
+DEFAULT_LATITUDE_LIMIT = [-90, 90]
 class Earth2Observe:
     """End user class to call all the data source classes abailable in earth2observe."""
 
@@ -23,6 +24,10 @@ class Earth2Observe:
     ):
         if data_source not in self.DataSources:
             raise ValueError(f"{data_source} not supported")
+        if lat_lim is None:
+            lat_lim = DEFAULT_LATITUDE_LIMIT
+        if lon_lim is None:
+            lon_lim = DEFAULT_LONGITUDE_LIMIT
 
         self.datasource = self.DataSources[data_source](
             start=start,
