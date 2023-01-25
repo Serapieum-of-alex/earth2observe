@@ -62,7 +62,7 @@ Current release info
 
 
 earth2observe - Remote sensing package
-=====================================================================
+=======================================
 
 **earth2observe** is a Python package providing unified API for several remote sensing data sources
 
@@ -77,8 +77,8 @@ Main Features
 
     earth2observe -> ECMWF;
     earth2observe -> CHIRPS;
-    earth2observe -> Amazon S3;
-    earth2observe -> Google Earth Engine;
+    earth2observe -> 'Amazon S3';
+    earth2observe -> 'Google Earth Engine';
     dpi=200;
 
 .. toctree::
@@ -86,4 +86,7 @@ Main Features
    :maxdepth: 1
 
    Installation <installation.rst>
+   Authentication <authentication.rst>
+   Data Catalog <catalog.rst>
    Data Sources <all_data_sources.rst>
+   Data Post processing <post_processing.rst>

@@ -1,92 +1,36 @@
-*****
+*********************************
+Data Source server authentication
+*********************************
+
+-----
 ECMWF
-*****
+-----
+- Installation of ECMWF API key
+1 - to be able to use Hapi to download ECMWF data you need to register and setup your account in the ECMWF website (https://apps.ecmwf.int/registration/)
 
-.. code-block:: py
-    :linenos:
+2 - Install ECMWF key (instruction are here https://confluence.ecmwf.int/display/WEBAPI/Access+ECMWF+Public+Datasets#AccessECMWFPublicDatasets-key)
+(https://confluence.ecmwf.int/display/WEBAPI/Install+ECMWF+API+Key)
+ (to get youe API key https://api.ecmwf.int/v1/key/)
+ (key)[\examples\img\key.png
 
-    from earth2observe.earth2observe import Earth2Observe
-    start = "2009-01-01"
-    end = "2009-01-10"
-    temporal_resolution = "daily"
-    latlim = [4.19, 4.64]
-    lonlim = [-75.65, -74.73]
-    source = "ecmwf"
-    path = r"examples\data\ecmwf"
-    variables = ["precipitation"]
+Copy/paste the key into a text file and save it to your $HOME directory as .ecmwfapirc (If you use
+Windows, you have to put the file in C:\Users\<USERNAME>\.ecmwfapirc
 
-    e2o = Earth2Observe(
-        data_source=source,
-        start=start,
-        end=end,
-        variables=variables,
-        lat_lim=latlim,
-        lon_lim=lonlim,
-        temporal_resolution=temporal_resolution,
-        path=path,
-    )
-    e2o.download()
+3- add environment variables
 
-******
+in your command prompt type the following lines and press enter
+
+export ECMWF_API_URL="https://api.ecmwf.int/v1"
+export ECMWF_API_KEY="************"
+export ECMWF_API_EMAIL="<your-email>"
+
+
+------
 CHIRPS
-******
+------
+- CHIRPS data source provides the data through a FTP server that is public and does not need and kind of registration
 
-.. code-block:: py
-    :linenos:
-
-    source = "chirps"
-    path = r"examples\data\chirps"
-    variables = ["precipitation"]
-    e2o = Earth2Observe(
-        data_source=source,
-        start=start,
-        end=end,
-        variables=variables,
-        lat_lim=latlim,
-        lon_lim=lonlim,
-        temporal_resolution=temporal_resolution,
-        path=path,
-    )
-    e2o.download()
-
-parallel download
------------------
-
-.. code-block:: py
-    :linenos:
-
-    path = r"examples\data\chirps-cores"
-
-    e2o = Earth2Observe(
-        data_source=source,
-        start=start,
-        end=end,
-        variables=variables,
-        lat_lim=latlim,
-        lon_lim=lonlim,
-        temporal_resolution=temporal_resolution,
-        path=path,
-    )
-    e2o.download(cores=4)
-
-*********
+---------
 Amazon-S3
-*********
-
-.. code-block:: py
-    :linenos:
-    
-    path = r"examples\data\s3-backend"
-    source = "amazon-s3"
-    variables = ["precipitation"]
-    e2o = Earth2Observe(
-        data_source=source,
-        start=start,
-        end=end,
-        variables=variables,
-        # lat_lim=latlim,
-        # lon_lim=lonlim,
-        temporal_resolution=temporal_resolution,
-        path=path,
-    )
-    e2o.download()
+---------
+the era5_bucket provides the data publically and does not require registering in amazon aws to download the data.

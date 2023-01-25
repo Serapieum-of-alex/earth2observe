@@ -251,7 +251,6 @@ texinfo_documents = [
         "earth2observe",
         "earth2observe Documentation",
         "Mostafa Farrag",
-        "earth2observe",
         "One line description of project.",
         "Miscellaneous",
     )
