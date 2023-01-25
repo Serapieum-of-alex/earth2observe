@@ -46,8 +46,8 @@ Install as a conda environment
 
 The easiest and most robust way to install earth2observe is by installing it in a separate
 conda environment. In the root repository directory there is an ``environment.yml`` file.
-This file lists all dependencies. Either use the ``environment.yml`` file from the master branch
-(please note that the master branch can change rapidly and break functionality without warning),
+This file lists all dependencies. Either use the ``environment.yml`` file from the main branch
+(please note that the main branch can change rapidly and break functionality without warning),
 or from one of the releases {release}.
 
 Run this command to start installing all earth2observe dependencies:
@@ -81,7 +81,7 @@ Or download the `tarball`_:
 
 .. code-block:: console
 
-    $ curl -OJL https://github.com/Serapieum-of-alex/earth2observe/tarball/master
+    $ curl -OJL https://github.com/Serapieum-of-alex/earth2observe/tarball/main
 
 Once you have a copy of the source, you can install it with:
 
@@ -91,10 +91,10 @@ Once you have a copy of the source, you can install it with:
 
 
 .. _Github repo: https://github.com/Serapieum-of-alex/earth2observe
-.. _tarball: https://github.com/Serapieum-of-alex/earth2observe/tarball/master
+.. _tarball: https://github.com/Serapieum-of-alex/earth2observe/tarball/main
 
 
-To install directly from GitHub (from the HEAD of the master branch):
+To install directly from GitHub (from the HEAD of the main branch):
 
 + ``pip install git+https://github.com/Serapieum-of-alex/earth2observe.git``
 
@@ -122,8 +122,8 @@ it from, such that any changes you make there are directly reflected in your ins
 + ``pip install -e .``
 
 Alternatively, if you want to avoid using ``git`` and simply want to test the latest
-version from the ``master`` branch, you can replace the first line with downloading
-a zip archive from GitHub: https://github.com/Serapieum-of-alex/earth2observe/archive/master.zip
+version from the ``main`` branch, you can replace the first line with downloading
+a zip archive from GitHub: https://github.com/Serapieum-of-alex/earth2observe/archive/main.zip
 `libraries.io <https://libraries.io/github/Serapieum-of-alex/earth2observe>`_.
 
 Install using pip
