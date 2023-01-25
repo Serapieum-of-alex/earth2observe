@@ -9,7 +9,10 @@ Unified API for all remote sensinf data sources
 
 The API takes few parameters to determine the domain of your data
 - The date range you want to download the data within in the form of `start`, `end`, and the `temporal_resolution`
-- The
+- The spatial extent of your area of interest in the form of latitude and longitude limit `latlim`, `lonlim`
+
+Each data source has different climate variables/datasets, and to know what variables/datasets each data source provides
+you can use the `Catalog` class that is with each data source.
 
 .. code-block:: py
     :linenos:
