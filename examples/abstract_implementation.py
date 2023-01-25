@@ -60,8 +60,8 @@ e2o = Earth2Observe(
     start=start,
     end=end,
     variables=variables,
-    lat_lim=latlim,
-    lon_lim=lonlim,
+    # lat_lim=latlim,
+    # lon_lim=lonlim,
     temporal_resolution=temporal_resolution,
     path=path,
 )
