@@ -2,16 +2,20 @@
 Current release info
 ====================
 
+.. image:: https://readthedocs.org/projects/earth2observe/badge/?version=latest
+    :target: https://earth2observe.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+
 .. image:: https://img.shields.io/pypi/v/earth2observe
   :target: https://pypi.org/project/earth2observe/
 
 
 .. image:: https://img.shields.io/conda/v/conda-forge/earth2observe?label=conda-forge
-  :target: https://pypi.org/project/earth2observe/
+    :target: https://pypi.org/project/earth2observe/
 
 
 .. image:: https://img.shields.io/pypi/pyversions/earth2observe
-  :target: https://pypi.org/project/earth2observe/
+    :target: https://pypi.org/project/earth2observe/
 
 
 .. image:: https://img.shields.io/github/forks/mafarrag/earth2observe?style=social
@@ -19,7 +23,7 @@ Current release info
 
 
 .. image:: https://anaconda.org/conda-forge/earth2observe/badges/downloads.svg
-  :target: https://anaconda.org/conda-forge/earth2observe
+    :target: https://anaconda.org/conda-forge/earth2observe
 
 
 .. image:: https://img.shields.io/conda/vn/conda-forge/earth2observe
