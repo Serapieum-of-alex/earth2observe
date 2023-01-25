@@ -59,10 +59,10 @@ class Dataset(GEE):
         Returns
         -------
         start_date: [str]
-            beginning of the time series.
+            beginning of the temporal_resolution series.
 
         end_date: [str]
-            end of the time series.
+            end of the temporal_resolution series.
         """
         data = catalog.loc[catalog["dataset"] == dataset_id, :]
 
