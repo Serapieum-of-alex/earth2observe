@@ -1,16 +1,15 @@
 """Amazon S3."""
 import datetime as dt
 import os
-from pathlib import Path
 from typing import Dict, List
 
 import boto3
 import botocore
 import pandas as pd
 from botocore import exceptions
+from serapeum_utils.utils import print_progress_bar
 
 from earth2observe.abstractdatasource import AbstractCatalog, AbstractDataSource
-from serapeum_utils.utils import print_progress_bar
 
 
 class S3(AbstractDataSource):
@@ -171,7 +170,9 @@ class S3(AbstractDataSource):
             month = date.strftime("%m")
             # file path patterns for remote S3 objects and corresponding local file
             s3_data_key = f"{year}/{month}/data/{var}.nc"
-            downloaded_file_dir = f"{self.path}/{year}{month}_{self.temporal_resolution}_{var}.nc"
+            downloaded_file_dir = (
+                f"{self.path}/{year}{month}_{self.temporal_resolution}_{var}.nc"
+            )
 
             self.API(s3_data_key, downloaded_file_dir)
 

@@ -1,9 +1,12 @@
-from typing import List
 import glob
 import os
 import shutil
+from typing import List
+
 import pytest
+
 from earth2observe.s3 import S3
+
 
 @pytest.fixture(scope="module")
 def test_create_s3_object(

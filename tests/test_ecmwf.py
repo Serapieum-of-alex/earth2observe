@@ -41,4 +41,3 @@ def test_download(
         shutil.rmtree(f"{ecmwf_base_dir}")
     except PermissionError:
         print("the downloaded files could not be deleted")
-

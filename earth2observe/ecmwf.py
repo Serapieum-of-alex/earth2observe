@@ -5,7 +5,6 @@
 import calendar
 import datetime as dt
 import os
-from pathlib import Path
 from typing import Dict
 
 import numpy as np
@@ -15,10 +14,11 @@ from ecmwfapi import ECMWFDataServer
 from loguru import logger
 from netCDF4 import Dataset
 from pyramids.raster import Raster
+from serapeum_utils.utils import print_progress_bar
 
 from earth2observe import __path__
 from earth2observe.abstractdatasource import AbstractCatalog, AbstractDataSource
-from serapeum_utils.utils import print_progress_bar
+
 
 class ECMWF(AbstractDataSource):
     """RemoteSensing.

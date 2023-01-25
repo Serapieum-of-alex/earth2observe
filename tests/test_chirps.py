@@ -43,9 +43,7 @@ def test_download(
     fname = test_create_chirps_object.clipped_fname
     test_create_chirps_object.download()
 
-    filelist = glob.glob(
-        os.path.join(f"{chirps_base_dir}", f"{fname}*.tif")
-    )
+    filelist = glob.glob(os.path.join(f"{chirps_base_dir}", f"{fname}*.tif"))
     assert len(filelist) == number_downloaded_files
     # delete the files
     try:

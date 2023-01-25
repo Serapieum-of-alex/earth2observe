@@ -48,9 +48,7 @@ class TestChirpsBackend:
         test_chirps_data_source_instantiate_object.download()
         fname = "P_CHIRPS"
         filelist = glob.glob(
-            os.path.join(
-                f"{chirps_data_source_output_dir}", f"{fname}*.tif"
-            )
+            os.path.join(f"{chirps_data_source_output_dir}", f"{fname}*.tif")
         )
         assert len(filelist) == number_downloaded_files
         # delete the files
@@ -94,9 +92,7 @@ class TestECMWFBackend:
         number_downloaded_files: int,
     ):
         test_ecmwf_data_source_instantiate_object.download()
-        filelist = glob.glob(
-            os.path.join(f"{ecmwf_data_source_output_dir}", f"*.tif")
-        )
+        filelist = glob.glob(os.path.join(f"{ecmwf_data_source_output_dir}", f"*.tif"))
         assert len(filelist) == number_downloaded_files
         # delete the files
         try:
@@ -139,9 +135,7 @@ class TestS3Backend:
         number_downloaded_files: int,
     ):
         test_s3_data_source_instantiate_object.download()
-        filelist = glob.glob(
-            os.path.join(f"{s3_era5_data_source_output_dir}", f"*.nc")
-        )
+        filelist = glob.glob(os.path.join(f"{s3_era5_data_source_output_dir}", f"*.nc"))
         assert len(filelist) == number_downloaded_files
         # delete the files
         try:
