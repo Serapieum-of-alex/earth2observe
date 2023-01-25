@@ -1,11 +1,27 @@
-***********************************************
-Unified API for all remote sensinf data sources
-***********************************************
+*************
+Earth2Observe
+*************
 
-`earth2observe` provides a unified API for all available data sources
+--------------
+Design Concept
+--------------
+earth2Observe is designed following the Template/Factory design pattern to create an abstract class as a template
+for different data sources.
+
+The main objective of the `earth2Observe` is to provide a unified API for all remote sensing data sources, where you
+only have to worry about the domain of your data (date range and spatial extent) and the package does everything in
+the backend. For some data source like google earth engine and ECMWF you still have to register and create access key.
+
+
+--------------
+Design Concept
+--------------
+
+`earth2observe` provides a unified API for the following data sources
 - ECMWF
 - CHIRPS
 - Amazon-S3
+- Google Earth Engine (still under development)
 
 Some of the data sources provides the data in servers that needs an authentication key, to create the authentication
 key required for each data source check the authentication instruictions .
