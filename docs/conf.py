@@ -15,7 +15,7 @@ import sys
 # import sphinx_rtd_theme
 
 # General information about the project.
-project = "pyramids"
+project = "earth2observe"
 author = "Mostafa Farrag"
 
 # copyright = u"2013-2019, "
@@ -28,7 +28,7 @@ html_theme_path = ["."]
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.abspath("../pyramids"))
+sys.path.insert(0, os.path.abspath("../earth2observe"))
 sys.path.insert(0, os.path.abspath(".."))
 sys.path.insert(0, os.path.abspath("../examples"))
 
@@ -137,7 +137,7 @@ html_theme = "sphinx_rtd_theme"
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
 """
-html_logo = "images/pyramids.png"
+html_logo = "images/earth2observe.png"
 """
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
@@ -197,7 +197,7 @@ html_show_sourcelink = True
 html_file_suffix = ".html"
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "pyramidsdoc"
+htmlhelp_basename = "earth2observedoc"
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -206,7 +206,7 @@ htmlhelp_basename = "pyramidsdoc"
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-    ("index", "pyramids.tex", "pyramids Documentation", "Mostafa Farrag", "report")
+    ("index", "earth2observe.tex", "earth2observe Documentation", "Mostafa Farrag", "report")
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -234,7 +234,7 @@ latex_domain_indices = False
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [("index", "pyramids", "pyramids Documentation", [author], 1)]
+man_pages = [("index", "earth2observe", "earth2observe Documentation", [author], 1)]
 
 # If true, show URL addresses after external links.
 # man_show_urls = False
@@ -248,10 +248,10 @@ man_pages = [("index", "pyramids", "pyramids Documentation", [author], 1)]
 texinfo_documents = [
     (
         "index",
-        "pyramids",
-        "pyramids Documentation",
+        "earth2observe",
+        "earth2observe Documentation",
         "Mostafa Farrag",
-        "pyramids",
+        "earth2observe",
         "One line description of project.",
         "Miscellaneous",
     )
@@ -277,5 +277,5 @@ autodoc_mock_imports = [
     #    "netCDF4_utils",
     #    "netcdftime",
     #    "pyproj",
-    #    "pyramids.version",
+    #    "earth2observe.version",
 ]
