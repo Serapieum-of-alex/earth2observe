@@ -26,3 +26,9 @@ History
 * create an abstract class for datasource and catalog as a bluebrint for all data sources
 * test all classes in CI
 * use pathlib to deal with paths
+
+0.2.1 (2023-01-25)
+------------------
+
+* add amazon S3 data source and catalog for the data available in era5 bucket (ERA5 only tested)
+* replace utility functions with the serapeum_utils package.
