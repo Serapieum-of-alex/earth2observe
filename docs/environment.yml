@@ -5,3 +5,5 @@ dependencies:
   - pip >=22.3.1
   - pandas
   - matplotlib
+  - pip:
+    - pydata-sphinx-theme
