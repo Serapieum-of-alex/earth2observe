@@ -8,7 +8,7 @@ import pytest
 from earth2observe.chirps import CHIRPS
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def test_create_chirps_object(
     dates: List,
     daily_temporal_resolution: str,
@@ -43,9 +43,10 @@ def test_download(
     fname = test_create_chirps_object.clipped_fname
     test_create_chirps_object.download()
 
-    filelist = glob.glob(
-        os.path.join(f"{chirps_base_dir}/chirps/precipitation", f"{fname}*.tif")
-    )
+    filelist = glob.glob(os.path.join(f"{chirps_base_dir}", f"{fname}*.tif"))
     assert len(filelist) == number_downloaded_files
     # delete the files
-    shutil.rmtree(f"{chirps_base_dir}/chirps/precipitation")
+    try:
+        shutil.rmtree(f"{chirps_base_dir}")
+    except PermissionError:
+        print("the downloaded files could not be deleted")

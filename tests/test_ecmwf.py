@@ -8,7 +8,7 @@ import pytest
 from earth2observe.ecmwf import ECMWF
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def test_create_ecmwf_object(
     dates: List,
     lat_bounds: List,
@@ -34,7 +34,10 @@ def test_download(
     number_downloaded_files: int,
 ):
     test_create_ecmwf_object.download()
-    filelist = glob.glob(os.path.join(f"{ecmwf_base_dir}/daily/Evaporation/", f"*.tif"))
+    filelist = glob.glob(os.path.join(f"{ecmwf_base_dir}", f"*.tif"))
     assert len(filelist) == number_downloaded_files
     # delete the files
-    shutil.rmtree(f"{ecmwf_base_dir}/daily")
+    try:
+        shutil.rmtree(f"{ecmwf_base_dir}")
+    except PermissionError:
+        print("the downloaded files could not be deleted")

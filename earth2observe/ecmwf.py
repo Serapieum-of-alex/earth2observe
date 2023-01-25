@@ -5,7 +5,6 @@
 import calendar
 import datetime as dt
 import os
-from pathlib import Path
 from typing import Dict
 
 import numpy as np
@@ -15,10 +14,10 @@ from ecmwfapi import ECMWFDataServer
 from loguru import logger
 from netCDF4 import Dataset
 from pyramids.raster import Raster
+from serapeum_utils.utils import print_progress_bar
 
 from earth2observe import __path__
 from earth2observe.abstractdatasource import AbstractCatalog, AbstractDataSource
-from earth2observe.utils import print_progress_bar
 
 
 class ECMWF(AbstractDataSource):
@@ -70,8 +69,8 @@ class ECMWF(AbstractDataSource):
             lat_lim=lat_lim,
             lon_lim=lon_lim,
             fmt=fmt,
+            path=path,
         )
-        self.path = Path(path).absolute()
 
     def check_input_dates(
         self, start: str, end: str, temporal_resolution: str, fmt: str
@@ -169,9 +168,7 @@ class ECMWF(AbstractDataSource):
                 f"Download ECMWF {var} data for period {self.start} till {self.end}"
             )
             var_info = catalog.get_variable(var)
-            self.downloadDataset(
-                var_info, dataset=dataset, progress_bar=progress_bar
-            )  # CaseParameters=[SumMean, Min, Max]
+            self.downloadDataset(var_info, dataset=dataset, progress_bar=progress_bar)
         # delete the downloaded netcdf
         del_ecmwf_dataset = os.path.join(self.path, "data_interim.nc")
         os.remove(del_ecmwf_dataset)
@@ -207,16 +204,10 @@ class ECMWF(AbstractDataSource):
         progress_bar: [bool]
             True if you want to display a progress bar.
         """
-        # Create the directory
-        out_dir = f"{self.path}/{self.temporal_resolution}/{var_info.get('file name')}"
-
-        if not os.path.exists(out_dir):
-            os.makedirs(out_dir)
-
         # trigger the request to the server
         self.API(var_info, dataset)
         # process the downloaded data
-        self.post_download(var_info, out_dir, dataset, progress_bar)
+        self.post_download(var_info, self.path, dataset, progress_bar)
 
     def API(self, var_info, dataset):
         """form the request url abd trigger the request.
@@ -331,9 +322,6 @@ class ECMWF(AbstractDataSource):
         area_str
         dataset
         """
-
-        os.chdir(output_folder)
-
         if download_type == 1 or download_type == 2:
             server.retrieve(
                 {
@@ -349,7 +337,7 @@ class ECMWF(AbstractDataSource):
                     "class": class_str,  # http://apps.ecmwf.int/codes/grib/format/mars/class/
                     "area": area_str,
                     "format": "netcdf",
-                    "target": f"data_{dataset}.nc",
+                    "target": f"{output_folder}/data_{dataset}.nc",
                 }
             )
 
@@ -369,7 +357,7 @@ class ECMWF(AbstractDataSource):
                     "class": class_str,  # http://apps.ecmwf.int/codes/grib/format/mars/class/
                     "area": area_str,
                     "format": "netcdf",
-                    "target": f"data_{dataset}.nc",
+                    "target": f"{output_folder}/data_{dataset}.nc",
                 }
             )
 
@@ -482,7 +470,7 @@ class ECMWF(AbstractDataSource):
             # Define the out name
             name_out = os.path.join(
                 out_dir,
-                f"%{var_output_name}_ECMWF_ERA-Interim_{Var_unit}_{self.temporal_resolution}_{year}.{month}.{day}.tif",
+                f"{var_output_name}_ECMWF_ERA-Interim_{Var_unit}_{self.temporal_resolution}_{year}.{month}.{day}.tif",
             )
 
             # Create Tiff files
@@ -505,10 +493,10 @@ class ECMWF(AbstractDataSource):
 class Catalog(AbstractCatalog):
     """ECMWF data catalog This class contains the information about the ECMWF variables http://rda.ucar.edu/cgi-bin/transform?xml=/metadata/ParameterTables/WMO_GRIB1.98-0.128.xml&view=gribdoc."""
 
-    def __init__(self, version: int = 1):
+    def __init__(self):
         # get the catalog
-        self.catalog = self.get_catalog()
-        self.version = version
+        super().__init__()
+        pass
 
     def get_catalog(self):
         """readthe data catalog from disk."""
@@ -518,7 +506,7 @@ class Catalog(AbstractCatalog):
 
     def get_variable(self, var_name):
         """retrieve a variable form the datasource catalog."""
-        return self.catalog.get(var_name)
+        return super().get_variable(var_name)
 
 
 class AuthenticationError(Exception):

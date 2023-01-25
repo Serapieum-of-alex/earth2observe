@@ -146,7 +146,7 @@ build_artifacts
 .idea
 mo_*
 conda/
-/examples/data/ecmwf/daily/*
+/examples/data/ecmwf/*
 .idea/*
 examples/data/chirps/*
 *.xml

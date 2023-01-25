@@ -28,6 +28,7 @@ Main Features
 -------------
   - ERA Interim Download
   - CHIRPS Rainfall data Download
+  - ERA5 from Amason S3 data source
 
 
 Future work
@@ -61,7 +62,7 @@ pip install git+https://github.com/MAfarrag/earthobserve
 ## pip
 to install the last release you can easly use pip
 ```
-pip install earthobserve==0.2.0
+pip install earthobserve==0.2.1
 ```
 
 Quick start
