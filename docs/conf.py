@@ -48,15 +48,19 @@ sys.path.append(os.path.abspath("sphinxext"))
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
-    "matplotlib.sphinxext.plot_directive",
-    "sphinx.ext.todo",
-    "sphinx.ext.mathjax",
     "sphinx.ext.autodoc",
-    "sphinx.ext.graphviz",
-    "sphinx.ext.doctest",
-    "sphinx.ext.autosectionlabel",
-    "python_docs_theme",
-    "pydata_sphinx_theme"
+    "sphinx.ext.coverage",
+    "sphinx.ext.viewcode",
+    # "matplotlib.sphinxext.plot_directive",
+    # "sphinx.ext.todo",
+    # "sphinx.ext.mathjax",
+    # "sphinx.ext.graphviz",
+    # "sphinx.ext.doctest",
+    # "sphinx.ext.autosectionlabel",
+    # "python_docs_theme",
+    # "pydata_sphinx_theme"
+    "numpydoc",
+    "nbsphinx"
 ]
 
 autosectionlabel_prefix_document = True
