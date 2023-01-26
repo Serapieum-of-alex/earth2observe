@@ -5,5 +5,9 @@ dependencies:
   - pip >=22.3.1
   - pandas
   - matplotlib
+  - numpy==1.20.*
+  - numpydoc==1.1.0
+  - typing-extensions==3.10.*
   - pip:
     - pydata-sphinx-theme
+    - nbsphinx

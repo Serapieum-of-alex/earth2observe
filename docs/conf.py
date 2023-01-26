@@ -55,6 +55,8 @@ extensions = [
     "sphinx.ext.graphviz",
     "sphinx.ext.doctest",
     "sphinx.ext.autosectionlabel",
+    "python_docs_theme",
+    "pydata_sphinx_theme"
 ]
 
 autosectionlabel_prefix_document = True
@@ -166,7 +168,13 @@ html_static_path = ["static"]
 # html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-# html_sidebars = {}
+html_sidebars = {
+    "**": [
+        "globaltoc.html",
+        "relations.html",  # needs 'show_related': True theme option to display
+        "searchbox.html",
+    ]
+}
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
@@ -203,8 +211,6 @@ htmlhelp_basename = "earth2observedoc"
 
 
 # -- Options for LaTeX output --------------------------------------------------
-
-
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [

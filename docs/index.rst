@@ -86,7 +86,7 @@ Main Features
    :maxdepth: 1
 
    Installation <installation.rst>
-   History <./HISTORY.rst>
+   History <../HISTORY.rst>
    Authentication <authentication.rst>
    Data Catalog <catalog.rst>
    Data Sources <all_data_sources.rst>
