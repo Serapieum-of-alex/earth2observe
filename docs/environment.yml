@@ -4,7 +4,6 @@ dependencies:
   - python >=3.9,<3.11
   - pip >=22.3.1
   - pandas
-  - matplotlib
   - numpy==1.20.*
   - numpydoc==1.1.0
   - typing-extensions==3.10.*
