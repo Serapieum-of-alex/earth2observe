@@ -32,3 +32,9 @@ History
 
 * add amazon S3 data source and catalog for the data available in era5 bucket (ERA5 only tested)
 * replace utility functions with the serapeum_utils package.
+
+0.2.2 (2023-01-29)
+------------------
+
+* add documentation
+* bump up pyramids versions
