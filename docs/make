@@ -1,0 +1,4 @@
+mkdir sphinxtest
+cd sphinxtest
+sphinx-quickstart
+code .

@@ -67,3 +67,5 @@ e2o = Earth2Observe(
     path=path,
 )
 e2o.download()
+
+#%%

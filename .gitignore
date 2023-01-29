@@ -137,7 +137,6 @@ build_artifacts
 *.iml
 
 *.qgz
-*.png
 .vscode
 
 .xml

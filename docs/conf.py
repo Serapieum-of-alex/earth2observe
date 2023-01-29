@@ -15,7 +15,7 @@ import sys
 # import sphinx_rtd_theme
 
 # General information about the project.
-project = "pyramids"
+project = "earth2observe"
 author = "Mostafa Farrag"
 
 # copyright = u"2013-2019, "
@@ -28,7 +28,7 @@ html_theme_path = ["."]
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.abspath("../pyramids"))
+sys.path.insert(0, os.path.abspath("../earth2observe"))
 sys.path.insert(0, os.path.abspath(".."))
 sys.path.insert(0, os.path.abspath("../examples"))
 
@@ -48,13 +48,19 @@ sys.path.append(os.path.abspath("sphinxext"))
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
-    "matplotlib.sphinxext.plot_directive",
-    "sphinx.ext.todo",
-    "sphinx.ext.mathjax",
     "sphinx.ext.autodoc",
-    "sphinx.ext.graphviz",
-    "sphinx.ext.doctest",
-    "sphinx.ext.autosectionlabel",
+    "sphinx.ext.coverage",
+    "sphinx.ext.viewcode",
+    # "matplotlib.sphinxext.plot_directive",
+    # "sphinx.ext.todo",
+    # "sphinx.ext.mathjax",
+    # "sphinx.ext.graphviz",
+    # "sphinx.ext.doctest",
+    # "sphinx.ext.autosectionlabel",
+    # "python_docs_theme",
+    # "pydata_sphinx_theme"
+    "numpydoc",
+    "nbsphinx"
 ]
 
 autosectionlabel_prefix_document = True
@@ -117,7 +123,9 @@ pygments_style = "sphinx"
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = "sphinx_rtd_theme"
+# html_theme = "sphinx_rtd_theme"
+html_theme = "pydata_sphinx_theme"
+
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -137,7 +145,7 @@ html_theme = "sphinx_rtd_theme"
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
 """
-html_logo = "images/pyramids.png"
+html_logo = "images/earth2observe.png"
 """
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
@@ -164,7 +172,13 @@ html_static_path = ["static"]
 # html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-# html_sidebars = {}
+html_sidebars = {
+    "**": [
+        "globaltoc.html",
+        "relations.html",  # needs 'show_related': True theme option to display
+        "searchbox.html",
+    ]
+}
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
@@ -197,16 +211,14 @@ html_show_sourcelink = True
 html_file_suffix = ".html"
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "pyramidsdoc"
+htmlhelp_basename = "earth2observedoc"
 
 
 # -- Options for LaTeX output --------------------------------------------------
-
-
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-    ("index", "pyramids.tex", "pyramids Documentation", "Mostafa Farrag", "report")
+    ("index", "earth2observe.tex", "earth2observe Documentation", "Mostafa Farrag", "report")
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -234,7 +246,7 @@ latex_domain_indices = False
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [("index", "pyramids", "pyramids Documentation", [author], 1)]
+man_pages = [("index", "earth2observe", "earth2observe Documentation", [author], 1)]
 
 # If true, show URL addresses after external links.
 # man_show_urls = False
@@ -248,10 +260,9 @@ man_pages = [("index", "pyramids", "pyramids Documentation", [author], 1)]
 texinfo_documents = [
     (
         "index",
-        "pyramids",
-        "pyramids Documentation",
+        "earth2observe",
+        "earth2observe Documentation",
         "Mostafa Farrag",
-        "pyramids",
         "One line description of project.",
         "Miscellaneous",
     )
@@ -277,5 +288,5 @@ autodoc_mock_imports = [
     #    "netCDF4_utils",
     #    "netcdftime",
     #    "pyproj",
-    #    "pyramids.version",
+    #    "earth2observe.version",
 ]

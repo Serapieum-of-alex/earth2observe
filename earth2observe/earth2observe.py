@@ -24,8 +24,31 @@ class Earth2Observe:
         lon_lim: list = None,
         fmt: str = "%Y-%m-%d",
     ):
+        """
+        Parameters
+        ----------
+        data_source: [str]
+            data source name. the available data sources are ["ecmwf", "chirps", "amazon-s3"].
+        temporal_resolution (str, optional):
+            temporal resolution. Defaults to 'daily'.
+        start (str, optional):
+            start date. Defaults to ''.
+        end (str, optional):
+            end date. Defaults to ''.
+        path (str, optional):
+            Path where you want to save the downloaded data. Defaults to ''.
+        variables (list, optional):
+            Variable name.
+        lat_lim (list, optional):
+            [ymin, ymax]. Defaults to None.
+        lon_lim (list, optional):
+            [xmin, xmax]. Defaults to None.
+        fmt (str, optional):
+            date format. Defaults to "%Y-%m-%d".
+        """
         if data_source not in self.DataSources:
             raise ValueError(f"{data_source} not supported")
+
         if lat_lim is None:
             lat_lim = DEFAULT_LATITUDE_LIMIT
         if lon_lim is None:

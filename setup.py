@@ -11,7 +11,7 @@ requirements_dev = [line.strip() for line in open("requirements-dev.txt").readli
 
 setup(
     name="earth2observe",
-    version="0.2.1",
+    version="0.2.2",
     description="remote sensing package",
     author="Mostafa Farrag",
     author_email="moah.farag@gmail.come",
