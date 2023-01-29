@@ -85,9 +85,9 @@ Main Features
    :hidden:
    :maxdepth: 1
 
-   Installation <Installation.rst>
+   Installation <installation.rst>
    Authentication <authentication.rst>
    Data Catalog <catalog.rst>
    Data Sources <all_data_sources.rst>
-   Post processing <post_processing.rst>
+   Data Post processing <post_processing.rst>
 
