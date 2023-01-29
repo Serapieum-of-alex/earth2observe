@@ -17,7 +17,7 @@ WE will be using
 
 Tutorial notebook
     - You don't need to copy and paste the code snippts in this tutorial, you can find the whole tutorial as a
-        jupyter notebook here `post processing of ERA5 data`_.
+        jupyter notebook `post processing of ERA5 data`_.
 
 ********
 Packages
@@ -161,9 +161,10 @@ pandas dataframe.
 #. First spatial indexing method, we will create an index raster with an id for each cell that will refer to the row in
     the dataframe to be able to locate the value and associate it to a specific location.
 #. Second method we will create a point/polygon geometry at the center of each cell so we can query the whole raster but
-    using geometries relations.
+    using geometries relations. for more information on how the `rasterToGeoDataFrame` function works, please check the
+    documentation of the `pyramids` package `rasterToGeoDataFrame documentation`_ .
 #. Third we will use the `H3` indexing method so we can assign a hexadecimal index (for each resolution 0-15) so we can
-    use the different resolution of H3 tfor faster querying of data.
+    use the different resolution of H3 tfor faster querying of data. for more information `H3 Documentation`_.
 #. The creation of the polygon index will take a bit long time (3 min) but it is optional since we can only use the
     point index.
 #. So the point/polygon and raster index will be created only once since all rasters have the same dimensions.
@@ -351,3 +352,4 @@ References
 .. _Pyramids package: https://pyramids-gis.readthedocs.io/en/latest
 .. _rasterToGeoDataFrame documentation: https://pyramids-gis.readthedocs.io/en/latest/convert.html#rastertogeodataframe
 .. _post processing of ERA5 data: https://github.com/Serapieum-of-alex/earth2observe/blob/main/examples/post-processing-tutorial.ipynb
+.. _H3 Documentation: https://pyramids-gis.readthedocs.io/en/latest/spatial_indexing.html
