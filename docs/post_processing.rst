@@ -19,7 +19,7 @@ WE will be using
 Tutorial notebook
 -----------------
 - You don't need to copy and paste the code snippts in this tutorial, you can find the whole tutorial as a
-    jupyter notebook here
+    jupyter notebook here `post processing of ERA5 data`_.
 
 ********
 Packages
@@ -340,3 +340,4 @@ References
 
 .. _Pyramids package: https://pyramids-gis.readthedocs.io/en/latest
 .. _rasterToGeoDataFrame documentation: https://pyramids-gis.readthedocs.io/en/latest/convert.html#rastertogeodataframe
+.. _post processing of ERA5 data: https://github.com/Serapieum-of-alex/earth2observe/blob/main/examples/post-processing-tutorial.ipynb
