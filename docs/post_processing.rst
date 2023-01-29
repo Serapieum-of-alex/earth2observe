@@ -13,8 +13,13 @@ In this tutorial we will do the following
 
 WE will be using
 ----------------
-- earth2observe package
-- The convert module in the pyramids package (dependency of earth2observe you don't need to install it )
+- `earth2observe` package
+- The convert module in the `Pyramids package`_ (dependency of earth2observe you don't need to install it separately)
+
+Tutorial notebook
+-----------------
+- You don't need to copy and paste the code snippts in this tutorial, you can find the whole tutorial as a
+    jupyter notebook here
 
 ********
 Packages
@@ -239,8 +244,6 @@ In this part we will convert the rasters into Dataframe using the convert module
 - For more information on how the `rasteToGeodataFrame` function works you can check the
     `rasterToGeoDataFrame documentation`_.
 
-.. _Pyramids package: https://pyramids-gis.readthedocs.io/en/latest
-.. _rasterToGeoDataFrame documentation: https://pyramids-gis.readthedocs.io/en/latest/convert.html#rastertogeodataframe
 
 .. code-block:: py
 
@@ -330,3 +333,10 @@ query it.
 
 - So the now the column names are of type datetime object so you can query it using two dates to get all time steps in
     between.
+
+**********
+References
+**********
+
+.. _Pyramids package: https://pyramids-gis.readthedocs.io/en/latest
+.. _rasterToGeoDataFrame documentation: https://pyramids-gis.readthedocs.io/en/latest/convert.html#rastertogeodataframe
