@@ -12,19 +12,29 @@ In this tutorial we will do the following
 - Use Uber H3 spatial index to get the spatial index for all cells for all 16 resolution.
 
 WE will be using
-----------------
-- `earth2observe` package
-- The convert module in the `Pyramids package`_ (dependency of earth2observe you don't need to install it separately)
+    - `earth2observe` package
+    - The convert module in the `Pyramids package`_ (dependency of earth2observe you don't need to install it separately)
 
 Tutorial notebook
------------------
-- You don't need to copy and paste the code snippts in this tutorial, you can find the whole tutorial as a
-    jupyter notebook here `post processing of ERA5 data`_.
+    - You don't need to copy and paste the code snippts in this tutorial, you can find the whole tutorial as a
+        jupyter notebook here `post processing of ERA5 data`_.
 
 ********
 Packages
 ********
+- you only need to install `earth2observe` from conda-forge
 
+.. code-block:: bash
+
+    conda install -c conda-forge earth2observe=0.2.2
+
+- or from pip
+
+.. code-block:: bash
+
+    pip install earth2observe==0.2.2
+
+- Import packages
 
 .. code-block:: py
 
