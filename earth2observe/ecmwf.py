@@ -40,7 +40,7 @@ class ECMWF(AbstractDataSource):
         lon_lim: list = None,
         fmt: str = "%Y-%m-%d",
     ):
-        """RemoteSensing.
+        """ECMWF.
 
         Parameters
         ----------
