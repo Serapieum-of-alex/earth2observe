@@ -33,7 +33,7 @@ The API takes few parameters to determine the domain of your data
 longitude limit [-180, 180], and latitude limit [-90, 90].
 
 .. code-block:: py
-    :linenos:
+
     from earth2observe.earth2observe import Earth2Observe
     start = "2009-01-01"
     end = "2009-01-10"
@@ -47,12 +47,12 @@ you can use the `Catalog` class that is with each data source. in this tutorial 
 `precipitation` from the `CHIRPS` and `Amazon S3` data source and `temperature` from `ECMWF`
 
 - The downloaded data format differs also based on the data source the `CHIRPS` and the `ECMWF` has a `post_download`
-function that is triggered after a the end of each downloaded chunck of data is done, and this `post_download`
-functions triggers some function from the `Pyramids GIS package`_. to convert the netcdf format into geotiff.
+    function that is triggered after a the end of each downloaded chunck of data is done, and this `post_download`
+    functions triggers some function from the `Pyramids GIS package`_. to convert the netcdf format into geotiff.
 
 - If you like to convert the downloaded data to anyother format or crop the data to a smaller area that what you have
-originally downloaded, reproject, or re-align the rasters to have the same alignment (rows and columns) like other
-raster data you can also find all the required functions in the `Pyramids GIS package`_.
+    originally downloaded, reproject, or re-align the rasters to have the same alignment (rows and columns) like other
+    raster data you can also find all the required functions in the `Pyramids GIS package`_.
 
 .. _Pyramids GIS package: https://github.com/Serapieum-of-alex/pyramids
 
@@ -66,7 +66,6 @@ ECMWF
 -----
 
 .. code-block:: py
-    :linenos:
 
     source = "ecmwf"
     path = r"examples\data\ecmwf"
@@ -89,7 +88,6 @@ CHIRPS
 ------
 
 .. code-block:: py
-    :linenos:
 
     source = "chirps"
     path = r"examples\data\chirps"
@@ -110,7 +108,6 @@ parallel download
 -----------------
 
 .. code-block:: py
-    :linenos:
 
     path = r"examples\data\chirps-cores"
     e2o = Earth2Observe(
@@ -130,7 +127,6 @@ Amazon-S3
 ---------
 
 .. code-block:: py
-    :linenos:
 
     path = r"examples\data\s3-backend"
     source = "amazon-s3"

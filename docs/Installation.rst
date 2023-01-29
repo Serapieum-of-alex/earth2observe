@@ -1,75 +1,73 @@
-.. highlight:: shell
-
-============
+############
 Installation
-============
+############
 
 
-
+**************
 Stable release
---------------
+**************
 
-Please install earth2observe in a Virtual environment so that its requirements don't tamper with your system's python
-``earth2observe`` works with all Python versions
+- Please install earth2observe in a Virtual environment so that its requirements don't tamper with your system's python
+    ``earth2observe`` works with all Python versions
 
 conda
 -----
-The easiest way to install ``earth2observe`` is using ``conda`` package manager. ``earth2observe`` is available in the `conda-forge
-<https://conda-forge.org/>`_ channel. To install
-you can use the following command:
+- The easiest way to install ``earth2observe`` is using ``conda`` package manager. ``earth2observe`` is available in
+    the `conda-forge`_ channel. To install you can use the following command:
 
-+ ``conda install -c conda-forge earth2observe``
+.. code-block:: bash
 
-If this works it will install earth2observe with all dependencies including Python and gdal,
-and you skip the rest of the installation instructions.
+    conda install -c conda-forge earth2observe
+
+- If this works it will install earth2observe with all dependencies including Python and gdal,
+    and you skip the rest of the installation instructions.
 
 
 Installing Python and gdal dependencies
 ---------------------------------------
 
-The main dependencies for earth2observe are an installation of Python 2.7+, and gdal
+- The main dependencies for earth2observe are an installation of Python 3.9+, and gdal
 
 Installing Python
 -----------------
 
-For Python we recommend using the Anaconda Distribution for Python 3, which is available
-for download from https://www.anaconda.com/download/. The installer gives the option to
-add ``python`` to your ``PATH`` environment variable. We will assume in the instructions
-below that it is available in the path, such that ``python``, ``pip``, and ``conda`` are
-all available from the command line.
-
-Note that there is no hard requirement specifically for Anaconda's Python, but often it
-makes installation of required dependencies easier using the conda package manager.
+- For Python we recommend using the Anaconda Distribution for Python 3, which is available for download from
+    https://www.anaconda.com/download/. The installer gives the option to add ``python`` to your ``PATH`` environment
+    variable. We will assume in the instructions below that it is available in the path, such that ``python``,
+    ``pip``, and ``conda`` are all available from the command line.
 
 Install as a conda environment
 ------------------------------
 
-The easiest and most robust way to install earth2observe is by installing it in a separate
-conda environment. In the root repository directory there is an ``environment.yml`` file.
-This file lists all dependencies. Either use the ``environment.yml`` file from the main branch
-(please note that the main branch can change rapidly and break functionality without warning),
-or from one of the releases {release}.
+- The easiest and most robust way to install earth2observe is by installing it in a separate conda environment. In
+    the root repository directory there is an ``environment.yml`` file. This file lists all dependencies. Either use
+    the ``environment.yml`` file from the main branch (please note that the main branch can change rapidly and break
+    functionality without warning), or from one of the releases {release}.
 
-Run this command to start installing all earth2observe dependencies:
+- Run this command to start installing all earth2observe dependencies:
 
-+ ``conda env create -f environment.yml``
+.. code-block:: bash
 
-This creates a new environment with the name ``earth2observe``. To activate this environment in
-a session, run:
+    conda env create -f environment.yml
 
-+ ``activate earth2observe``
+- This creates a new environment with the name ``earth2observe``. To activate this environment in a session, run:
 
-For the installation of earth2observe there are two options (from the Python Package Index (PyPI)
-or from Github). To install a release of earth2observe from the PyPI (available from release 2018.1):
+.. code-block:: bash
 
-+ ``pip install earth2observe=={release}``
+    activate earth2observe
+
+- For the installation of earth2observe there are two options (from the Python Package Index (PyPI) or from Github).
+    To install a release of earth2observe from the PyPI:
+
+.. code-block:: bash
+
+    pip install earth2observe=={release}
 
 
 From sources
 ------------
 
-
-The sources for earth2observe can be downloaded from the `Github repo`_.
+- The sources for earth2observe can be downloaded from the `Github repo`_.
 
 You can either clone the public repository:
 
@@ -90,17 +88,17 @@ Once you have a copy of the source, you can install it with:
     $ python setup.py install
 
 
-.. _Github repo: https://github.com/Serapieum-of-alex/earth2observe
-.. _tarball: https://github.com/Serapieum-of-alex/earth2observe/tarball/main
-
-
 To install directly from GitHub (from the HEAD of the main branch):
 
-+ ``pip install git+https://github.com/Serapieum-of-alex/earth2observe.git``
+.. code-block:: bash
+
+    pip install git+https://github.com/Serapieum-of-alex/earth2observe.git
 
 or from Github from a specific release:
 
-+ ``pip install git+https://github.com/Serapieum-of-alex/earth2observe.git@{release}``
+.. code-block:: bash
+
+    pip install git+https://github.com/Serapieum-of-alex/earth2observe.git@{release}
 
 Now you should be able to start this environment's Python with ``python``, try
 ``import earth2observe`` to see if the package is installed.
@@ -116,10 +114,12 @@ of you clone. This will not move a copy to your Python installation directory, b
 instead create a link in your Python installation pointing to the folder you installed
 it from, such that any changes you make there are directly reflected in your install.
 
-+ ``git clone https://github.com/Serapieum-of-alex/earth2observe.git``
-+ ``cd earth2observe``
-+ ``activate earth2observe``
-+ ``pip install -e .``
+.. code-block:: bash
+
+    git clone https://github.com/Serapieum-of-alex/earth2observe.git
+    cd earth2observe
+    activate earth2observe
+    pip install -e .
 
 Alternatively, if you want to avoid using ``git`` and simply want to test the latest
 version from the ``main`` branch, you can replace the first line with downloading
@@ -156,10 +156,18 @@ This should run without errors.
 
 .. note::
 
-      This documentation was generated on |today|
+      This documentation was generated on |date|
 
       Documentation for the development version:
       https://earth2observe.readthedocs.org/en/latest/
 
       Documentation for the stable version:
       https://earth2observe.readthedocs.org/en/stable/
+
+References
+----------
+
+.. target-notes::
+.. _Github repo: https://github.com/Serapieum-of-alex/earth2observe
+.. _tarball: https://github.com/Serapieum-of-alex/earth2observe/tarball/main
+.. _`conda-forge`: https://conda-forge.org
