@@ -38,7 +38,7 @@ e2o.download()
 Convert the downloaded netcdf into rasters one for each time stamp in the ncdf file
 For the example I converted only 1-hourly rasters 
 """
-nc_file = f"{path}/202205_monthly_precipitation_amount_1hour_Accumulation.nc"
+nc_file = f"{rdir}/202205_monthly_precipitation_amount_1hour_Accumulation.nc"
 Convert.nctoTiff(nc_file, path, time_var_name="time1", prefix="Amazon-S3-ERA5")
 #%%
 """
