@@ -1,7 +1,6 @@
 import os
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Dict
 
 
 class AbstractDataSource(ABC):
@@ -94,14 +93,9 @@ class AbstractCatalog(ABC):
     """abstrach class for the datasource catalog."""
 
     def __init__(self):
-        self.catalog = self.get_catalog()
+        self.catalog = self._get_catalog()
 
     @abstractmethod
-    def get_catalog(self):
+    def _get_catalog(self):
         """read the catalog of the datasource from disk or retrieve it from server."""
         pass
-
-    @abstractmethod
-    def get_variable(self, var_name) -> Dict[str, str]:
-        """get the details of a specific variable."""
-        return self.catalog.get(var_name)
