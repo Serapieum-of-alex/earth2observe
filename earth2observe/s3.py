@@ -202,7 +202,7 @@ class S3(AbstractDataSource):
         -------
         Download the file to your local drive.
         """
-        if not os.path.isfile(local_dir_fname):  # check if file already exists
+        if not os.path.isfile(local_dir_fname):  # check if the file already exists
             print(f"Downloading {s3_file_path} from S3...")
             try:
                 self.client.download_file(bucket, s3_file_path, local_dir_fname)

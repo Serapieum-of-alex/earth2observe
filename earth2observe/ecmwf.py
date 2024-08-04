@@ -1,6 +1,7 @@
 """Created on Fri Apr  2 06:58:20 2021.
 
 @author: mofarrag
+https://www.ecmwf.int/en/computing/software/ecmwf-web-api
 """
 import calendar
 import datetime as dt
@@ -25,7 +26,7 @@ class ECMWF(AbstractDataSource):
 
     RemoteSensing class contains methods to download ECMWF data
     """
-
+    api_url: str = "https://api.ecmwf.int/v1"
     temporal_resolution = ["daily", "monthly"]
     spatial_resolution = 0.125
 
@@ -105,7 +106,6 @@ class ECMWF(AbstractDataSource):
     def initialize(self):
         """Initialize connection with ECMWF server."""
         try:
-            url = os.environ["ECMWF_API_URL"]
             key = os.environ["ECMWF_API_KEY"]
             email = os.environ["ECMWF_API_EMAIL"]
         except KeyError:
@@ -114,7 +114,7 @@ class ECMWF(AbstractDataSource):
                 "connection with ecmwf server ECMWF_API_URL, ECMWF_API_KEY, ECMWF_API_EMAIL"
             )
 
-        self.server = ECMWFDataServer(url=url, key=key, email=email)
+        self.server = ECMWFDataServer(ECMWF.api_url, key=key, email=email)
 
     def create_grid(self, lat_lim: list, lon_lim: list):
         """Create_grid.
@@ -492,7 +492,8 @@ class ECMWF(AbstractDataSource):
 
 
 class Catalog(AbstractCatalog):
-    """ECMWF data catalog This class contains the information about the ECMWF variables http://rda.ucar.edu/cgi-bin/transform?xml=/metadata/ParameterTables/WMO_GRIB1.98-0.128.xml&view=gribdoc."""
+    """ECMWF data catalog This class contains the information about the ECMWF variables
+    https://rda.ucar.edu/cgi-bin/transform?xml=/metadata/ParameterTables/WMO_GRIB1.98-0.128.xml&view=gribdoc."""
 
     def __init__(self):
         # get the catalog
