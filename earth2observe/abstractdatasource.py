@@ -1,10 +1,11 @@
 import os
 from abc import ABC, abstractmethod
 from pathlib import Path
+from typing import Dict
 
 
 class AbstractDataSource(ABC):
-    """Bluebrint for all class for different datasources."""
+    """Blueprint for all class for different datasource's."""
 
     def __init__(
         self,
@@ -57,12 +58,12 @@ class AbstractDataSource(ABC):
     def check_input_dates(
         self, start: str, end: str, temporal_resolution: str, fmt: str
     ):
-        """Check validity of input dates."""
+        """Check the validity of input dates."""
         pass
 
     @abstractmethod
     def initialize(self, *args, **kwargs):
-        """Initialize connection with the data source server (for non ftp servers)"""
+        """Initialize connection with the data source server (for non-ftp servers)"""
         pass
 
     @abstractmethod
@@ -80,22 +81,27 @@ class AbstractDataSource(ABC):
     # @abstractmethod
     def downloadDataset(self):
         """Download single variable/dataset."""
-        # used for non ftp servers
+        # used for non-ftp servers
         pass
 
     @abstractmethod
     def API(self):
-        """send/recieve request to the dataset server."""
+        """send/receive request to the dataset server."""
         pass
 
 
 class AbstractCatalog(ABC):
-    """abstrach class for the datasource catalog."""
+    """abstract class for the datasource catalog."""
 
     def __init__(self):
-        self.catalog = self._get_catalog()
+        self.catalog = self.get_catalog()
 
-    @abstractmethod
-    def _get_catalog(self):
+    # @abstractmethod
+    def get_catalog(self):
         """read the catalog of the datasource from disk or retrieve it from server."""
         pass
+
+    # @abstractmethod
+    def get_variable(self, var_name) -> Dict[str, str]:
+        """get the details of a specific variable."""
+        return self.catalog.get(var_name)
