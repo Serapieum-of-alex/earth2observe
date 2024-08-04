@@ -1,7 +1,7 @@
 fail_fast: true
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v4.6.0
     hooks:
       - id: end-of-file-fixer
         name: "[py -  check] validate yaml"
@@ -55,10 +55,10 @@ repos:
     hooks:
       - id: pydocstyle
         name: "[py   - check] pydocstyle"
-        files: ^Hapi/
+        files: ^earth2observe/
 
   - repo: https://github.com/pycqa/flake8
-    rev: 6.1.0
+    rev: 7.1.0
     hooks:
       - id: flake8
         name: "[py   - check] flake8"
@@ -70,7 +70,7 @@ repos:
   #  hooks:
   #    - id: black
   - repo: https://github.com/ambv/black
-    rev: 23.11.0
+    rev: 24.4.2
     hooks:
       - id: black
         name: "[py   - format] black"
@@ -108,7 +108,23 @@ repos:
     hooks:
       - id: pytest-check
         name: pytest-check
-        entry: pytest -v --cov=pyramids --cov-report term-missing
+        entry: pytest -v --cov=earth2observe --cov-report term-missing
         language: system
         pass_filenames: false
         always_run: true
+
+  - repo: local
+    hooks:
+      - id: examples-notebook-check
+        name: nbval
+        entry: pytest --nbval
+        language: system
+        files: \.ipynb$
+
+  - repo: local
+    hooks:
+      - id: doctest
+        name: doctest
+        entry: pytest --doctest-modules
+        language: system
+        files: earth2observe\.py$

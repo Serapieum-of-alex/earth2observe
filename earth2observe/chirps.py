@@ -5,9 +5,8 @@ from ftplib import FTP
 import numpy as np
 import pandas as pd
 from joblib import Parallel, delayed
-from osgeo import gdal
-from pyramids.raster import Raster
-from pyramids.utils import extractFromGZ
+from pyramids.dataset import Dataset
+from pyramids._io import extract_from_gz
 from serapeum_utils.utils import print_progress_bar
 
 from earth2observe.abstractdatasource import AbstractCatalog, AbstractDataSource
@@ -340,50 +339,33 @@ class CHIRPS(AbstractDataSource):
         try:
             # unzip the file
             zip_filename = os.path.join(path, filename)
-            extractFromGZ(zip_filename, outfilename, delete=True)
+            extract_from_gz(zip_filename, out_file_name, delete=True)
 
             # open tiff file
-            src = gdal.Open(outfilename)
-            dataset, NoDataValue = Raster.getRasterData(src)
+            dataset = Dataset.read_file(out_file_name)
+
+            data = dataset.read_array()
+            no_data_value = dataset.no_data_value[0]
 
             # clip dataset to the given extent
-            data = dataset[yID[0] : yID[1], xID[0] : xID[1]]
+            data = data[y_id[0]: y_id[1], x_id[0]: x_id[1]]
             # replace -ve values with -9999
             data[data < 0] = -9999
 
-            # save dataset as geotiff file
-            geo = [lon_lim[0], 0.05, 0, latlim[1], 0, -0.05]
-            Raster.createRaster(
-                DirFileEnd,
-                data,
-                geo=geo,
-                epsg="WGS84",
-                nodatavalue=NoDataValue,
-            )
+            # save dataset as a geotiff file
+            geo = [lon_lim[0], 0.05, 0, lat_lim[1], 0, -0.05]
+
+            new_dataset = Dataset.create_from_array(data, geo=geo, epsg=dataset.epsg, no_data_value=no_data_value)
+            new_dataset.to_file(dir_file_end)
 
             # delete old tif file
-            os.remove(outfilename)
+            os.remove(out_file_name)
 
         except PermissionError:
             print(
                 "The file covering the whole world could not be deleted please delete it after the download ends"
             )
         return True
-
-    def listAttributes(self):
-        """Print Attributes List."""
-
-        print("\n")
-        print(
-            f"Attributes List of: {repr(self.__dict__['name'])} - {self.__class__.__name__} Instance\n"
-        )
-        self_keys = list(self.__dict__.keys())
-        self_keys.sort()
-        for key in self_keys:
-            if key != "name":
-                print(str(key) + " : " + repr(self.__dict__[key]))
-
-        print("\n")
 
 
 class Catalog(AbstractCatalog):

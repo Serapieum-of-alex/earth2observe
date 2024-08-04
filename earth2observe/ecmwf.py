@@ -12,8 +12,8 @@ import pandas as pd
 import yaml
 from ecmwfapi import ECMWFDataServer
 from loguru import logger
-from netCDF4 import Dataset
-from pyramids.raster import Raster
+from netCDF4 import Dataset as nc_dataset
+from pyramids.dataset import Dataset
 from serapeum_utils.utils import print_progress_bar
 
 from earth2observe import __path__
@@ -391,7 +391,7 @@ class ECMWF(AbstractDataSource):
         """
         # Open the downloaded data
         NC_filename = os.path.join(self.path, f"data_{dataset}.nc")
-        fh = Dataset(NC_filename, mode="r")
+        fh = nc_dataset(NC_filename, mode="r")
 
         # Get the NC variable parameter
         parameter_var = var_info.get("var_name")
@@ -474,8 +474,9 @@ class ECMWF(AbstractDataSource):
             )
 
             # Create Tiff files
-            # Raster.Save_as_tiff(name_out, Data_end, geo, "WGS84")
-            Raster.createRaster(path=name_out, arr=Data_end, geo=geo, epsg="WGS84")
+            dataset = Dataset.create_from_array(Data_end, geo=geo, epsg=4326)
+            dataset.to_file(name_out)
+            # Raster.createRaster(path=name_out, arr=Data_end, geo=geo, epsg="WGS84")
 
             if progress_bar:
                 amount = amount + 1
