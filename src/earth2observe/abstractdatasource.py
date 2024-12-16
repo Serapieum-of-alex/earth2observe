@@ -39,10 +39,8 @@ class AbstractDataSource(ABC):
         fmt (str, optional):
             [description]. Defaults to "%Y-%m-%d".
         """
-        # initialize connection with ecmwf server
         self.initialize()
         self.temporal_resolution = temporal_resolution
-        # TODO: create a function to check if the given variable exists in the catalog
         self.vars = variables
 
         self.create_grid(lat_lim, lon_lim)
@@ -51,8 +49,6 @@ class AbstractDataSource(ABC):
         # Create the directory
         if not os.path.exists(self.path):
             os.makedirs(self.path)
-
-        pass
 
     @abstractmethod
     def check_input_dates(
