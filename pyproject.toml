@@ -95,7 +95,6 @@ select = "B,C,E,F,W,T4"
 markers = [
     "slow: mark test as slow.",
     "fast: mark test as fast.",
-    "plot: test plotting function optional package (deselect with '-m \"not plot\"')"
 ]
 
 
