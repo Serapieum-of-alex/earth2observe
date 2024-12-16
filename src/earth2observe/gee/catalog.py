@@ -54,8 +54,8 @@ class Catalog(AbstractCatalog):
             data = yaml.safe_load(file)
         return data
 
-    def __getitem__(self, item) -> DatasetInfo:
-        return DatasetInfo(**self.catalog[item])
+    def __getitem__(self, dataset_id: str) -> DatasetInfo:
+        return DatasetInfo(**self.catalog[dataset_id])
 
     def __repr__(self):
         return self.catalog.__repr__()
