@@ -12,5 +12,5 @@ def test_catalog(catalog_columns: List[str]):
     assert all(key in dataset.__dict__.keys() for key in ["name", "provider", "url", "spatial_resolution",
                                                           "temporal_resolution", "start_date", "end_date", "bands",
                                                           "bands_description", "min", "max"])
-    assert catalog.__str__()
-    assert catalog.__repr__()
+    assert isinstance(catalog.__str__(), str)
+    assert isinstance(catalog.__repr__(), str)
