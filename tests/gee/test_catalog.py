@@ -9,6 +9,7 @@ def test_catalog(catalog_columns: List[str]):
     assert isinstance(catalog.datasets, list)
     dataset = catalog["ls9_sr"]
     assert isinstance(dataset, DatasetInfo)
+    dataset = catalog.get_dataset("ls9_sr")
     assert all(key in dataset.__dict__.keys() for key in ["name", "provider", "url", "spatial_resolution",
                                                           "temporal_resolution", "start_date", "end_date", "bands",
                                                           "bands_description", "min", "max"])
