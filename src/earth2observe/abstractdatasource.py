@@ -98,6 +98,6 @@ class AbstractCatalog(ABC):
         pass
 
     # @abstractmethod
-    def get_variable(self, var_name) -> Dict[str, str]:
+    def get_dataset(self, var_name) -> Dict[str, str]:
         """get the details of a specific variable."""
         return self.catalog.get(var_name)
