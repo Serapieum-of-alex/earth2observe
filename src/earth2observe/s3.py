@@ -131,7 +131,7 @@ class S3(AbstractDataSource):
         """
         catalog = Catalog()
         for var in self.vars:
-            var_info = catalog.get_variable(var)
+            var_info = catalog.get_dataset(var)
             var_s3_name = var_info.get("bucket_name")
             self.downloadDataset(var_s3_name, progress_bar=progress_bar)
 
@@ -304,9 +304,9 @@ class Catalog(AbstractCatalog):
             }
         }
 
-    def get_variable(self, var_name) -> Dict[str, str]:
+    def get_dataset(self, var_name) -> Dict[str, str]:
         """get the details of a specific variable."""
-        return super().get_variable(var_name)
+        return super().get_dataset(var_name)
 
     def get_available_years(self, bucket: str = "era5-pds"):
         """The ERA5 data is chunked into distinct NetCDF files per variable, each containing a month of hourly data. These files are organized in the S3 bucket by year, month, and variable name.
