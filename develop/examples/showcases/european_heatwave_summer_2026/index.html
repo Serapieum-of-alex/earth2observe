@@ -25076,8 +25076,8 @@ plt.show()</div>
 <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">"</span><span class="si">%d</span><span class="s2"> %b"</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">daily</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
 <span class="n">glyph</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
     <span class="n">cmap</span><span class="o">=</span><span class="n">t2m_cmap</span><span class="p">,</span>
-    <span class="n">vmin</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-    <span class="n">vmax</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+    <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">vmax</span><span class="o">=</span><span class="mi">38</span><span class="p">,</span>
     <span class="n">figsize</span><span class="o">=</span><span class="n">SOCIAL_FIGSIZE</span><span class="p">,</span>
     <span class="n">animation_axis_values</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>
     <span class="c1"># apply_blank_canvas only strips the map axes -- it doesn't touch the</span>
@@ -25097,6 +25097,14 @@ plt.show()</div>
 <span class="c1"># all three social showcases.</span>
 <span class="n">glyph</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="o">*</span><span class="n">SOCIAL_FIGSIZE</span><span class="p">)</span>
 <span class="n">glyph</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">set_dpi</span><span class="p">(</span><span class="mi">150</span><span class="p">)</span>
+<span class="c1"># The default colorbar axes sits close enough to the figure's right edge that</span>
+<span class="c1"># its rotated label runs past the canvas -- shifting only the colorbar's own</span>
+<span class="c1"># axes left (figure-fraction) leaves the map axes, and everything drawn on</span>
+<span class="c1"># it, completely untouched.</span>
+<span class="n">cbar_pos</span> <span class="o">=</span> <span class="n">glyph</span><span class="o">.</span><span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span>
+<span class="n">glyph</span><span class="o">.</span><span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_position</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">cbar_pos</span><span class="o">.</span><span class="n">x0</span> <span class="o">-</span> <span class="mf">0.025</span><span class="p">,</span> <span class="n">cbar_pos</span><span class="o">.</span><span class="n">y0</span><span class="p">,</span> <span class="n">cbar_pos</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">cbar_pos</span><span class="o">.</span><span class="n">height</span><span class="p">]</span>
+<span class="p">)</span>
 <span class="c1"># Both bake their position from the figure's CURRENT size, so they must come</span>
 <span class="c1"># after set_dpi/set_size_inches -- and before save_animation, which reads the</span>
 <span class="c1"># figure as its final frame.</span>
@@ -25139,8 +25147,8 @@ cube = DatasetCollection.from_files(celsius_paths)
 labels = [d.strftime("%d %b") for d in daily.index]
 glyph = cube.plot(
     cmap=t2m_cmap,
-    vmin=5,
-    vmax=40,
+    vmin=0,
+    vmax=38,
     figsize=SOCIAL_FIGSIZE,
     animation_axis_values=labels,
     # apply_blank_canvas only strips the map axes -- it doesn't touch the
@@ -25160,6 +25168,14 @@ glyph.add_reference_map(style="dark", extent=[west, south, east, north])
 # all three social showcases.
 glyph.fig.set_size_inches(*SOCIAL_FIGSIZE)
 glyph.fig.set_dpi(150)
+# The default colorbar axes sits close enough to the figure's right edge that
+# its rotated label runs past the canvas -- shifting only the colorbar's own
+# axes left (figure-fraction) leaves the map axes, and everything drawn on
+# it, completely untouched.
+cbar_pos = glyph.cbar.ax.get_position()
+glyph.cbar.ax.set_position(
+    [cbar_pos.x0 - 0.025, cbar_pos.y0, cbar_pos.width, cbar_pos.height]
+)
 # Both bake their position from the figure's CURRENT size, so they must come
 # after set_dpi/set_size_inches -- and before save_animation, which reads the
 # figure as its final frame.
