@@ -24867,6 +24867,21 @@ def stamp_watermark(
             <span class="p">)</span>
         <span class="p">)</span>
     <span class="n">daily_tifs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">daily_tifs</span><span class="p">)</span>
+
+<span class="c1"># The cache check above only asks "is raw_kelvin_dir non-empty", not "does it</span>
+<span class="c1"># cover what START/END are asking for right now" -- so a stale cache from a</span>
+<span class="c1"># previous, narrower window is served silently, with no error. Catch that</span>
+<span class="c1"># here instead of downstream: reparse each cached file's own date and compare</span>
+<span class="c1"># the set against the calendar days START..END actually calls for.</span>
+<span class="n">cached_days</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DatetimeIndex</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"_"</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="s2">"%Y%m</span><span class="si">%d</span><span class="s2">"</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">daily_tifs</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="n">expected_days</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="n">END</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s2">"D"</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">set</span><span class="p">(</span><span class="n">cached_days</span><span class="p">)</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span><span class="n">expected_days</span><span class="p">),</span> <span class="p">(</span>
+    <span class="sa">f</span><span class="s2">"cached tiles cover </span><span class="si">{</span><span class="n">cached_days</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">.</span><span class="n">date</span><span class="p">()</span><span class="si">}</span><span class="s2">..</span><span class="si">{</span><span class="n">cached_days</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">date</span><span class="p">()</span><span class="si">}</span><span class="s2"> "</span>
+    <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">cached_days</span><span class="p">)</span><span class="si">}</span><span class="s2"> days) but START/END ask for </span><span class="si">{</span><span class="n">START</span><span class="si">}</span><span class="s2">..</span><span class="si">{</span><span class="n">END</span><span class="si">}</span><span class="s2"> "</span>
+    <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">expected_days</span><span class="p">)</span><span class="si">}</span><span class="s2"> days) -- delete </span><span class="si">{</span><span class="n">raw_kelvin_dir</span><span class="si">}</span><span class="s2"> and re-run"</span>
+<span class="p">)</span>
 <span class="nb">len</span><span class="p">(</span><span class="n">daily_tifs</span><span class="p">)</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-2">raw_kelvin_dir = OUT / "raw_kelvin"
@@ -24912,6 +24927,21 @@ if not daily_tifs:
             )
         )
     daily_tifs = sorted(daily_tifs)
+
+# The cache check above only asks "is raw_kelvin_dir non-empty", not "does it
+# cover what START/END are asking for right now" -- so a stale cache from a
+# previous, narrower window is served silently, with no error. Catch that
+# here instead of downstream: reparse each cached file's own date and compare
+# the set against the calendar days START..END actually calls for.
+cached_days = pd.DatetimeIndex(
+    [pd.to_datetime(Path(p).stem.split("_")[-1], format="%Y%m%d") for p in daily_tifs]
+)
+expected_days = pd.date_range(START, END, freq="D")
+assert set(cached_days) == set(expected_days), (
+    f"cached tiles cover {cached_days.min().date()}..{cached_days.max().date()} "
+    f"({len(cached_days)} days) but START/END ask for {START}..{END} "
+    f"({len(expected_days)} days) -- delete {raw_kelvin_dir} and re-run"
+)
 len(daily_tifs)</div>
 </div>
 </div>
