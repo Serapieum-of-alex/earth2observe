@@ -100,7 +100,7 @@
   
 
   <meta name="panzoom-theme" content="material">
-<meta name="panzoom-data" content='{"selectors": [".mermaid", ".d2"], "initial_zoom_level": 1.0}'> </head>
+<meta name="panzoom-data" content='{"selectors": [".d2", ".mermaid"], "initial_zoom_level": 1.0}'> </head>
   
   
     
@@ -12546,34 +12546,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../europe_temperature_2026/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    An ECMWF-style temperature animation over Europe — June → July 2026
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../netherlands_drought_2026/" class="md-nav__link">
         
   
@@ -24801,7 +24773,7 @@ def stamp_watermark(
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="1-fetch-the-whole-window-in-one-cds-request">1 · Fetch the whole window in one CDS request<a class="anchor-link" href="#1-fetch-the-whole-window-in-one-cds-request">¶</a></h2><p>Unlike <code>europe_temperature_2026.ipynb</code>'s per-day <code>gee</code> loop, the <code>ecmwf</code> backend takes the whole date range in a <strong>single</strong> request and returns one multi-day NetCDF — <code>aggregate=</code> then reduces it into one GeoTIFF per day (<code>op="mean"</code>, the natural daily summary for a state variable like 2 m temperature) without a second pass. CDS is a queue, not a live API ("this may take several minutes" per the <code>ecmwf</code> backend's own log line), but that is still one wait for the whole ~3.5-month window rather than ~110 separate waits.</p>
+<h2 id="1-fetch-the-whole-window-in-one-cds-request">1 · Fetch the whole window in one CDS request<a class="anchor-link" href="#1-fetch-the-whole-window-in-one-cds-request">¶</a></h2><p>The <code>ecmwf</code> backend takes the whole date range in a <strong>single</strong> request and returns one multi-day NetCDF — <code>aggregate=</code> then reduces it into one GeoTIFF per day (<code>op="mean"</code>, the natural daily summary for a state variable like 2 m temperature) without a second pass. CDS is a queue, not a live API ("this may take several minutes" per the <code>ecmwf</code> backend's own log line), but that is still one wait for the whole ~3.5-month window rather than ~110 separate waits.</p>
 </div>
 </div>
 </div>
@@ -25123,7 +25095,7 @@ plt.show()</div>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="3-animate-with-the-ecmwf-2t-preset">3 · Animate with the ECMWF <code>"2t"</code> preset<a class="anchor-link" href="#3-animate-with-the-ecmwf-2t-preset">¶</a></h2><p>The same recipe as <code>europe_temperature_2026.ipynb</code>'s ECMWF-social-media look (<code>style="2t"</code> → <code>apply_blank_canvas</code> → <code>add_reference_map(style="ecmwf-dark")</code>), but the full summer instead of six weeks, and rendered at exactly 1200x627 px — LinkedIn's recommended single-image post size, the same <code>SOCIAL_FIGSIZE</code> used by the el_nino showcase's animations regardless of Europe's own narrower aspect ratio. Rendered once to <code>.mp4</code> (ready for a native LinkedIn video post) and the <code>.gif</code> embedded below — as an <code>&lt;img&gt;</code>, not an HTML5 <code>&lt;video&gt;</code>, so it plays in every viewer with no JavaScript — is derived from that file via cleopatra's <code>gif_from_video</code>, rather than re-rendering the whole animation a second time.</p>
+<h2 id="3-animate-with-the-ecmwf-2t-preset">3 · Animate with the ECMWF <code>"2t"</code> preset<a class="anchor-link" href="#3-animate-with-the-ecmwf-2t-preset">¶</a></h2><p>The ECMWF-social-media look (<code>style="2t"</code> → <code>apply_blank_canvas</code> → <code>add_reference_map(style="ecmwf-dark")</code>), but the full summer instead of six weeks, and rendered at exactly 1200x627 px — LinkedIn's recommended single-image post size, the same <code>SOCIAL_FIGSIZE</code> used by the el_nino showcase's animations regardless of Europe's own narrower aspect ratio. Rendered once to <code>.mp4</code> (ready for a native LinkedIn video post) and the <code>.gif</code> embedded below — as an <code>&lt;img&gt;</code>, not an HTML5 <code>&lt;video&gt;</code>, so it plays in every viewer with no JavaScript — is derived from that file via cleopatra's <code>gif_from_video</code>, rather than re-rendering the whole animation a second time.</p>
 </div>
 </div>
 </div>
