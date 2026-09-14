@@ -24661,8 +24661,9 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <span class="n">SOCIAL_FIGSIZE</span> <span class="o">=</span> <span class="p">(</span><span class="mf">8.0</span><span class="p">,</span> <span class="mf">4.18</span><span class="p">)</span>
 <span class="c1"># END verified live against CDS's own ERA5-Land availability (a request past this</span>
 <span class="c1"># raises ValueError -- "does not match any constraint entry" -- rather than silently</span>
-<span class="c1"># returning nothing).</span>
-<span class="n">START</span><span class="p">,</span> <span class="n">END</span> <span class="o">=</span> <span class="s2">"2026-05-15"</span><span class="p">,</span> <span class="s2">"2026-08-31"</span>
+<span class="c1"># returning nothing). Re-verify before bumping this further: the day CDS actually</span>
+<span class="c1"># publishes through moves roughly a week behind the real calendar date.</span>
+<span class="n">START</span><span class="p">,</span> <span class="n">END</span> <span class="o">=</span> <span class="s2">"2026-05-15"</span><span class="p">,</span> <span class="s2">"2026-09-07"</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">stamp_watermark</span><span class="p">(</span>
@@ -24744,8 +24745,9 @@ LOGO = (
 SOCIAL_FIGSIZE = (8.0, 4.18)
 # END verified live against CDS's own ERA5-Land availability (a request past this
 # raises ValueError -- "does not match any constraint entry" -- rather than silently
-# returning nothing).
-START, END = "2026-05-15", "2026-08-31"
+# returning nothing). Re-verify before bumping this further: the day CDS actually
+# publishes through moves roughly a week behind the real calendar date.
+START, END = "2026-05-15", "2026-09-07"
 
 
 def stamp_watermark(
@@ -24828,20 +24830,43 @@ def stamp_watermark(
     <span class="c1"># CDS is a queue, not a live API -- only submit a request when the</span>
     <span class="c1"># aggregated output isn't already on disk, same caching convention as</span>
     <span class="c1"># every other fetch helper in this notebook.</span>
-    <span class="n">job</span> <span class="o">=</span> <span class="n">EarthLens</span><span class="p">(</span>
-        <span class="n">data_source</span><span class="o">=</span><span class="s2">"ecmwf"</span><span class="p">,</span>
-        <span class="n">variables</span><span class="o">=</span><span class="p">{</span><span class="s2">"reanalysis-era5-land"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"2m-temperature"</span><span class="p">]},</span>
-        <span class="n">start</span><span class="o">=</span><span class="n">START</span><span class="p">,</span>
-        <span class="n">end</span><span class="o">=</span><span class="n">END</span><span class="p">,</span>
-        <span class="n">temporal_resolution</span><span class="o">=</span><span class="s2">"daily"</span><span class="p">,</span>
-        <span class="n">path</span><span class="o">=</span><span class="n">OUT</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">EUROPE</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">daily_tifs</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">download</span><span class="p">(</span>
-        <span class="n">aggregate</span><span class="o">=</span><span class="n">AggregationConfig</span><span class="p">(</span>
-            <span class="n">freq</span><span class="o">=</span><span class="s2">"D"</span><span class="p">,</span> <span class="n">op</span><span class="o">=</span><span class="s2">"mean"</span><span class="p">,</span> <span class="n">cell_size</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="n">raw_kelvin_dir</span>
+    <span class="c1">#</span>
+    <span class="c1"># One request per calendar month boundary, not one request for the whole</span>
+    <span class="c1"># window: CDS builds a single day=[01..31] list applied uniformly across</span>
+    <span class="c1"># every month named in the request, so a request spanning into a month</span>
+    <span class="c1"># that is still being published gets rejected in full the moment that</span>
+    <span class="c1"># list contains a day CDS has not published yet -- confirmed live, a</span>
+    <span class="c1"># single request for the whole START..END span returns zero files even</span>
+    <span class="c1"># though every earlier month in it is complete. Splitting at the most</span>
+    <span class="c1"># recent full month boundary keeps each request's day range something</span>
+    <span class="c1"># CDS will actually answer.</span>
+    <span class="n">end_ts</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">(</span><span class="n">END</span><span class="p">)</span>
+    <span class="n">month_start</span> <span class="o">=</span> <span class="n">end_ts</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">day</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">(</span><span class="n">START</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">month_start</span><span class="p">:</span>
+        <span class="n">windows</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="p">(</span><span class="n">month_start</span> <span class="o">-</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">"%Y-%m-</span><span class="si">%d</span><span class="s2">"</span><span class="p">)),</span>
+            <span class="p">(</span><span class="n">month_start</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">"%Y-%m-</span><span class="si">%d</span><span class="s2">"</span><span class="p">),</span> <span class="n">END</span><span class="p">),</span>
+        <span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">windows</span> <span class="o">=</span> <span class="p">[(</span><span class="n">START</span><span class="p">,</span> <span class="n">END</span><span class="p">)]</span>
+
+    <span class="n">daily_tifs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">w_start</span><span class="p">,</span> <span class="n">w_end</span> <span class="ow">in</span> <span class="n">windows</span><span class="p">:</span>
+        <span class="n">job</span> <span class="o">=</span> <span class="n">EarthLens</span><span class="p">(</span>
+            <span class="n">data_source</span><span class="o">=</span><span class="s2">"ecmwf"</span><span class="p">,</span>
+            <span class="n">variables</span><span class="o">=</span><span class="p">{</span><span class="s2">"reanalysis-era5-land"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"2m-temperature"</span><span class="p">]},</span>
+            <span class="n">start</span><span class="o">=</span><span class="n">w_start</span><span class="p">,</span>
+            <span class="n">end</span><span class="o">=</span><span class="n">w_end</span><span class="p">,</span>
+            <span class="n">temporal_resolution</span><span class="o">=</span><span class="s2">"daily"</span><span class="p">,</span>
+            <span class="n">path</span><span class="o">=</span><span class="n">OUT</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">EUROPE</span><span class="p">,</span>
         <span class="p">)</span>
-    <span class="p">)</span>
+        <span class="n">daily_tifs</span> <span class="o">+=</span> <span class="n">job</span><span class="o">.</span><span class="n">download</span><span class="p">(</span>
+            <span class="n">aggregate</span><span class="o">=</span><span class="n">AggregationConfig</span><span class="p">(</span>
+                <span class="n">freq</span><span class="o">=</span><span class="s2">"D"</span><span class="p">,</span> <span class="n">op</span><span class="o">=</span><span class="s2">"mean"</span><span class="p">,</span> <span class="n">cell_size</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="n">raw_kelvin_dir</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="n">daily_tifs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">daily_tifs</span><span class="p">)</span>
 <span class="nb">len</span><span class="p">(</span><span class="n">daily_tifs</span><span class="p">)</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-2">raw_kelvin_dir = OUT / "raw_kelvin"
@@ -24850,20 +24875,43 @@ if not daily_tifs:
     # CDS is a queue, not a live API -- only submit a request when the
     # aggregated output isn't already on disk, same caching convention as
     # every other fetch helper in this notebook.
-    job = EarthLens(
-        data_source="ecmwf",
-        variables={"reanalysis-era5-land": ["2m-temperature"]},
-        start=START,
-        end=END,
-        temporal_resolution="daily",
-        path=OUT,
-        **EUROPE,
-    )
-    daily_tifs = job.download(
-        aggregate=AggregationConfig(
-            freq="D", op="mean", cell_size=0.1, out_dir=raw_kelvin_dir
+    #
+    # One request per calendar month boundary, not one request for the whole
+    # window: CDS builds a single day=[01..31] list applied uniformly across
+    # every month named in the request, so a request spanning into a month
+    # that is still being published gets rejected in full the moment that
+    # list contains a day CDS has not published yet -- confirmed live, a
+    # single request for the whole START..END span returns zero files even
+    # though every earlier month in it is complete. Splitting at the most
+    # recent full month boundary keeps each request's day range something
+    # CDS will actually answer.
+    end_ts = pd.Timestamp(END)
+    month_start = end_ts.replace(day=1)
+    if pd.Timestamp(START) &lt; month_start:
+        windows = [
+            (START, (month_start - pd.Timedelta(days=1)).strftime("%Y-%m-%d")),
+            (month_start.strftime("%Y-%m-%d"), END),
+        ]
+    else:
+        windows = [(START, END)]
+
+    daily_tifs = []
+    for w_start, w_end in windows:
+        job = EarthLens(
+            data_source="ecmwf",
+            variables={"reanalysis-era5-land": ["2m-temperature"]},
+            start=w_start,
+            end=w_end,
+            temporal_resolution="daily",
+            path=OUT,
+            **EUROPE,
         )
-    )
+        daily_tifs += job.download(
+            aggregate=AggregationConfig(
+                freq="D", op="mean", cell_size=0.1, out_dir=raw_kelvin_dir
+            )
+        )
+    daily_tifs = sorted(daily_tifs)
 len(daily_tifs)</div>
 </div>
 </div>
